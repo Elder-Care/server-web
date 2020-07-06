@@ -117,14 +117,15 @@ def login(conn, name, password):
         return 1
 
 
-def zhuce(conn, name, password):
+def zhuce(conn, info):
     # 用户注册
     table_name = 'sys_user'
-    where = 'UserName = \'' + name + '\''
+    where = 'UserName = \'' + info['UserName'] + '\''
     l = select(conn, table_name, where)
     if len(l) == 0:
         t = time.strftime('%Y-%m-%d', time.localtime())
-        value = {'UserName': name, 'Password': password, 'CREATED': t}
+        value = info
+        value['CREATED'] = str(t)
         insert(conn, table_name, value)
         return 1
     else:
@@ -191,13 +192,14 @@ def del_elder(conn, uid):
     return 1
 
 
-def add_employee(conn, name):
+def add_employee(conn, info):
     table_name = 'employee_info'
-    where = 'username = \'' + name + '\''
+    where = 'username = \'' + info['username'] + '\''
     l = select(conn, table_name, where)
     if len(l) == 0:
         t = time.strftime('%Y-%m-%d', time.localtime())
-        value = {'username': name, 'CREATED': t}
+        value = info
+        value['CREATED'] = str(t)
         insert(conn, table_name, value)
         return 1
     else:
@@ -225,13 +227,14 @@ def del_employee(conn, uid):
     return 1
 
 
-def add_volunteer(conn, name):
+def add_volunteer(conn, info):
     table_name = 'volunteer_info'
-    where = 'name = \'' + name + '\''
+    where = 'name = \'' + info['name'] + '\''
     l = select(conn, table_name, where)
     if len(l) == 0:
         t = time.strftime('%Y-%m-%d', time.localtime())
-        value = {'name': name, 'CREATED': t}
+        value = info
+        value['CREATED'] = str(t)
         insert(conn, table_name, value)
         return 1
     else:
@@ -257,6 +260,24 @@ def del_volunteer(conn, uid):
     where = 'ID = \'' + str(uid) + '\''
     delete(conn, table_name, where)
     return 1
+
+
+def sel_old(conn, name):
+    table_name = 'oldperson_info'
+    where = 'username = \'' + name + '\''
+    return select(conn, table_name, where)
+
+
+def sel_emp(conn, name):
+    table_name = 'employee_info'
+    where = 'username = \'' + name + '\''
+    return select(conn, table_name, where)
+
+
+def sel_vol(conn, name):
+    table_name = 'volunteer_info'
+    where = 'name = \'' + name + '\''
+    return select(conn, table_name, where)
 
 
 @app.route('/')
@@ -422,21 +443,23 @@ def login0():
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
     form = request.form
-    username = form.get('username')
-    password = form.get('password')
+    username = form.get('UserName')
+    password = form.get('Password')
     if not username:
         content = "请输入用户名"
-        return render_template('signin.html', content=content)
+        return render_template('/htmls/register.html', content=content)
     if not password:
         content = "请输入密码"
-        return render_template('signin.html', content=content)
+        return render_template('/htmls/register.html', content=content)
     global conn
-    if zhuce(conn, username, password):
+    info = {'Username': username, 'password': password, 'REAL_NAME': form.get('REAL_NAME'), 'SEX': form.get('SEX'),
+            'EMAIL': form.get('EMAIL'), 'PHONE': form.get('PHONE'), 'MOBILE': form.get('MOBILE')}
+    if zhuce(conn, info):
         content = "注册成功"
-        return render_template('login.html', content=content)
+        return render_template('/htmls/index.html', content=content)
     else:
         content = "用户名已存在"
-        return render_template('signin.html', content=content)
+        return render_template('/htmls/index.html', content=content)
 
 
 @app.route('/pinfo', methods=['GET', 'POST'])
@@ -536,13 +559,25 @@ def delo():
         return render_template('delo.html', content=content)
 
 
+@app.route('/selo', methods=['GET', 'POST'])
+def selo():
+    form = request.form
+    username = form.get('username')
+    content = sel_old(conn, username)
+    if content:
+        return render_template('/htmls/select_old.html', content=content)
+    else:
+        content = '该用户不存在'
+        return render_template('/htmls/select_old.html', content=content)
+
+
 @app.route('/adde', methods=['GET', 'POST'])
 def adde():
     # 新增员工
     form = request.form
     if not form.get('username'):
         content = "请输入用户名"
-        return render_template('/htmls/add_volunteer', content=content)
+        return render_template('/htmls/add_worker.html', content=content)
     info = {'username': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
             'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'hire_date': form.get("hire_date"),
@@ -551,10 +586,10 @@ def adde():
     global conn
     if add_employee(conn, info):
         content = "增添成功"
-        return render_template('adde.html', content=content)
+        return render_template('/htmls/index.html', content=content)
     else:
         content = "用户名已存在"
-        return render_template('adde.html', content=content)
+        return render_template('/htmls/index.html', content=content)
 
 
 @app.route('/einfo', methods=['GET', 'POST'])
@@ -589,25 +624,37 @@ def dele():
         return render_template('dele.html', content=content)
 
 
+@app.route('/sele', methods=['GET', 'POST'])
+def sele():
+    form = request.form
+    username = form.get('username')
+    content = sel_emp(conn, username)
+    if content:
+        return render_template('/htmls/select_worker.html', content=content)
+    else:
+        content = '该用户不存在'
+        return render_template('/htmls/select_worker.html', content=content)
+
+
 @app.route('/addv', methods=['GET', 'POST'])
 def addv():
     # 新增志愿者
     form = request.form
-    if not form.get('username'):
+    if not form.get('name'):
         content = "请输入用户名"
-        return render_template('addv.html', content=content)
-    info = {'name': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
+        return render_template('/htmls/add_volunteer.html', content=content)
+    info = {'name': form.get('name'), 'gender': form.get('gender'), 'phone': form.get('phone'),
             'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
-            'checkout_date': form.get('checkout_date'), 'profile_photo':
-                form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
+            'checkout_date': form.get('checkout_date'), 'imgset_dir':
+                form.get('imgset_dir'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     global conn
     if add_volunteer(conn, info):
         content = "增添成功"
-        return render_template('addv.html', content=content)
+        return render_template('/htmls/index.html', content=content)
     else:
         content = "用户名已存在"
-        return render_template('addv.html', content=content)
+        return render_template('/htmls/index.html', content=content)
 
 
 @app.route('/vinfo', methods=['GET', 'POST'])
@@ -640,6 +687,26 @@ def delv():
     else:
         content = "该id不存在"
         return render_template('delv.html', content=content)
+
+
+@app.route('/selv', methods=['GET', 'POST'])
+def selv():
+    form = request.form
+    username = form.get('username')
+    content = sel_vol(conn, username)
+    if content:
+        return render_template('/htmls/select_volunteer.html', content=content)
+    else:
+        content = '该用户不存在'
+        return render_template('/htmls/select_volunteer.html', content=content)
+
+
+@app.route('/reta', methods=['GET', 'POST'])
+def reta():
+    form = request.form
+    table_name = form.get('table_name')
+    content = select(conn, table_name, "")
+    return render_template()
 
 
 @app.route('/images', methods=['GET', 'POST'])
