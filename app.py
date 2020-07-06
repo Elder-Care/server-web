@@ -6,12 +6,13 @@ import random
 import cv2
 import bodydetect
 
+
 app = Flask(__name__)
 conn = sqlite3.connect('old_care.sqlite', check_same_thread=False)
 cur_id = 0
 
 
-class camera(object):
+class camera(object):#摄像机
     def __init__(self):
         self.frames = [open(f + '.jpg', 'rb').read() for f in ['1', '2', '3']]
         self.video = cv2.VideoCapture(0)
@@ -25,46 +26,47 @@ class camera(object):
         return jpeg.tobytes()
 
 
-def columns(table_name):
+def columns(table_name):#获取表格列名
     if table_name == 'oldperson_info':
-        return ['id', 'usernamee', 'gender', 'phone', 'id_card', 'birthday', 'checkin_date', 'checkout_date',
-                'imgset_dir'
+        return ['id', 'usernamee', 'gender', 'phone', 'id_card', 'birthday', 'checkin_date', 'checkout_date', 'imgset_dir'
             , 'profile_photo', 'room_number', 'firstguardian_name', 'firstguardian_relationship', 'firstguardian_phone'
             , 'firstguardian_wechat', 'secondguardian_name', 'secondguardian_relationship', ' secondguardian_phone'
             , 'secondguardian_wechat', 'health_state', 'DESCRIPTION', 'ISACTIVE', 'CREATED', 'CREATEDBY', 'UPDATED'
-            , 'UPDATEDBY', 'REMOVE']
+                , 'UPDATEDBY', 'REMOVE']
     elif table_name == 'employee_info':
-        return ['id', 'username', 'gender', 'phone', 'id_card', 'birthday', 'hire_date', 'resign_date', 'imgset_dir',
-                'profile_photo', 'DESCRIPTION', 'ISACTIVE', 'CREATED', 'CREATEDBY', 'UPDATED', 'UPDATEDBY', 'REMOVE']
+        return['id', 'username', 'gender', 'phone', 'id_card', 'birthday', 'hire_date', 'resign_date', 'imgset_dir',
+               'profile_photo', 'DESCRIPTION', 'ISACTIVE', 'CREATED', 'CREATEDBY', 'UPDATED', 'UPDATEDBY', 'REMOVE']
     elif table_name == 'volunteer_info':
-        return ['id', 'name', 'gender', 'phone', 'id_card', 'birthday', 'checkin_date', 'checkout_date', 'imgset_dir'
+        return['id', 'name', 'gender', 'phone', 'id_card', 'birthday', 'checkin_date', 'checkout_date', 'imgset_dir'
             , 'profile_photo', 'DESCRIPTION', 'ISACTIVE', 'CREATED', 'CREATEDBY', 'UPDATED'
-            , 'UPDATEDBY', 'REMOVE']
+                , 'UPDATEDBY', 'REMOVE']
     elif table_name == 'event_info':
-        return ['id', 'event_type', 'event_date', 'event_location', 'event_desc', 'oldperson_id']
+        return['id', 'event_type', 'event_date', 'event_location', 'event_desc', 'oldperson_id']
     elif table_name == 'sys_user':
-        return ['ID', 'UserName', 'Password', 'REAL_NAME', 'SEX', 'EMAIL', 'PHONE', 'MOBILE', 'DESCRIPTION', 'ISACTIVE',
-                'CREATED', 'CREATEDBY', 'UPDATED', 'UPDATEDBY', 'REMOVE', 'DATAFILTER', 'theme', 'defaultpage',
-                'logoimage', 'qqopenid', 'appversion', 'jsonauth']
+        return['ID', 'UserName', 'Password', 'REAL_NAME', 'SEX', 'EMAIL', 'PHONE', 'MOBILE', 'DESCRIPTION', 'ISACTIVE',
+               'CREATED', 'CREATEDBY', 'UPDATED', 'UPDATEDBY', 'REMOVE', 'DATAFILTER', 'theme', 'defaultpage',
+               'logoimage', 'qqopenid', 'appversion', 'jsonauth']
     else:
         print("表名不对")
         return 0
 
 
-def insert(conn, table_name, value):
+def insert(conn, table_name, value):#通用表格插入操作
     cols = columns(table_name)
     if cols != 0:
         sql_insert = "INSERT INTO " + table_name + "("
         for k, v in value.items():
-            sql_insert += k
-            sql_insert += ','
+            if v:
+                sql_insert += k
+                sql_insert += ','
         sql_insert = sql_insert[:-1]
         sql_insert += ')VALUES('
         for k, v in value.items():
-            sql_insert += '\''
-            sql_insert += v
-            sql_insert += '\''
-            sql_insert += ','
+            if v:
+                sql_insert += '\''
+                sql_insert += v
+                sql_insert += '\''
+                sql_insert += ','
         sql_insert = sql_insert[:-1]
         sql_insert += ')'
         # print(sql_insert)
@@ -72,14 +74,14 @@ def insert(conn, table_name, value):
         conn.commit()
 
 
-def delete(conn, table_name, where):
+def delete(conn, table_name, where):#通用表格删除操作
     sql_delete = "DELETE FROM " + table_name + " WHERE " + where + ";"
     conn.execute(sql_delete)
     conn.commit()
-    # print(sql_delete)
+    #print(sql_delete)
 
 
-def update(conn, table_name, set, where):
+def update(conn, table_name, set, where):#通用表格更新操作
     sql_update = "UPDATE " + table_name + " SET " + set
     if where != "":
         sql_update = sql_update + " WHERE " + where
@@ -89,7 +91,7 @@ def update(conn, table_name, set, where):
     conn.commit()
 
 
-def select(conn, table_name, where):
+def select(conn, table_name, where):#通用表格查询操作
     cols = columns(table_name)
     if cols != 0:
         sql_select = "SELECT * FROM " + table_name
@@ -116,7 +118,7 @@ def login(conn, name, password):
 
 
 def zhuce(conn, name, password):
-    # 用户注册
+    #用户注册
     table_name = 'sys_user'
     where = 'UserName = \'' + name + '\''
     l = select(conn, table_name, where)
@@ -154,13 +156,15 @@ def zhuxiao(conn, name):
         return 0
 
 
-def add_elder(conn, name):
+def add_elder(conn, info):
+    #新增老人
     table_name = 'oldperson_info'
-    where = 'username = \'' + name + '\''
+    where = 'username = \'' + info['username'] + '\''
     l = select(conn, table_name, where)
     if len(l) == 0:
         t = time.strftime('%Y-%m-%d', time.localtime())
-        value = {'username': name, 'CREATED': t}
+        value = info
+        value['CREATED'] = str(t)
         insert(conn, table_name, value)
         return 1
     else:
@@ -168,7 +172,7 @@ def add_elder(conn, name):
 
 
 def elder_info(conn, uid, info):
-    # 完善个人信息
+    # 完善老人信息
     table_name = 'oldperson_info'
     set = ''
     for k, v in info.items():
@@ -181,19 +185,22 @@ def elder_info(conn, uid, info):
 
 
 def del_elder(conn, uid):
+    #删除老人
     table_name = 'oldperson_info'
     where = 'ID = \'' + str(uid) + '\''
     delete(conn, table_name, where)
     return 1
 
 
-def add_employee(conn, name):
+def add_employee(conn, info):
+    #新增员工
     table_name = 'employee_info'
-    where = 'username = \'' + name + '\''
+    where = 'username = \'' + info['username'] + '\''
     l = select(conn, table_name, where)
     if len(l) == 0:
         t = time.strftime('%Y-%m-%d', time.localtime())
-        value = {'username': name, 'CREATED': t}
+        value = info
+        value['CREATED'] = str(t)
         insert(conn, table_name, value)
         return 1
     else:
@@ -201,7 +208,7 @@ def add_employee(conn, name):
 
 
 def emp_info(conn, uid, info):
-    # 完善个人信息
+    # 完善员工信息
     table_name = 'employee_info'
     set = ''
     for k, v in info.items():
@@ -215,19 +222,22 @@ def emp_info(conn, uid, info):
 
 
 def del_employee(conn, uid):
+    #删除员工
     table_name = 'employee_info'
     where = 'ID = \'' + str(uid) + '\''
     delete(conn, table_name, where)
     return 1
 
 
-def add_volunteer(conn, name):
+def add_volunteer(conn, info):
+    #新增志愿者
     table_name = 'volunteer_info'
-    where = 'name = \'' + name + '\''
+    where = 'name = \'' + info['name'] + '\''
     l = select(conn, table_name, where)
     if len(l) == 0:
         t = time.strftime('%Y-%m-%d', time.localtime())
-        value = {'name': name, 'CREATED': t}
+        value = info
+        value['CREATED'] = str(t)
         insert(conn, table_name, value)
         return 1
     else:
@@ -235,7 +245,7 @@ def add_volunteer(conn, name):
 
 
 def vol_info(conn, uid, info):
-    # 完善个人信息
+    # 完善志愿者信息
     table_name = 'volunteer_info'
     set = ''
     for k, v in info.items():
@@ -249,6 +259,7 @@ def vol_info(conn, uid, info):
 
 
 def del_volunteer(conn, uid):
+    #删除志愿者
     table_name = 'volunteer_info'
     where = 'ID = \'' + str(uid) + '\''
     delete(conn, table_name, where)
@@ -257,166 +268,34 @@ def del_volunteer(conn, uid):
 
 @app.route('/')
 def login1():
-    return render_template('/htmls/login.html')
-
-
-@app.route('/tomodifypassword')
-def tomodifypassword():
-    return render_template('/htmls/modify_password.html')
-
-
-@app.route('/tologin1')
-def tologin1():
-    return render_template('/htmls/login.html')
-
-
-@app.route('/toprofile', methods=['GET', 'POST'])
-def toprofile():
-    return render_template('/htmls/profile.html')
-
-
-@app.route('/tomain', methods=['GET', 'POST'])
-def tomain():
-    return render_template('/htmls/index.html')
-
-
-@app.route('/toselectevent', methods=['GET', 'POST'])
-def toselectevent():
-    return render_template('/htmls/select_event.html')
-
-
-@app.route('/toaddold', methods=['GET', 'POST'])
-def toaddold():
-    return render_template('/htmls/add_old.html')
-
-
-@app.route('/toselectold', methods=['GET', 'POST'])
-def toselectold():
-    return render_template('/htmls/select_old.html')
-
-
-@app.route('/tomodifyold', methods=['GET', 'POST'])
-def tomodifyold():
-    return render_template('/htmls/modify_old.html')
-
-
-@app.route('/toanalyzeold', methods=['GET', 'POST'])
-def toanalyzeold():
-    return render_template('/htmls/analyze_old.html')
-
-
-@app.route('/toaddworker', methods=['GET', 'POST'])
-def toaddworker():
-    return render_template('/htmls/add_worker.html')
-
-
-@app.route('/toselectworker', methods=['GET', 'POST'])
-def toselectworker():
-    return render_template('/htmls/select_worker.html')
-
-
-@app.route('/tomodifyworker', methods=['GET', 'POST'])
-def tomodifyworker():
-    return render_template('/htmls/modify_worker.html')
-
-
-@app.route('/toanalyzeworker', methods=['GET', 'POST'])
-def toanalyzeworker():
-    return render_template('/htmls/analyze_worker.html')
-
-
-@app.route('/toaddvolunteer', methods=['GET', 'POST'])
-def toaddvolunteer():
-    return render_template('/htmls/add_volunteer.html')
-
-
-@app.route('/toselectvolunteer', methods=['GET', 'POST'])
-def toselectvolunteer():
-    return render_template('/htmls/select_volunteer.html')
-
-
-@app.route('/tomodifyvolunteer', methods=['GET', 'POST'])
-def tomodifyvolunteer():
-    return render_template('/htmls/modify_volunteer.html')
-
-
-@app.route('/toanalyzevolunteer', methods=['GET', 'POST'])
-def toanalyzevolunteer():
-    return render_template('/htmls/analyze_volunteer.html')
-
-
-@app.route('/tooldtable', methods=['GET', 'POST'])
-def tooldtable():
-    return render_template('/htmls/old_table.html')
-
-
-@app.route('/toworkertable', methods=['GET', 'POST'])
-def toworkertable():
-    return render_template('/htmls/worker_table.html')
-
-
-@app.route('/tovolunteertable', methods=['GET', 'POST'])
-def tovolunteertable():
-    return render_template('/htmls/volunteer_table.html')
-
-
-@app.route('/toeventtable', methods=['GET', 'POST'])
-def toeventtable():
-    return render_template('/htmls/event_table.html')
-
-
-@app.route('/tomanagertable', methods=['GET', 'POST'])
-def tomanagertable():
-    return render_template('/htmls/manager_table.html')
-
-
-@app.route('/tomonitor1', methods=['GET', 'POST'])
-def tomonitor1():
-    return render_template('/htmls/monitor1.html')
-
-
-@app.route('/tomonitor2', methods=['GET', 'POST'])
-def tomonitor2():
-    return render_template('/htmls/monitor2.html')
-
-
-@app.route('/tomonitor3', methods=['GET', 'POST'])
-def tomonitor3():
-    return render_template('/htmls/monitor3.html')
-
-
-@app.route('/tomonitor4', methods=['GET', 'POST'])
-def tomonitor4():
-    return render_template('/htmls/monitor4.html')
-
-
-@app.route('/tomonitor5', methods=['GET', 'POST'])
-def tomonitor5():
-    return render_template('/htmls/monitor5.html')
+    #初始登录界面
+    return render_template('login.html')
 
 
 @app.route('/login0', methods=['GET', 'POST'])
 def login0():
+    #登录
     form = request.form
     username = form.get('username')
     password = form.get('password')
     if not username:
         content = "请输入用户名"
-        return render_template('/htmls/login.html', content=content)
+        return render_template('login.html', content=content)
     if not password:
         content = "请输入密码"
-        return render_template('/htmls/login.html', content=content)
+        return render_template('login.html', content=content)
     global conn
     if login(conn, username, password):
         content = "登录成功"
-        return render_template('/htmls/index.html', content=content)
+        return render_template('login.html', content=content)
     else:
         content = "用户名或密码错误"
-        return render_template('/htmls/login.html', content=content)
+        return render_template('login.html', content=content)
 
 
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
+    #注册
     form = request.form
     username = form.get('username')
     password = form.get('password')
@@ -437,6 +316,7 @@ def signin():
 
 @app.route('/pinfo', methods=['GET', 'POST'])
 def pinfo():
+    #个人信息
     form = request.form
     info = {'REAL_NAME': form.get('REAL_NAME'), 'SEX': form.get('SEX'), 'PHONE': form.get('PHONE'),
             'MOBILE': form.get('MOBILE'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
@@ -450,6 +330,7 @@ def pinfo():
 
 @app.route('/signoff', methods=['GET', 'POST'])
 def signoff():
+    #注销
     form = request.form
     username = form.get('username')
     if not username:
@@ -466,14 +347,12 @@ def signoff():
 
 @app.route('/addo', methods=['GET', 'POST'])
 def addo():
-    # 新增老人
+    #新增老人
     form = request.form
-    print(111)
     if not form.get('username'):
         content = "请输入用户名"
-        return render_template('/htmls/add_old.html', content=content)
-    info = {'username': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
-            'id_card': form.get('id_card'),
+        return render_template('addo.html', content=content)
+    info = {'username':form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'), 'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
             'checkout_date': form.get('checkout_date'), 'profile_photo':
                 form.get('profile_photo'), 'room_number': form.get('room_number'), 'firstguardian_name':
@@ -487,36 +366,38 @@ def addo():
     global conn
     if add_elder(conn, info):
         content = "增添成功"
-        return render_template('/htmls/index.html', content=content)
+        return render_template('addo.html', content=content)
     else:
         content = "用户名已存在"
-        return render_template('/htmls/index.html', content=content)
+        return render_template('addo.html', content=content)
 
 
 @app.route('/oinfo', methods=['POST', 'GET'])
 def oinfo():
+    #老人信息
     form = request.form
     uid = form.get('id')
     info = {'gender': form.get('gender'), 'phone': form.get('phone'), 'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
             'checkout_date': form.get('checkout_date'), 'profile_photo':
-                form.get('profile_photo'), 'room_number': form.get('room_number'), 'firstguardian_name':
-                form.get('firstguardian_name'), 'firstguardian_relationship': form.get('firstguardian_relationship'),
+            form.get('profile_photo'), 'room_number': form.get('room_number'), 'firstguardian_name':
+            form.get('firstguardian_name'), 'firstguardian_relationship': form.get('firstguardian_relationship'),
             'firstguardian_phone': form.get('firstguardian_phone'), 'firstguardian_wechat':
-                form.get('firstguardian_wechat'), 'secondguardian_name':
-                form.get('secondguardian_name'), 'secondguardian_relationship': form.get('secondguardian_relationship'),
+            form.get('firstguardian_wechat'), 'secondguardian_name':
+            form.get('secondguardian_name'), 'secondguardian_relationship': form.get('secondguardian_relationship'),
             'secondguardian_phone': form.get('secondguardian_phone'), 'secondguardian_wechat':
-                form.get('secondguardian_wechat'), 'health_state': form.get('health_state'),
+            form.get('secondguardian_wechat'), 'health_state': form.get('health_state'),
             'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     if elder_info(conn, uid, info):
         content = "老人信息更新成功"
     else:
         content = ''
-    return render_template('./htmls/add_old.html', content=content)
+    return render_template('oinfo.html', content=content)
 
 
 @app.route('/delo', methods=['GET', 'POST'])
 def delo():
+    #删除老人
     form = request.form
     uid = form.get('uid')
     print(uid)
@@ -534,13 +415,12 @@ def delo():
 
 @app.route('/adde', methods=['GET', 'POST'])
 def adde():
-    # 新增员工
+    #新增员工
     form = request.form
     if not form.get('username'):
         content = "请输入用户名"
         return render_template('adde.html', content=content)
-    info = {'username': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
-            'id_card': form.get('id_card'),
+    info = {'username':form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'), 'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'hire_date': form.get("hire_date"),
             'resign_date': form.get('resign_date'), 'profile_photo':
                 form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
@@ -555,12 +435,13 @@ def adde():
 
 @app.route('/einfo', methods=['GET', 'POST'])
 def einfo():
+    #员工信息
     form = request.form
     uid = form.get('id')
     info = {'gender': form.get('gender'), 'phone': form.get('phone'), 'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'hire_date': form.get("hire_date"),
             'resign_date': form.get('resign_date'), 'imgset_dir': form.get('imgset_dir'), 'profile_photo':
-                form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
+            form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     if emp_info(conn, uid, info):
         content = "员工信息更新成功"
     else:
@@ -570,6 +451,7 @@ def einfo():
 
 @app.route('/dele', methods=['GET', 'POST'])
 def dele():
+    #删除员工
     form = request.form
     uid = form.get('uid')
     print(uid)
@@ -587,13 +469,12 @@ def dele():
 
 @app.route('/addv', methods=['GET', 'POST'])
 def addv():
-    # 新增志愿者
+    #新增志愿者
     form = request.form
     if not form.get('username'):
         content = "请输入用户名"
         return render_template('addv.html', content=content)
-    info = {'name': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
-            'id_card': form.get('id_card'),
+    info = {'name':form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'), 'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
             'checkout_date': form.get('checkout_date'), 'profile_photo':
                 form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
@@ -608,12 +489,13 @@ def addv():
 
 @app.route('/vinfo', methods=['GET', 'POST'])
 def vinfo():
+    #志愿者信息
     form = request.form
     uid = form.get('id')
     info = {'gender': form.get('gender'), 'phone': form.get('phone'), 'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
             'checkout_date': form.get('checkout_date'), 'imgset_dir': form.get('imgset_dir'), 'profile_photo':
-                form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
+            form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     if vol_info(conn, uid, info):
         content = "志愿者信息更新成功"
     else:
@@ -623,6 +505,7 @@ def vinfo():
 
 @app.route('/delv', methods=['GET', 'POST'])
 def delv():
+    #删除志愿者
     form = request.form
     uid = form.get('uid')
     print(uid)
@@ -640,6 +523,7 @@ def delv():
 
 @app.route('/images', methods=['GET', 'POST'])
 def images():
+    #上传图片（老人、员工和志愿者照片）
     f = request.files.get('file')
     form = request.form
     t0 = form.get('type')
@@ -673,6 +557,7 @@ def images():
 
 @app.route('/videos', methods=['GET', 'POST'])
 def videos():
+    #上传视频文件
     f = request.files.get('file')
     path = 'D:\\dasanxxq\\videos'
     if not os.path.exists(path):
@@ -684,7 +569,7 @@ def videos():
         f.save(path)
     return render_template('videos.html')
 
-
+#这三个用不到，尝试获取视频流，但没有成功
 @app.route('/vindex', methods=['GET', 'POST'])
 def vindex():
     return render_template('vindex.html')
@@ -700,37 +585,18 @@ def gen(camera):
 @app.route('/video_feed')
 def video_feed():
     return Response(gen(camera()),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+                mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route('/fall', methods=['GET', 'POST'])
 def fall():
+    #读取指定图片进行摔倒检测
     f = bodydetect.detect_fall('D:\\dasanxxq\\fallimage\\fall-02-cam0-rgb-001.png')
     if f:
         content = '摔倒'
     else:
         content = '正常'
     return render_template('fall.html', content=content)
-
-
-@app.route('/camera')
-def camera():
-    # cap = cv2.VideoCapture('person.mp4')
-    cap = cv2.VideoCapture()
-    count = 1
-    while True:
-        success, image = cap.read()
-        if success:
-            if count % 36 == 1:
-                cv2.imwrite("picture/frame%d.jpg" % count, image)
-                if cv2.waitKey(10) == 27:
-                    break
-            count += 1
-        else:
-            break
-    cap.release()
-    cv2.destroyAllWindows()
-    pass
 
 
 if __name__ == '__main__':
