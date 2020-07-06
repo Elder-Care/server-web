@@ -470,7 +470,7 @@ def addo():
     form = request.form
     if not form.get('username'):
         content = "请输入用户名"
-        return render_template('addo.html', content=content)
+        return render_template('/htmls/add_old.html', content=content)
     info = {'username': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
             'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
@@ -486,10 +486,10 @@ def addo():
     global conn
     if add_elder(conn, info):
         content = "增添成功"
-        return render_template('addo.html', content=content)
+        return render_template('/htmls/index.html', content=content)
     else:
         content = "用户名已存在"
-        return render_template('addo.html', content=content)
+        return render_template('/htmls/index.html', content=content)
 
 
 @app.route('/oinfo', methods=['POST', 'GET'])
