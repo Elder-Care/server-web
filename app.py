@@ -51,20 +51,22 @@ def columns(table_name):
         return 0
 
 
-def insert(conn, table_name, value):
+def insert(conn, table_name, value):  # 通用表格插入操作
     cols = columns(table_name)
     if cols != 0:
         sql_insert = "INSERT INTO " + table_name + "("
         for k, v in value.items():
-            sql_insert += k
-            sql_insert += ','
+            if v:
+                sql_insert += k
+                sql_insert += ','
         sql_insert = sql_insert[:-1]
         sql_insert += ')VALUES('
         for k, v in value.items():
-            sql_insert += '\''
-            sql_insert += v
-            sql_insert += '\''
-            sql_insert += ','
+            if v:
+                sql_insert += '\''
+                sql_insert += v
+                sql_insert += '\''
+                sql_insert += ','
         sql_insert = sql_insert[:-1]
         sql_insert += ')'
         # print(sql_insert)
@@ -154,13 +156,15 @@ def zhuxiao(conn, name):
         return 0
 
 
-def add_elder(conn, name):
+def add_elder(conn, info):
+    # 新增老人
     table_name = 'oldperson_info'
-    where = 'username = \'' + name + '\''
+    where = 'username = \'' + info['username'] + '\''
     l = select(conn, table_name, where)
     if len(l) == 0:
         t = time.strftime('%Y-%m-%d', time.localtime())
-        value = {'username': name, 'CREATED': t}
+        value = info
+        value['CREATED'] = str(t)
         insert(conn, table_name, value)
         return 1
     else:
@@ -469,6 +473,7 @@ def addo():
     # 新增老人
     form = request.form
     if not form.get('username'):
+        print("noname")
         content = "请输入用户名"
         return render_template('/htmls/add_old.html', content=content)
     info = {'username': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
@@ -537,7 +542,7 @@ def adde():
     form = request.form
     if not form.get('username'):
         content = "请输入用户名"
-        return render_template('adde.html', content=content)
+        return render_template('/htmls/add_volunteer', content=content)
     info = {'username': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
             'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'hire_date': form.get("hire_date"),
