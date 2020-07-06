@@ -776,7 +776,7 @@ def video_feed():
 
 @app.route('/fall', methods=['GET', 'POST'])
 def fall():
-    f = bodydetect.detect_fall('D:\\dasanxxq\\fallimage\\fall-02-cam0-rgb-001.png')
+    f = bodydetect.detect_fall('./pic/test.png')
     if f:
         content = '摔倒'
     else:
