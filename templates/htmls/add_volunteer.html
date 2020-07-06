@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>义工信息录入</title>
+
+    <!-- Plugin styles -->
+    <link rel="stylesheet" href="../static/vendors/bundle.css" type="text/css">
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="../static/assets/css/app.min.css" type="text/css">
+
+<link href="../static/assets/css/bootstrap-fileinput.css" rel="stylesheet">
+
+<style>
+body{padding:0;margin:0 10px;}
+.title{padding:0;margin:10px 0;font:700 18px/1.5 \5fae\8f6f\96c5\9ed1;text-align:center;}
+.title a{font:400 14px/1.5 Tahoma;margin-left:20px;}
+.example{position:absolute;top:150px;left:50%;margin-left:-275px;font-size:12px;}
+.example .item{border:1px solid #85BEE5;}
+.example input{color:#404040;padding:3px;width:170px;height:18px;line-height:18px;border:1px solid #AFAFAF;font:12px/18px Arial;}
+.example button{margin-right:50px;}
+.checkie6{padding:3px;width:178px;border:1px solid #AFAFAF;font:12px/1.5 Arial;}
+</style>  
+<script src="../static/vendors/datepicker/yui-min.js"></script>
+<script>
+YUI({
+    modules: {
+        'trip-calendar': {
+            fullpath: '../static/vendors/datepicker/trip-calendar.js',
+            type    : 'js',
+            requires: ['trip-calendar-css']
+        },
+        'trip-calendar-css': {
+            fullpath: '../static/vendors/datepicker/trip-calendar.css',
+            type    : 'css'
+        }
+    }
+}).use('trip-calendar', function(Y) {
+
+    /**
+     * 弹出式日历实例
+     * 将日历与指定的触发元素绑定
+     * 日历可根据浏览器窗口大小，自动调整显示位置
+     */
+    var oCal = new Y.TripCalendar({
+        //绑定日历的节点，支持选择器模式，可批量设置（必选）
+        triggerNode: '.J_Item, #J_Item-1, #J_Item-2, button, .J_Link'
+    });
+    
+    oCal.on('dateclick', function(e) {
+        this.getCurrentNode().setAttribute('data-date', e.date);
+    });
+    
+    //显示日历时自定义事件
+    oCal.on('show', function() {
+        var v = this.getCurrentNode().getAttribute('data-date');
+        this.set('date', v || new Date);
+        this.set('selectedDate', v).render();
+    });
+    
+    //解决chrome的foucs事件bug
+    Y.on('click', function(e) {
+        e.currentTarget.focus();
+    }, 'button, .J_Link');
+});
+</script>
+
+</head>
+<body>
+
+<!-- begin::preloader-->
+<div class="preloader">
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="50px" height="50px" viewBox="0 0 128 128"
+         xml:space="preserve">
+        <rect x="0" y="0" width="100%" height="100%" fill="#FFFFFF"/>
+        <g>
+            <path d="M75.4 126.63a11.43 11.43 0 0 1-2.1-22.65 40.9 40.9 0 0 0 30.5-30.6 11.4 11.4 0 1 1 22.27 4.87h.02a63.77 63.77 0 0 1-47.8 48.05v-.02a11.38 11.38 0 0 1-2.93.37z"
+                  fill="#000000" fill-opacity="1"/>
+            <animateTransform attributeName="transform" type="rotate" from="0 64 64" to="360 64 64"
+                              dur="500ms" repeatCount="indefinite">
+            </animateTransform>
+        </g>
+    </svg>
+</div>
+<!-- end::preloader -->
+
+<!-- begin::navigation -->
+<div class="navigation">
+
+    <!-- begin::logo -->
+    <div id="logo">
+        <a href="tomain">
+            <img class="logo" src="../static/assets/media/image/logo.png" alt="logo">
+            <img class="logo-sm" src="../static/assets/media/image/logo-sm.png" alt="small logo">
+        </a>
+    </div>
+    <!-- end::logo -->
+
+    <!-- begin::navigation header -->
+    <header class="navigation-header">
+        <figure class="avatar avatar-state-success">
+            <img src="../static/assets/media/image/user/1.png" class="rounded-circle" alt="image">
+        </figure>
+        <div>
+            <h5>杨烁平</h5>
+            <p class="text-muted">管理员</p>
+            <ul class="nav">
+                <li class="nav-item">
+                    <a href="toprofile" class="btn nav-link bg-info-bright" title="个人信息" data-toggle="tooltip">
+                        <i data-feather="user"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="tologin1" class="btn nav-link bg-danger-bright" title="注销" data-toggle="tooltip">
+                        <i data-feather="log-out"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <!-- end::navigation header -->
+
+    <!-- begin::navigation menu -->
+    <div class="navigation-menu-body">
+        <ul>
+            <li class="navigation-divider">信息管理</li>
+            <li>
+                <a href="tomain">
+                    <i class="nav-link-icon" data-feather="airplay"></i>
+                    <span>首页</span>
+                    <span class="badge badge-success">2</span>
+                </a>
+            </li>
+            <li>
+                <a href="toselectevent">
+                    <i class="nav-link-icon" data-feather="clipboard"></i>
+                    <span>事件记录</span>
+                    <span class="badge badge-success">2</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="feather"></i>
+                    <span>老年人信息管理</span>
+                </a>
+                <ul>
+                    <li><a href="toaddold">信息录入</a></li>
+                    <li><a href="toselectold">信息查询</a></li>
+                    <li><a href="tomodifyold">信息删改</a></li>
+                    <li><a href="toanalyzeold">统计分析</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="user"></i>
+                    <span>工作人员信息管理</span>
+                </a>
+                <ul>
+                    <li><a href="toaddworker">信息录入</a></li>
+                    <li><a href="toselectworker">信息查询</a></li>
+                    <li><a href="tomodifyworker">信息删改</a></li>
+                    <li><a href="toanalyzeworker">统计分析</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="users"></i>
+                    <span>义工信息管理</span>
+                </a>
+                <ul>
+                    <li><a href="toaddvolunteer">信息录入</a></li>
+                    <li><a href="toselectvolunteer">信息查询</a></li>
+                    <li><a href="tomodifyvolunteer">信息删改</a></li>
+                    <li><a href="toanalyzevolunteer">统计分析</a></li>
+                </ul>
+            </li>
+            <li class="navigation-divider">系统管理</li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="database"></i>
+                    <span>数据管理</span>
+                </a>
+                <ul>
+                    <li><a href="tooldtable">老人信息表</a></li>
+                    <li><a href="toworkertable">工作人员信息表</a></li>
+                    <li><a href="tovolunteertable">义工信息表</a></li>
+                    <li><a href="toeventtable">事件信息表</a></li>
+                    <li><a href="tomanagertable">系统管理员信息表</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="monitor"></i>
+                    <span>摄像头管理</span>
+                </a>
+                <ul>
+                    <li><a href="tomonitor1">摄像头1</a></li>
+                    <li><a href="tomonitor2">摄像头2</a></li>
+                    <li><a href="tomonitor3">摄像头3</a></li>
+                    <li><a href="tomonitor4">摄像头4</a></li>
+                    <li><a href="tomonitor5">摄像头5</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- end::navigation menu -->
+
+</div>
+<!-- end::navigation -->
+
+<!-- begin::main -->
+<div id="main">
+
+    <!-- begin::header -->
+    <div class="header">
+
+        <!-- begin::header left -->
+        <ul class="navbar-nav">
+
+            <!-- begin::navigation-toggler -->
+            <li class="nav-item navigation-toggler">
+                <a href="#" class="nav-link">
+                    <i data-feather="menu"></i>
+                </a>
+            </li>
+            <!-- end::navigation-toggler -->
+
+            <!-- begin::header-logo -->
+            <li class="nav-item" id="header-logo">
+                <a href="tomain">
+                    <img class="logo" src="../static/assets/media/image/logo.png" alt="logo">
+                    <img class="logo-sm" src="../static/assets/media/image/logo-sm.png" alt="small logo">
+                </a>
+            </li>
+            <!-- end::header-logo -->
+        </ul>
+        <!-- end::header left -->
+
+        <!-- begin::header-right -->
+        <div class="header-right">
+            <ul class="navbar-nav">
+
+                <!-- begin::search-form -->
+                <li class="nav-item search-form">
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h4>智慧养老系统后台</h4>
+                        </div>
+                    </div>
+                </li>
+                <!-- end::search-form -->
+
+                <!-- begin::header minimize/maximize -->
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link" title="全屏" data-toggle="fullscreen">
+                        <i class="maximize" data-feather="maximize"></i>
+                        <i class="minimize" data-feather="minimize"></i>
+                    </a>
+                </li>
+                <!-- end::header minimize/maximize -->
+
+                <!-- begin::header notification dropdown -->
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link nav-link-notify" title="通知" data-toggle="dropdown">
+                        <i data-feather="bell"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-big">
+                        <div class="p-4 text-center" data-backround-image="assets/media/image/image1.png">
+                            <h6 class="mb-1">通知</h6>
+                        </div>
+                        <div>
+                            <ul class="list-group list-group-flush">
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                老年人信息录入成功
+                                            </p>
+                                            <span class="text-muted small">1分钟前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                工作人员信息录入成功
+                                            </p>
+                                            <span class="text-muted small">5分钟前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                老年人信息删除成功
+                                            </p>
+                                            <span class="text-muted small">1小时前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                义工信息删除成功
+                                            </p>
+                                            <span class="text-muted small">2小时前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <!-- end::header notification dropdown -->
+            </ul>
+
+            <!-- begin::mobile header toggler -->
+            <ul class="navbar-nav d-flex align-items-center">
+                <li class="nav-item header-toggler">
+                    <a href="#" class="nav-link">
+                        <i data-feather="arrow-down"></i>
+                    </a>
+                </li>
+            </ul>
+            <!-- end::mobile header toggler -->
+        </div>
+        <!-- end::header-right -->
+    </div>
+    <!-- end::header -->
+
+    <!-- begin::main-content -->
+    <div class="main-content">
+
+        <!-- begin::container -->
+        <div class="container">
+
+            <!-- begin::page-header -->
+            <div class="page-header">
+                <h4>信息录入</h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="#">老年人信息管理</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">信息录入</li>
+                    </ol>
+                </nav>
+            </div>
+            <!-- end::page-header -->
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="card">
+                        <div class="card-body">
+
+                            <h6 class="card-title">义工信息录入</h6>
+
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <form>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">姓名</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" placeholder="请输入义工姓名">
+                                            </div>
+                                        </div>
+                                <fieldset class="form-group">
+                                    <div class="row">
+                                        <div class="col-form-label col-sm-4 pt-0">性别</div>
+                                        <div class="col-sm-8">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
+                                                <label class="form-check-label" for="gridRadios1">
+                                                    男
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
+                                                <label class="form-check-label" for="gridRadios2">
+                                                    女
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">电话</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" placeholder="请输入电话号码">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">身份证号</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" placeholder="请输入身份证号">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">出生日期</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="J_Item" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">访问日期</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="J_Item" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">离开日期</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="J_Item" autocomplete="off" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">图像目录</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" placeholder="请输入图像目录">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">头像路径</label>
+                                            <div class="col-sm-8">
+                <div class="fileinput fileinput-new" data-provides="fileinput"  id="exampleInputUpload">
+                    <div class="fileinput-new thumbnail" style="width: 200px;height: auto;max-height:150px;">
+                        <img id='picImg' style="width: 100%;height: auto;max-height: 140px;" src="../static/assets/media/images/noimage.png" alt="" />
+                    </div>
+                    <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>
+                    <div>
+                        <span class="btn btn-primary btn-file">
+                            <span class="fileinput-new">选择文件</span>
+                            <span class="fileinput-exists">换一张</span>
+                            <input type="file" name="pic1" id="picID" accept="image/gif,image/jpeg,image/x-png">
+                        </span>
+                        <a href="javascript:;" class="btn btn-warning fileinput-exists" data-dismiss="fileinput">移除</a>
+                    </div>
+                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">描述</label>
+                                            <div class="col-sm-8">
+                                                <textarea class="form-control" rows="3" placeholder="请输入描述内容"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">删除标志</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" placeholder="请输入删除标志">
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">录入信息</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- end::container -->
+
+    </div>
+    <!-- end::main-content -->
+
+    <!-- begin::footer -->
+    <footer>
+        <div class="container">
+            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a></div>
+        </div>
+    </footer>
+    <!-- end::footer -->
+
+</div>
+<!-- end::main -->
+
+<!-- Plugin scripts -->
+<script src="../static/vendors/bundle.js"></script>
+
+<!-- App scripts -->
+<script src="../static/assets/js/app.min.js"></script>
+
+<script src="../static/assets/js/jquery.min.js"></script>
+<script src="../static/assets/js/bootstrap-fileinput.js"></script>
+
+</body>
+</html>

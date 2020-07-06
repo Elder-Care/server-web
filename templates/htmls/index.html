@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>主界面</title>
+
+    <!-- Plugin styles -->
+    <link rel="stylesheet" href="../static/vendors/bundle.css" type="text/css">
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="../static/assets/css/app.min.css" type="text/css">
+</head>
+<body>
+
+<!-- begin::preloader-->
+<div class="preloader">
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="50px" height="50px" viewBox="0 0 128 128"
+         xml:space="preserve">
+        <rect x="0" y="0" width="100%" height="100%" fill="#FFFFFF"/>
+        <g>
+            <path d="M75.4 126.63a11.43 11.43 0 0 1-2.1-22.65 40.9 40.9 0 0 0 30.5-30.6 11.4 11.4 0 1 1 22.27 4.87h.02a63.77 63.77 0 0 1-47.8 48.05v-.02a11.38 11.38 0 0 1-2.93.37z"
+                  fill="#000000" fill-opacity="1"/>
+            <animateTransform attributeName="transform" type="rotate" from="0 64 64" to="360 64 64"
+                              dur="500ms" repeatCount="indefinite">
+            </animateTransform>
+        </g>
+    </svg>
+</div>
+<!-- end::preloader -->
+
+<!-- begin::navigation -->
+<div class="navigation">
+
+    <!-- begin::logo -->
+    <div id="logo">
+        <a href="tomain">
+            <img class="logo" src="../static/assets/media/image/logo.png" alt="logo">
+            <img class="logo-sm" src="../static/assets/media/image/logo-sm.png" alt="small logo">
+        </a>
+    </div>
+    <!-- end::logo -->
+
+    <!-- begin::navigation header -->
+    <header class="navigation-header">
+        <figure class="avatar avatar-state-success">
+            <img src="../static/assets/media/image/user/1.png" class="rounded-circle" alt="image">
+        </figure>
+        <div>
+            <h5>杨烁平</h5>
+            <p class="text-muted">管理员</p>
+            <ul class="nav">
+                <li class="nav-item">
+                    <a href="toprofile" class="btn nav-link bg-info-bright" title="个人信息" data-toggle="tooltip">
+                        <i data-feather="user"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="tologin1" class="btn nav-link bg-danger-bright" title="注销" data-toggle="tooltip">
+                        <i data-feather="log-out"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <!-- end::navigation header -->
+
+    <!-- begin::navigation menu -->
+    <div class="navigation-menu-body">
+        <ul>
+            <li class="navigation-divider">信息管理</li>
+            <li>
+                <a href="tomain">
+                    <i class="nav-link-icon" data-feather="airplay"></i>
+                    <span>首页</span>
+                    <span class="badge badge-success">2</span>
+                </a>
+            </li>
+            <li>
+                <a href="toselectevent">
+                    <i class="nav-link-icon" data-feather="clipboard"></i>
+                    <span>事件记录</span>
+                    <span class="badge badge-success">2</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="feather"></i>
+                    <span>老年人信息管理</span>
+                </a>
+                <ul>
+                    <li><a href="toaddold">信息录入</a></li>
+                    <li><a href="toselectold">信息查询</a></li>
+                    <li><a href="tomodifyold">信息删改</a></li>
+                    <li><a href="toanalyzeold">统计分析</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="user"></i>
+                    <span>工作人员信息管理</span>
+                </a>
+                <ul>
+                    <li><a href="toaddworker">信息录入</a></li>
+                    <li><a href="toselectworker">信息查询</a></li>
+                    <li><a href="tomodifyworker">信息删改</a></li>
+                    <li><a href="toanalyzeworker">统计分析</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="users"></i>
+                    <span>义工信息管理</span>
+                </a>
+                <ul>
+                    <li><a href="toaddvolunteer">信息录入</a></li>
+                    <li><a href="toselectvolunteer">信息查询</a></li>
+                    <li><a href="tomodifyvolunteer">信息删改</a></li>
+                    <li><a href="toanalyzevolunteer">统计分析</a></li>
+                </ul>
+            </li>
+            <li class="navigation-divider">系统管理</li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="database"></i>
+                    <span>数据管理</span>
+                </a>
+                <ul>
+                    <li><a href="tooldtable">老人信息表</a></li>
+                    <li><a href="toworkertable">工作人员信息表</a></li>
+                    <li><a href="tovolunteertable">义工信息表</a></li>
+                    <li><a href="toeventtable">事件信息表</a></li>
+                    <li><a href="tomanagertable">系统管理员信息表</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="monitor"></i>
+                    <span>摄像头管理</span>
+                </a>
+                <ul>
+                    <li><a href="tomonitor1">摄像头1</a></li>
+                    <li><a href="tomonitor2">摄像头2</a></li>
+                    <li><a href="tomonitor3">摄像头3</a></li>
+                    <li><a href="tomonitor4">摄像头4</a></li>
+                    <li><a href="tomonitor5">摄像头5</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- end::navigation menu -->
+
+</div>
+<!-- end::navigation -->
+
+<!-- begin::main -->
+<div id="main">
+
+    <!-- begin::header -->
+    <div class="header">
+
+        <!-- begin::header left -->
+        <ul class="navbar-nav">
+
+            <!-- begin::navigation-toggler -->
+            <li class="nav-item navigation-toggler">
+                <a href="#" class="nav-link">
+                    <i data-feather="menu"></i>
+                </a>
+            </li>
+            <!-- end::navigation-toggler -->
+
+            <!-- begin::header-logo -->
+            <li class="nav-item" id="header-logo">
+                <a href="tomain">
+                    <img class="logo" src="../static/assets/media/image/logo.png" alt="logo">
+                    <img class="logo-sm" src="../static/assets/media/image/logo-sm.png" alt="small logo">
+                </a>
+            </li>
+            <!-- end::header-logo -->
+        </ul>
+        <!-- end::header left -->
+
+        <!-- begin::header-right -->
+        <div class="header-right">
+            <ul class="navbar-nav">
+
+                <!-- begin::search-form -->
+                <li class="nav-item search-form">
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h4>智慧养老系统后台</h4>
+                        </div>
+                    </div>
+                </li>
+                <!-- end::search-form -->
+
+                <!-- begin::header minimize/maximize -->
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link" title="全屏" data-toggle="fullscreen">
+                        <i class="maximize" data-feather="maximize"></i>
+                        <i class="minimize" data-feather="minimize"></i>
+                    </a>
+                </li>
+                <!-- end::header minimize/maximize -->
+
+                <!-- begin::header notification dropdown -->
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link nav-link-notify" title="通知" data-toggle="dropdown">
+                        <i data-feather="bell"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-big">
+                        <div class="p-4 text-center" data-backround-image="assets/media/image/image1.png">
+                            <h6 class="mb-1">通知</h6>
+                        </div>
+                        <div>
+                            <ul class="list-group list-group-flush">
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                老年人信息录入成功
+                                            </p>
+                                            <span class="text-muted small">1分钟前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                工作人员信息录入成功
+                                            </p>
+                                            <span class="text-muted small">5分钟前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                老年人信息删除成功
+                                            </p>
+                                            <span class="text-muted small">1小时前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                义工信息删除成功
+                                            </p>
+                                            <span class="text-muted small">2小时前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <!-- end::header notification dropdown -->
+            </ul>
+
+            <!-- begin::mobile header toggler -->
+            <ul class="navbar-nav d-flex align-items-center">
+                <li class="nav-item header-toggler">
+                    <a href="#" class="nav-link">
+                        <i data-feather="arrow-down"></i>
+                    </a>
+                </li>
+            </ul>
+            <!-- end::mobile header toggler -->
+        </div>
+        <!-- end::header-right -->
+    </div>
+    <!-- end::header -->
+
+    <!-- begin::main-content -->
+    <div class="main-content">
+
+        <!-- begin::container -->
+        <div class="container">
+
+            <div class="page-header">
+                <h4>欢迎， <span class="text-primary">杨烁平</span></h4>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title d-md-flex justify-content-between">
+                                        近几个月养老院人数变化数据表
+                                    </h6>
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-12">
+                                            <div class="card border mb-3">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="icon-block mr-3 icon-block-lg icon-block-outline-success text-success">
+                                                            <i class="fa fa-blind"></i>
+                                                        </div>
+                                                        <div>
+                                                            <h6 class="text-uppercase font-size-11">目前养老院的老年人数量</h6>
+                                                            <h4 class="mb-0">133</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card border mb-3">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="icon-block mr-3 icon-block-lg icon-block-outline-danger  text-danger">
+                                                            <i class="fa fa-users"></i>
+                                                        </div>
+                                                        <div>
+                                                            <h6 class="text-uppercase font-size-11">目前养老院的工作人员数量</h6>
+                                                            <h4 class="mb-0">26</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card border mb-3">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="icon-block mr-3 icon-block-lg icon-block-outline-warning text-warning">
+                                                            <i class="fa fa-child"></i>
+                                                        </div>
+                                                        <div>
+                                                            <h6 class="text-uppercase font-size-11">目前养老院的义工数量</h6>
+                                                            <h4 class="mb-0">11</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-12">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover mb-0">
+                                                    <thead class="thead-light">
+                                                    <tr>
+                                                        <th>日期</th>
+                                                        <th>进入养老院老人人数</th>
+                                                        <th>离开养老院老人人数</th>
+                                                        <th>入职工作人员人数</th>
+                                                        <th>访问义工人数</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>07/2020</td>
+                                                        <td class="text-success">+ 3</td>
+                                                        <td class="text-danger">- 2</td>
+                                                        <td class="text-success">+ 3</td>
+                                                        <td class="text-success">+ 3</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>06/2020</td>
+                                                        <td class="text-success">+ 1</td>
+                                                        <td class="text-danger">- 4</td>
+                                                        <td class="text-success">+ 5</td>
+                                                        <td class="text-success">+ 1</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>05/2020</td>
+                                                        <td class="text-success">+ 9</td>
+                                                        <td class="text-danger">- 0</td>
+                                                        <td class="text-success">+ 11</td>
+                                                        <td class="text-success">+ 32</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>04/2020</td>
+                                                        <td class="text-success">+ 13</td>
+                                                        <td class="text-danger">- 20</td>
+                                                        <td class="text-success">+ 30</td>
+                                                        <td class="text-success">+ 31</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>03/2020</td>
+                                                        <td class="text-success">+ 13</td>
+                                                        <td class="text-danger">- 21</td>
+                                                        <td class="text-success">+ 32</td>
+                                                        <td class="text-success">+ 37</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>02/2020</td>
+                                                        <td class="text-success">+ 0</td>
+                                                        <td class="text-danger">- 20</td>
+                                                        <td class="text-success">+ 0</td>
+                                                        <td class="text-success">+ 1</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <canvas id="chartjs_old"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- end::container -->
+
+    </div>
+    <!-- end::main-content -->
+
+    <!-- begin::footer -->
+    <footer>
+        <div class="container">
+            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a></div>
+        </div>
+    </footer>
+    <!-- end::footer -->
+
+</div>
+<!-- end::main -->
+
+<!-- Plugin scripts -->
+<script src="../static/vendors/bundle.js"></script>
+
+<!-- App scripts -->
+<script src="../static/assets/js/app.min.js"></script>
+
+<!-- Chartjs -->
+<script src="../static/vendors/charts/chartjs/chart.min.js"></script>
+<script>
+$(document).ready(function () {
+
+    var colors = {
+        primary: $('.colors .bg-primary').css('background-color'),
+        primaryLight: $('.colors .bg-primary-bright').css('background-color'),
+        secondary: $('.colors .bg-secondary').css('background-color'),
+        secondaryLight: $('.colors .bg-secondary-bright').css('background-color'),
+        info: $('.colors .bg-info').css('background-color'),
+        infoLight: $('.colors .bg-info-bright').css('background-color'),
+        success: $('.colors .bg-success').css('background-color'),
+        successLight: $('.colors .bg-success-bright').css('background-color'),
+        danger: $('.colors .bg-danger').css('background-color'),
+        dangerLight: $('.colors .bg-danger-bright').css('background-color'),
+        warning: $('.colors .bg-warning').css('background-color'),
+        warningLight: $('.colors .bg-warning-bright').css('background-color'),
+    };
+
+    function chartjs_old() {
+        var element = document.getElementById("chartjs_old");
+        element.height = 100;
+        new Chart(element, {
+            type: 'bar',
+            data: {
+                labels: ["7月", "8月", "9月", "10月", "11月", "12月"],
+                datasets: [{
+                    label: "入院",
+                    type: "line",
+                    borderColor: colors.warning,
+                    data: [4,44,22,111,22,1],
+                    fill: false
+                }, {
+                    label: "出院",
+                    type: "line",
+                    borderColor: colors.success,
+                    data: [0,43,21,12,91,4],
+                    fill: false
+                }, {
+                    label: "入院",
+                    type: "bar",
+                    backgroundColor: colors.secondary,
+                    data: [4,44,22,111,22,1],
+                }, {
+                    label: "出院",
+                    type: "bar",
+                    backgroundColor: colors.primary,
+                    backgroundColorHover: "#3e95cd",
+                    data: [0,43,21,12,91,4]
+                }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: '2019年下半年养老院每月老年人数量变化图'
+                },
+                legend: { display: false }
+            }
+        });
+    }
+
+    chartjs_old();
+
+});
+</script>
+<div class="colors"> <!-- To use theme colors with Javascript -->
+    <div class="bg-primary"></div>
+    <div class="bg-primary-bright"></div>
+    <div class="bg-secondary"></div>
+    <div class="bg-secondary-bright"></div>
+    <div class="bg-info"></div>
+    <div class="bg-info-bright"></div>
+    <div class="bg-success"></div>
+    <div class="bg-success-bright"></div>
+    <div class="bg-danger"></div>
+    <div class="bg-danger-bright"></div>
+    <div class="bg-warning"></div>
+    <div class="bg-warning-bright"></div>
+</div>
+
+</body>
+</html>

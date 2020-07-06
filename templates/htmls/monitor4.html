@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>摄像头4</title>
+
+    <!-- Plugin styles -->
+    <link rel="stylesheet" href="../static/vendors/bundle.css" type="text/css">
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="../static/assets/css/app.min.css" type="text/css">
+</head>
+<body>
+
+<!-- begin::preloader-->
+<div class="preloader">
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="50px" height="50px" viewBox="0 0 128 128"
+         xml:space="preserve">
+        <rect x="0" y="0" width="100%" height="100%" fill="#FFFFFF"/>
+        <g>
+            <path d="M75.4 126.63a11.43 11.43 0 0 1-2.1-22.65 40.9 40.9 0 0 0 30.5-30.6 11.4 11.4 0 1 1 22.27 4.87h.02a63.77 63.77 0 0 1-47.8 48.05v-.02a11.38 11.38 0 0 1-2.93.37z"
+                  fill="#000000" fill-opacity="1"/>
+            <animateTransform attributeName="transform" type="rotate" from="0 64 64" to="360 64 64"
+                              dur="500ms" repeatCount="indefinite">
+            </animateTransform>
+        </g>
+    </svg>
+</div>
+<!-- end::preloader -->
+
+<!-- begin::navigation -->
+<div class="navigation">
+
+    <!-- begin::logo -->
+    <div id="logo">
+        <a href="tomain">
+            <img class="logo" src="../static/assets/media/image/logo.png" alt="logo">
+            <img class="logo-sm" src="../static/assets/media/image/logo-sm.png" alt="small logo">
+        </a>
+    </div>
+    <!-- end::logo -->
+
+    <!-- begin::navigation header -->
+    <header class="navigation-header">
+        <figure class="avatar avatar-state-success">
+            <img src="../static/assets/media/image/user/1.png" class="rounded-circle" alt="image">
+        </figure>
+        <div>
+            <h5>杨烁平</h5>
+            <p class="text-muted">管理员</p>
+            <ul class="nav">
+                <li class="nav-item">
+                    <a href="toprofile" class="btn nav-link bg-info-bright" title="个人信息" data-toggle="tooltip">
+                        <i data-feather="user"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="tologin1" class="btn nav-link bg-danger-bright" title="注销" data-toggle="tooltip">
+                        <i data-feather="log-out"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <!-- end::navigation header -->
+
+    <!-- begin::navigation menu -->
+    <div class="navigation-menu-body">
+        <ul>
+            <li class="navigation-divider">信息管理</li>
+            <li>
+                <a href="tomain">
+                    <i class="nav-link-icon" data-feather="airplay"></i>
+                    <span>首页</span>
+                    <span class="badge badge-success">2</span>
+                </a>
+            </li>
+            <li>
+                <a href="toselectevent">
+                    <i class="nav-link-icon" data-feather="clipboard"></i>
+                    <span>事件记录</span>
+                    <span class="badge badge-success">2</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="feather"></i>
+                    <span>老年人信息管理</span>
+                </a>
+                <ul>
+                    <li><a href="toaddold">信息录入</a></li>
+                    <li><a href="toselectold">信息查询</a></li>
+                    <li><a href="tomodifyold">信息删改</a></li>
+                    <li><a href="toanalyzeold">统计分析</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="user"></i>
+                    <span>工作人员信息管理</span>
+                </a>
+                <ul>
+                    <li><a href="toaddworker">信息录入</a></li>
+                    <li><a href="toselectworker">信息查询</a></li>
+                    <li><a href="tomodifyworker">信息删改</a></li>
+                    <li><a href="toanalyzeworker">统计分析</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="users"></i>
+                    <span>义工信息管理</span>
+                </a>
+                <ul>
+                    <li><a href="toaddvolunteer">信息录入</a></li>
+                    <li><a href="toselectvolunteer">信息查询</a></li>
+                    <li><a href="tomodifyvolunteer">信息删改</a></li>
+                    <li><a href="toanalyzevolunteer">统计分析</a></li>
+                </ul>
+            </li>
+            <li class="navigation-divider">系统管理</li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="database"></i>
+                    <span>数据管理</span>
+                </a>
+                <ul>
+                    <li><a href="tooldtable">老人信息表</a></li>
+                    <li><a href="toworkertable">工作人员信息表</a></li>
+                    <li><a href="tovolunteertable">义工信息表</a></li>
+                    <li><a href="toeventtable">事件信息表</a></li>
+                    <li><a href="tomanagertable">系统管理员信息表</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="monitor"></i>
+                    <span>摄像头管理</span>
+                </a>
+                <ul>
+                    <li><a href="tomonitor1">摄像头1</a></li>
+                    <li><a href="tomonitor2">摄像头2</a></li>
+                    <li><a href="tomonitor3">摄像头3</a></li>
+                    <li><a href="tomonitor4">摄像头4</a></li>
+                    <li><a href="tomonitor5">摄像头5</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- end::navigation menu -->
+
+</div>
+<!-- end::navigation -->
+
+<!-- begin::main -->
+<div id="main">
+
+    <!-- begin::header -->
+    <div class="header">
+
+        <!-- begin::header left -->
+        <ul class="navbar-nav">
+
+            <!-- begin::navigation-toggler -->
+            <li class="nav-item navigation-toggler">
+                <a href="#" class="nav-link">
+                    <i data-feather="menu"></i>
+                </a>
+            </li>
+            <!-- end::navigation-toggler -->
+
+            <!-- begin::header-logo -->
+            <li class="nav-item" id="header-logo">
+                <a href="tomain">
+                    <img class="logo" src="../static/assets/media/image/logo.png" alt="logo">
+                    <img class="logo-sm" src="../static/assets/media/image/logo-sm.png" alt="small logo">
+                </a>
+            </li>
+            <!-- end::header-logo -->
+        </ul>
+        <!-- end::header left -->
+
+        <!-- begin::header-right -->
+        <div class="header-right">
+            <ul class="navbar-nav">
+
+                <!-- begin::search-form -->
+                <li class="nav-item search-form">
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h4>智慧养老系统后台</h4>
+                        </div>
+                    </div>
+                </li>
+                <!-- end::search-form -->
+
+                <!-- begin::header minimize/maximize -->
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link" title="全屏" data-toggle="fullscreen">
+                        <i class="maximize" data-feather="maximize"></i>
+                        <i class="minimize" data-feather="minimize"></i>
+                    </a>
+                </li>
+                <!-- end::header minimize/maximize -->
+
+                <!-- begin::header notification dropdown -->
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link nav-link-notify" title="通知" data-toggle="dropdown">
+                        <i data-feather="bell"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-big">
+                        <div class="p-4 text-center" data-backround-image="assets/media/image/image1.png">
+                            <h6 class="mb-1">通知</h6>
+                        </div>
+                        <div>
+                            <ul class="list-group list-group-flush">
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                老年人信息录入成功
+                                            </p>
+                                            <span class="text-muted small">1分钟前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                工作人员信息录入成功
+                                            </p>
+                                            <span class="text-muted small">5分钟前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                老年人信息删除成功
+                                            </p>
+                                            <span class="text-muted small">1小时前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                义工信息删除成功
+                                            </p>
+                                            <span class="text-muted small">2小时前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <!-- end::header notification dropdown -->
+            </ul>
+
+            <!-- begin::mobile header toggler -->
+            <ul class="navbar-nav d-flex align-items-center">
+                <li class="nav-item header-toggler">
+                    <a href="#" class="nav-link">
+                        <i data-feather="arrow-down"></i>
+                    </a>
+                </li>
+            </ul>
+            <!-- end::mobile header toggler -->
+        </div>
+        <!-- end::header-right -->
+    </div>
+    <!-- end::header -->
+
+    <!-- begin::main-content -->
+    <div class="main-content">
+
+        <!-- begin::container -->
+        <div class="container">
+
+            <!-- begin::page-header -->
+            <div class="page-header">
+                <h4>摄像头4</h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="#">摄像头管理</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">摄像头4</li>
+                    </ol>
+                </nav>
+            </div>
+            <!-- end::page-header -->
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="col-lg-3 col-sm-6 m-t-b-20">
+                                <button type="button" class="btn btn-instagram" id="take">
+                                    <i class="fa fa-instagram mr-2"></i> 实时拍照
+                                </button>
+                            </div>
+                            <br />
+                            <video id="v" style="width: 640px;height: 480px;"></video>
+                            <canvas id="canvas" style="display:none;"></canvas>
+                            <br />
+                            <img src="http://placehold.it/640&text=Your%20image%20here%20..." id="photo" alt="photo">
+
+    <script>
+        !(function () {
+            // 老的浏览器可能根本没有实现 mediaDevices，所以我们可以先设置一个空的对象
+            if (navigator.mediaDevices === undefined) {
+                navigator.mediaDevices = {};
+            }
+            if (navigator.mediaDevices.getUserMedia === undefined) {
+                navigator.mediaDevices.getUserMedia = function (constraints) {
+                    // 首先，如果有getUserMedia的话，就获得它
+                    var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+                    // 一些浏览器根本没实现它 - 那么就返回一个error到promise的reject来保持一个统一的接口
+                    if (!getUserMedia) {
+                        return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+                    }
+
+                    // 否则，为老的navigator.getUserMedia方法包裹一个Promise
+                    return new Promise(function (resolve, reject) {
+                        getUserMedia.call(navigator, constraints, resolve, reject);
+                    });
+                }
+            }
+            const constraints = {
+                video: true,
+                audio: false
+            };
+            let videoPlaying = false;
+            let v = document.getElementById('v');
+            let promise = navigator.mediaDevices.getUserMedia(constraints);
+            promise.then(stream => {
+                // 旧的浏览器可能没有srcObject
+                if ("srcObject" in v) {
+                    v.srcObject = stream;
+                } else {
+                    // 防止再新的浏览器里使用它，应为它已经不再支持了
+                    v.src = window.URL.createObjectURL(stream);
+                }
+                v.onloadedmetadata = function (e) {
+                    v.play();
+                    videoPlaying = true;
+                };
+            }).catch(err => {
+                console.error(err.name + ": " + err.message);
+            })
+            document.getElementById('take').addEventListener('click', function () {
+                if (videoPlaying) {
+                    let canvas = document.getElementById('canvas');
+                    canvas.width = v.videoWidth;
+                    canvas.height = v.videoHeight;
+                    canvas.getContext('2d').drawImage(v, 0, 0);
+                    let data = canvas.toDataURL('image/webp');
+                    document.getElementById('photo').setAttribute('src', data);
+                }
+            }, false);
+        })();
+    </script>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- end::container -->
+
+    </div>
+    <!-- end::main-content -->
+
+    <!-- begin::footer -->
+    <footer>
+        <div class="container">
+            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a></div>
+        </div>
+    </footer>
+    <!-- end::footer -->
+
+</div>
+<!-- end::main -->
+
+<!-- Plugin scripts -->
+<script src="../static/vendors/bundle.js"></script>
+
+<!-- App scripts -->
+<script src="../static/assets/js/app.min.js"></script>
+</body>
+</html>

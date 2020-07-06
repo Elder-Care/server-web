@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>个人信息</title>
+
+    <!-- Plugin styles -->
+    <link rel="stylesheet" href="../static/vendors/bundle.css" type="text/css">
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="../static/assets/css/app.min.css" type="text/css">
+
+</head>
+<body>
+
+<!-- begin::preloader-->
+<div class="preloader">
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="50px" height="50px" viewBox="0 0 128 128"
+         xml:space="preserve">
+        <rect x="0" y="0" width="100%" height="100%" fill="#FFFFFF"/>
+        <g>
+            <path d="M75.4 126.63a11.43 11.43 0 0 1-2.1-22.65 40.9 40.9 0 0 0 30.5-30.6 11.4 11.4 0 1 1 22.27 4.87h.02a63.77 63.77 0 0 1-47.8 48.05v-.02a11.38 11.38 0 0 1-2.93.37z"
+                  fill="#000000" fill-opacity="1"/>
+            <animateTransform attributeName="transform" type="rotate" from="0 64 64" to="360 64 64"
+                              dur="500ms" repeatCount="indefinite">
+            </animateTransform>
+        </g>
+    </svg>
+</div>
+<!-- end::preloader -->
+
+<!-- begin::navigation -->
+<div class="navigation">
+
+    <!-- begin::logo -->
+    <div id="logo">
+        <a href="tomain">
+            <img class="logo" src="../static/assets/media/image/logo.png" alt="logo">
+            <img class="logo-sm" src="../static/assets/media/image/logo-sm.png" alt="small logo">
+        </a>
+    </div>
+    <!-- end::logo -->
+
+    <!-- begin::navigation header -->
+    <header class="navigation-header">
+        <figure class="avatar avatar-state-success">
+            <img src="../static/assets/media/image/user/1.png" class="rounded-circle" alt="image">
+        </figure>
+        <div>
+            <h5>杨烁平</h5>
+            <p class="text-muted">管理员</p>
+            <ul class="nav">
+                <li class="nav-item">
+                    <a href="toprofile" class="btn nav-link bg-info-bright" title="个人信息" data-toggle="tooltip">
+                        <i data-feather="user"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="tologin1" class="btn nav-link bg-danger-bright" title="注销" data-toggle="tooltip">
+                        <i data-feather="log-out"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <!-- end::navigation header -->
+
+    <!-- begin::navigation menu -->
+    <div class="navigation-menu-body">
+        <ul>
+            <li class="navigation-divider">信息管理</li>
+            <li>
+                <a href="tomain">
+                    <i class="nav-link-icon" data-feather="airplay"></i>
+                    <span>首页</span>
+                    <span class="badge badge-success">2</span>
+                </a>
+            </li>
+            <li>
+                <a href="toselectevent">
+                    <i class="nav-link-icon" data-feather="clipboard"></i>
+                    <span>事件记录</span>
+                    <span class="badge badge-success">2</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="feather"></i>
+                    <span>老年人信息管理</span>
+                </a>
+                <ul>
+                    <li><a href="toaddold">信息录入</a></li>
+                    <li><a href="toselectold">信息查询</a></li>
+                    <li><a href="tomodifyold">信息删改</a></li>
+                    <li><a href="toanalyzeold">统计分析</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="user"></i>
+                    <span>工作人员信息管理</span>
+                </a>
+                <ul>
+                    <li><a href="toaddworker">信息录入</a></li>
+                    <li><a href="toselectworker">信息查询</a></li>
+                    <li><a href="tomodifyworker">信息删改</a></li>
+                    <li><a href="toanalyzeworker">统计分析</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="users"></i>
+                    <span>义工信息管理</span>
+                </a>
+                <ul>
+                    <li><a href="toaddvolunteer">信息录入</a></li>
+                    <li><a href="toselectvolunteer">信息查询</a></li>
+                    <li><a href="tomodifyvolunteer">信息删改</a></li>
+                    <li><a href="toanalyzevolunteer">统计分析</a></li>
+                </ul>
+            </li>
+            <li class="navigation-divider">系统管理</li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="database"></i>
+                    <span>数据管理</span>
+                </a>
+                <ul>
+                    <li><a href="tooldtable">老人信息表</a></li>
+                    <li><a href="toworkertable">工作人员信息表</a></li>
+                    <li><a href="tovolunteertable">义工信息表</a></li>
+                    <li><a href="toeventtable">事件信息表</a></li>
+                    <li><a href="tomanagertable">系统管理员信息表</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="nav-link-icon" data-feather="monitor"></i>
+                    <span>摄像头管理</span>
+                </a>
+                <ul>
+                    <li><a href="tomonitor1">摄像头1</a></li>
+                    <li><a href="tomonitor2">摄像头2</a></li>
+                    <li><a href="tomonitor3">摄像头3</a></li>
+                    <li><a href="tomonitor4">摄像头4</a></li>
+                    <li><a href="tomonitor5">摄像头5</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- end::navigation menu -->
+
+</div>
+<!-- end::navigation -->
+
+<!-- begin::main -->
+<div id="main">
+
+    <!-- begin::header -->
+    <div class="header">
+
+        <!-- begin::header left -->
+        <ul class="navbar-nav">
+
+            <!-- begin::navigation-toggler -->
+            <li class="nav-item navigation-toggler">
+                <a href="#" class="nav-link">
+                    <i data-feather="menu"></i>
+                </a>
+            </li>
+            <!-- end::navigation-toggler -->
+
+            <!-- begin::header-logo -->
+            <li class="nav-item" id="header-logo">
+                <a href="tomain">
+                    <img class="logo" src="../static/assets/media/image/logo.png" alt="logo">
+                    <img class="logo-sm" src="../static/assets/media/image/logo-sm.png" alt="small logo">
+                </a>
+            </li>
+            <!-- end::header-logo -->
+        </ul>
+        <!-- end::header left -->
+
+        <!-- begin::header-right -->
+        <div class="header-right">
+            <ul class="navbar-nav">
+
+                <!-- begin::search-form -->
+                <li class="nav-item search-form">
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h4>智慧养老系统后台</h4>
+                        </div>
+                    </div>
+                </li>
+                <!-- end::search-form -->
+
+                <!-- begin::header minimize/maximize -->
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link" title="全屏" data-toggle="fullscreen">
+                        <i class="maximize" data-feather="maximize"></i>
+                        <i class="minimize" data-feather="minimize"></i>
+                    </a>
+                </li>
+                <!-- end::header minimize/maximize -->
+
+                <!-- begin::header notification dropdown -->
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link nav-link-notify" title="通知" data-toggle="dropdown">
+                        <i data-feather="bell"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-big">
+                        <div class="p-4 text-center" data-backround-image="assets/media/image/image1.png">
+                            <h6 class="mb-1">通知</h6>
+                        </div>
+                        <div>
+                            <ul class="list-group list-group-flush">
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                老年人信息录入成功
+                                            </p>
+                                            <span class="text-muted small">1分钟前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                工作人员信息录入成功
+                                            </p>
+                                            <span class="text-muted small">5分钟前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                老年人信息删除成功
+                                            </p>
+                                            <span class="text-muted small">1小时前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
+                                        <div class="flex-grow-1">
+                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
+                                                义工信息删除成功
+                                            </p>
+                                            <span class="text-muted small">2小时前</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <!-- end::header notification dropdown -->
+            </ul>
+
+            <!-- begin::mobile header toggler -->
+            <ul class="navbar-nav d-flex align-items-center">
+                <li class="nav-item header-toggler">
+                    <a href="#" class="nav-link">
+                        <i data-feather="arrow-down"></i>
+                    </a>
+                </li>
+            </ul>
+            <!-- end::mobile header toggler -->
+        </div>
+        <!-- end::header-right -->
+    </div>
+    <!-- end::header -->
+
+    <!-- begin::main-content -->
+    <div class="main-content">
+
+        <!-- begin::container -->
+        <div class="container">
+
+            <!-- begin::page-header -->
+            <div class="page-header">
+                <h4>个人信息</h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="#">个人信息管理</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">个人信息</li>
+                    </ol>
+                </nav>
+            </div>
+            <!-- end::page-header -->
+
+            <div class="row">
+                <div class="col-md-4">
+
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <figure class="avatar avatar-lg m-b-20">
+                                <img src="../static/assets/media/image/user/1.png" class="rounded-circle" alt="...">
+                            </figure>
+                            <h5 class="mb-1">杨烁平</h5>
+                            <p class="text-muted small">管理员</p>
+                            <p>小程序员一枚。现就读于北京交通大学软件学院。</p>
+                            <a href="modify_profile.html" class="btn btn-outline-primary">
+                                <i data-feather="edit-2" class="mr-2"></i>编辑个人信息
+                            </a>
+                        </div>
+                        <hr class="m-0">
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-12 text-success">
+                                    <h4 class="font-weight-bold">17301053</h4>
+                                    <span>用户名</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-8">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title d-flex justify-content-between align-items-center">
+                                信息
+                                <a href="modify_profile.html" class="btn btn-outline-light btn-sm">
+                                    <i data-feather="edit-2" class="mr-2"></i> 编辑
+                                </a>
+                            </h6>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">系统管理员ID：</div>
+                                <div class="col-6">777</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">性别：</div>
+                                <div class="col-6">男</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">邮箱：</div>
+                                <div class="col-6">xxx@163.com</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">电话:</div>
+                                <div class="col-6">111</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">移动电话:</div>
+                                <div class="col-6">7777777</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">创建时间：</div>
+                                <div class="col-6">2020/6/30</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">创建人：</div>
+                                <div class="col-6">xxx</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">更新时间：</div>
+                                <div class="col-6">2020/6/30</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">更新人：</div>
+                                <div class="col-6">xxx</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- end::container -->
+
+    </div>
+    <!-- end::main-content -->
+
+    <!-- begin::footer -->
+    <footer>
+        <div class="container">
+            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a></div>
+        </div>
+    </footer>
+    <!-- end::footer -->
+
+</div>
+<!-- end::main -->
+
+<!-- Plugin scripts -->
+<script src="../static/vendors/bundle.js"></script>
+
+<!-- App scripts -->
+<script src="../static/assets/js/app.min.js"></script>
+
+</body>
+</html>
