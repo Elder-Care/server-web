@@ -46,21 +46,24 @@
     <h5>登录</h5>
 
     <!-- form -->
-    <form action="/login0" method="post">
+    <form action="login0" method="post">
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="管理员用户名" autofocus name="username">
+            <input type="text" class="form-control" placeholder="管理员用户名" required autofocus name="username">
         </div>
         <div class="form-group">
-            <input type="password" class="form-control" placeholder="密码" name="password">
+            <input type="password" class="form-control" placeholder="密码" required name="password">
         </div>
         <div class="form-group d-flex justify-content-between">
             <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" checked="" id="customCheck1">
                 <label class="custom-control-label" for="customCheck1">记住用户名和密码</label>
             </div>
-            <a href="tomodifypassword">修改密码</a>
+            <a href="modify-password.html">修改密码</a>
         </div>
         <button class="btn btn-primary btn-block" type="submit">登录</button>
+        <hr>
+        <p class="text-muted">没有账号？</p>
+        <a href="./register.html" class="btn btn-outline-light btn-sm" type="submit">注册</a>
     </form>
     <!-- ./ form -->
 
