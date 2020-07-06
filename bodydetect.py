@@ -1,6 +1,7 @@
 import cv2 as cv
 import numpy as np
 
+
 confThreshold = 0.5
 nmsThreshold = 0.4
 inpWidth = 320
