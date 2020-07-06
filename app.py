@@ -468,6 +468,7 @@ def signoff():
 def addo():
     # 新增老人
     form = request.form
+    print(111)
     if not form.get('username'):
         content = "请输入用户名"
         return render_template('addo.html', content=content)
