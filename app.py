@@ -539,7 +539,7 @@ def oinfo():
         content = "老人信息更新成功"
     else:
         content = ''
-    return render_template('./htmls/add_old.html', content=content)
+    return render_template('./htmls/old_info.html', content=content)
 
 
 @app.route('/delo', methods=['GET', 'POST'])
@@ -604,7 +604,7 @@ def einfo():
         content = "员工信息更新成功"
     else:
         content = ''
-    return render_template('einfo.html', content=content)
+    return render_template('htmls/worker_info.html', content=content)
 
 
 @app.route('/dele', methods=['GET', 'POST'])
@@ -669,7 +669,7 @@ def vinfo():
         content = "志愿者信息更新成功"
     else:
         content = ''
-    return render_template('vinfo.html', content=content)
+    return render_template('/htmls/volunteer_info', content=content)
 
 
 @app.route('/delv', methods=['GET', 'POST'])
