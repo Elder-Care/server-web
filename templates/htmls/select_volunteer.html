@@ -79,7 +79,7 @@
                 </a>
             </li>
             <li>
-                <a href="toselectevent">
+                <a href="retev">
                     <i class="nav-link-icon" data-feather="clipboard"></i>
                     <span>事件记录</span>
                     <span class="badge badge-success">2</span>
@@ -92,7 +92,7 @@
                 </a>
                 <ul>
                     <li><a href="toaddold">信息录入</a></li>
-                    <li><a href="toselectold">信息查询</a></li>
+                    <li><a href="reto">信息查询</a></li>
                     <li><a href="tomodifyold">信息删改</a></li>
                     <li><a href="toanalyzeold">统计分析</a></li>
                 </ul>
@@ -104,7 +104,7 @@
                 </a>
                 <ul>
                     <li><a href="toaddworker">信息录入</a></li>
-                    <li><a href="toselectworker">信息查询</a></li>
+                    <li><a href="rete">信息查询</a></li>
                     <li><a href="tomodifyworker">信息删改</a></li>
                     <li><a href="toanalyzeworker">统计分析</a></li>
                 </ul>
@@ -116,7 +116,7 @@
                 </a>
                 <ul>
                     <li><a href="toaddvolunteer">信息录入</a></li>
-                    <li><a href="toselectvolunteer">信息查询</a></li>
+                    <li><a href="retv">信息查询</a></li>
                     <li><a href="tomodifyvolunteer">信息删改</a></li>
                     <li><a href="toanalyzevolunteer">统计分析</a></li>
                 </ul>
@@ -347,59 +347,10 @@
                                         <th scope="col">义工姓名</th>
                                         <th scope="col">性别</th>
                                         <th scope="col">电话</th>
-                                        <th scope="col">头像</th>
                                         <th scope="col"></th>
                                     </tr>
                                     </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>李同学</td>
-                                        <td>男</td>
-                                        <td>11342341</td>
-                                        <td>
-                                            <figure class="avatar avatar-sm">
-                                                <img src="" class="rounded-circle" alt="image">
-                                            </figure>
-                                        </td>
-                                        <td>
-                                            <a href="volunteer_info.html">
-                                                <button type="button" class="btn btn-outline-primary">详细信息</button>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>老王同学</td>
-                                        <td>男</td>
-                                        <td>222131</td>
-                                        <td>
-                                            <figure class="avatar avatar-sm">
-                                                <img src="" class="rounded-circle" alt="image">
-                                            </figure>
-                                        </td>
-                                        <td>
-                                            <a href="volunteer_info.html">
-                                                <button type="button" class="btn btn-outline-primary">详细信息</button>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>小米</td>
-                                        <td>女</td>
-                                        <td>33322234</td>
-                                        <td>
-                                            <figure class="avatar avatar-sm">
-                                                <img src="" class="rounded-circle" alt="image">
-                                            </figure>
-                                        </td>
-                                        <td>
-                                            <a href="volunteer_info.html">
-                                                <button type="button" class="btn btn-outline-primary">详细信息</button>
-                                            </a>
-                                        </td>
-                                    </tr>
+                                    <tbody id="volunteerbody">
                                     </tbody>
                                 </table>
                             </div>
@@ -423,7 +374,9 @@
         </div>
     </footer>
     <!-- end::footer -->
-
+    <form id="myform" action="/selv" method="post">
+        <input id="id" name="id" value="" style="display: none"/>
+    </form>
 </div>
 <!-- end::main -->
 
@@ -432,6 +385,36 @@
 
 <!-- App scripts -->
 <script src="../static/assets/js/app.min.js"></script>
+
+<script>
+    var infoorigin = {{ info|tojson }};
+    var info = eval('(' + infoorigin + ')');
+    console.log(info)
+    var tableData = "";
+
+    for (var i = 0; i < info.length; i++) {
+        tableData += "<tr>";
+        tableData += "<td>" + info[i].id + "</td>";
+        tableData += "<td>" + info[i].name + "</td>";
+        tableData += "<td>" + info[i].gender + "</td>";
+        tableData += "<td>" + info[i].phone + "</td>";
+        tableData += "<td>\n" +
+            "                                                <button type=\"button\" class=\"btn btn-outline-primary\" onclick=\"submittable(this)\">详细信息</button>\n" +
+            "                                            </a>\n" +
+            "                                        </td>";
+        tableData += "</tr>";
+    }
+
+    $("#volunteerbody").html(tableData);
+
+    function submittable(x) {
+        var i = x.parentNode.parentNode.rowIndex
+        var table = document.getElementById('table-volunteer')
+        var id = table.rows[i].cells[0].innerHTML
+        document.getElementById('id').value = id;
+        myform.submit();
+    }
+</script>
 
 </body>
 </html>
