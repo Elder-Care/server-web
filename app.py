@@ -5,6 +5,7 @@ import os
 import random
 import cv2
 import bodydetect
+from camera import VideoCamera
 
 app = Flask(__name__)
 conn = sqlite3.connect('old_care.sqlite', check_same_thread=False)
@@ -24,6 +25,17 @@ class camera(object):
         ret, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
 
+def gen(camera):
+    while True:
+        frame = camera.get_frame()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
+
+@app.route('/video_feed')
+def video_feed():
+    return Response(gen(VideoCamera()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 def columns(table_name):
     if table_name == 'oldperson_info':
@@ -766,12 +778,6 @@ def gen(camera):
         frame = camera.get_frame()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-
-@app.route('/video_feed')
-def video_feed():
-    return Response(gen(camera()),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route('/fall', methods=['GET', 'POST'])
