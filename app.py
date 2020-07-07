@@ -11,6 +11,87 @@ conn = sqlite3.connect('old_care.sqlite', check_same_thread=False)
 cur_id = 0
 
 
+class VideoCamera1(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        bodydetect.detect_fall(image)
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera2(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture('./camera2.mp4')
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera3(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera4(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera5(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
 class camera(object):
     def __init__(self):
         self.frames = [open(f + '.jpg', 'rb').read() for f in ['1', '2', '3']]
@@ -23,6 +104,19 @@ class camera(object):
         success, image = self.video.read()
         ret, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
+
+
+def gen(camera):
+    while True:
+        frame = camera.get_frame()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
+
+@app.route('/video_feed1')
+def video_feed1():
+    return Response(gen(VideoCamera1()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 def columns(table_name):
@@ -51,20 +145,22 @@ def columns(table_name):
         return 0
 
 
-def insert(conn, table_name, value):
+def insert(conn, table_name, value):  # 通用表格插入操作
     cols = columns(table_name)
     if cols != 0:
         sql_insert = "INSERT INTO " + table_name + "("
         for k, v in value.items():
-            sql_insert += k
-            sql_insert += ','
+            if v:
+                sql_insert += k
+                sql_insert += ','
         sql_insert = sql_insert[:-1]
         sql_insert += ')VALUES('
         for k, v in value.items():
-            sql_insert += '\''
-            sql_insert += v
-            sql_insert += '\''
-            sql_insert += ','
+            if v:
+                sql_insert += '\''
+                sql_insert += v
+                sql_insert += '\''
+                sql_insert += ','
         sql_insert = sql_insert[:-1]
         sql_insert += ')'
         # print(sql_insert)
@@ -115,14 +211,15 @@ def login(conn, name, password):
         return 1
 
 
-def zhuce(conn, name, password):
+def zhuce(conn, info):
     # 用户注册
     table_name = 'sys_user'
-    where = 'UserName = \'' + name + '\''
+    where = 'UserName = \'' + info['UserName'] + '\''
     l = select(conn, table_name, where)
     if len(l) == 0:
         t = time.strftime('%Y-%m-%d', time.localtime())
-        value = {'UserName': name, 'Password': password, 'CREATED': t}
+        value = info
+        value['CREATED'] = str(t)
         insert(conn, table_name, value)
         return 1
     else:
@@ -154,13 +251,15 @@ def zhuxiao(conn, name):
         return 0
 
 
-def add_elder(conn, name):
+def add_elder(conn, info):
+    # 新增老人
     table_name = 'oldperson_info'
-    where = 'username = \'' + name + '\''
+    where = 'username = \'' + info['username'] + '\''
     l = select(conn, table_name, where)
     if len(l) == 0:
         t = time.strftime('%Y-%m-%d', time.localtime())
-        value = {'username': name, 'CREATED': t}
+        value = info
+        value['CREATED'] = str(t)
         insert(conn, table_name, value)
         return 1
     else:
@@ -187,13 +286,14 @@ def del_elder(conn, uid):
     return 1
 
 
-def add_employee(conn, name):
+def add_employee(conn, info):
     table_name = 'employee_info'
-    where = 'username = \'' + name + '\''
+    where = 'username = \'' + info['username'] + '\''
     l = select(conn, table_name, where)
     if len(l) == 0:
         t = time.strftime('%Y-%m-%d', time.localtime())
-        value = {'username': name, 'CREATED': t}
+        value = info
+        value['CREATED'] = str(t)
         insert(conn, table_name, value)
         return 1
     else:
@@ -221,13 +321,14 @@ def del_employee(conn, uid):
     return 1
 
 
-def add_volunteer(conn, name):
+def add_volunteer(conn, info):
     table_name = 'volunteer_info'
-    where = 'name = \'' + name + '\''
+    where = 'name = \'' + info['name'] + '\''
     l = select(conn, table_name, where)
     if len(l) == 0:
         t = time.strftime('%Y-%m-%d', time.localtime())
-        value = {'name': name, 'CREATED': t}
+        value = info
+        value['CREATED'] = str(t)
         insert(conn, table_name, value)
         return 1
     else:
@@ -253,6 +354,24 @@ def del_volunteer(conn, uid):
     where = 'ID = \'' + str(uid) + '\''
     delete(conn, table_name, where)
     return 1
+
+
+def sel_old(conn, name):
+    table_name = 'oldperson_info'
+    where = 'username = \'' + name + '\''
+    return select(conn, table_name, where)
+
+
+def sel_emp(conn, name):
+    table_name = 'employee_info'
+    where = 'username = \'' + name + '\''
+    return select(conn, table_name, where)
+
+
+def sel_vol(conn, name):
+    table_name = 'volunteer_info'
+    where = 'name = \'' + name + '\''
+    return select(conn, table_name, where)
 
 
 @app.route('/')
@@ -365,6 +484,11 @@ def toeventtable():
     return render_template('/htmls/event_table.html')
 
 
+@app.route('/tooldinfo', methods=['GET', 'POST'])
+def tooldinfo():
+    return render_template('/htmls/old_info.html')
+
+
 @app.route('/tomanagertable', methods=['GET', 'POST'])
 def tomanagertable():
     return render_template('/htmls/manager_table.html')
@@ -418,21 +542,23 @@ def login0():
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
     form = request.form
-    username = form.get('username')
-    password = form.get('password')
+    username = form.get('UserName')
+    password = form.get('Password')
     if not username:
         content = "请输入用户名"
-        return render_template('signin.html', content=content)
+        return render_template('/htmls/register.html', content=content)
     if not password:
         content = "请输入密码"
-        return render_template('signin.html', content=content)
+        return render_template('/htmls/register.html', content=content)
     global conn
-    if zhuce(conn, username, password):
+    info = {'Username': username, 'password': password, 'REAL_NAME': form.get('REAL_NAME'), 'SEX': form.get('SEX'),
+            'EMAIL': form.get('EMAIL'), 'PHONE': form.get('PHONE'), 'MOBILE': form.get('MOBILE')}
+    if zhuce(conn, info):
         content = "注册成功"
-        return render_template('login.html', content=content)
+        return render_template('/htmls/index.html', content=content)
     else:
         content = "用户名已存在"
-        return render_template('signin.html', content=content)
+        return render_template('/htmls/index.html', content=content)
 
 
 @app.route('/pinfo', methods=['GET', 'POST'])
@@ -469,8 +595,9 @@ def addo():
     # 新增老人
     form = request.form
     if not form.get('username'):
+        print("noname")
         content = "请输入用户名"
-        return render_template('addo.html', content=content)
+        return render_template('/htmls/add_old.html', content=content)
     info = {'username': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
             'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
@@ -486,10 +613,10 @@ def addo():
     global conn
     if add_elder(conn, info):
         content = "增添成功"
-        return render_template('addo.html', content=content)
+        return render_template('/htmls/index.html', content=content)
     else:
         content = "用户名已存在"
-        return render_template('addo.html', content=content)
+        return render_template('/htmls/index.html', content=content)
 
 
 @app.route('/oinfo', methods=['POST', 'GET'])
@@ -531,13 +658,25 @@ def delo():
         return render_template('delo.html', content=content)
 
 
+@app.route('/selo', methods=['GET', 'POST'])
+def selo():
+    form = request.form
+    username = form.get('username')
+    content = sel_old(conn, username)
+    if content:
+        return render_template('/htmls/select_old.html', content=content)
+    else:
+        content = '该用户不存在'
+        return render_template('/htmls/select_old.html', content=content)
+
+
 @app.route('/adde', methods=['GET', 'POST'])
 def adde():
     # 新增员工
     form = request.form
     if not form.get('username'):
         content = "请输入用户名"
-        return render_template('adde.html', content=content)
+        return render_template('/htmls/add_worker.html', content=content)
     info = {'username': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
             'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'hire_date': form.get("hire_date"),
@@ -546,10 +685,10 @@ def adde():
     global conn
     if add_employee(conn, info):
         content = "增添成功"
-        return render_template('adde.html', content=content)
+        return render_template('/htmls/index.html', content=content)
     else:
         content = "用户名已存在"
-        return render_template('adde.html', content=content)
+        return render_template('/htmls/index.html', content=content)
 
 
 @app.route('/einfo', methods=['GET', 'POST'])
@@ -584,25 +723,37 @@ def dele():
         return render_template('dele.html', content=content)
 
 
+@app.route('/sele', methods=['GET', 'POST'])
+def sele():
+    form = request.form
+    username = form.get('username')
+    content = sel_emp(conn, username)
+    if content:
+        return render_template('/htmls/select_worker.html', content=content)
+    else:
+        content = '该用户不存在'
+        return render_template('/htmls/select_worker.html', content=content)
+
+
 @app.route('/addv', methods=['GET', 'POST'])
 def addv():
     # 新增志愿者
     form = request.form
-    if not form.get('username'):
+    if not form.get('name'):
         content = "请输入用户名"
-        return render_template('addv.html', content=content)
-    info = {'name': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
+        return render_template('/htmls/add_volunteer.html', content=content)
+    info = {'name': form.get('name'), 'gender': form.get('gender'), 'phone': form.get('phone'),
             'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
-            'checkout_date': form.get('checkout_date'), 'profile_photo':
-                form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
+            'checkout_date': form.get('checkout_date'), 'imgset_dir':
+                form.get('imgset_dir'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     global conn
     if add_volunteer(conn, info):
         content = "增添成功"
-        return render_template('addv.html', content=content)
+        return render_template('/htmls/index.html', content=content)
     else:
         content = "用户名已存在"
-        return render_template('addv.html', content=content)
+        return render_template('/htmls/index.html', content=content)
 
 
 @app.route('/vinfo', methods=['GET', 'POST'])
@@ -635,6 +786,26 @@ def delv():
     else:
         content = "该id不存在"
         return render_template('delv.html', content=content)
+
+
+@app.route('/selv', methods=['GET', 'POST'])
+def selv():
+    form = request.form
+    username = form.get('username')
+    content = sel_vol(conn, username)
+    if content:
+        return render_template('/htmls/select_volunteer.html', content=content)
+    else:
+        content = '该用户不存在'
+        return render_template('/htmls/select_volunteer.html', content=content)
+
+
+@app.route('/reta', methods=['GET', 'POST'])
+def reta():
+    form = request.form
+    table_name = form.get('table_name')
+    content = select(conn, table_name, "")
+    return render_template(content=content)
 
 
 @app.route('/images', methods=['GET', 'POST'])
@@ -696,15 +867,9 @@ def gen(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-@app.route('/video_feed')
-def video_feed():
-    return Response(gen(camera()),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
 @app.route('/fall', methods=['GET', 'POST'])
 def fall():
-    f = bodydetect.detect_fall('D:\\dasanxxq\\fallimage\\fall-02-cam0-rgb-001.png')
+    f = bodydetect.detect_fall('./pic/test.png')
     if f:
         content = '摔倒'
     else:

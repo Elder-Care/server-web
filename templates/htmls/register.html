@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>登录界面</title>
-
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="../static/assets/media/image/favicon.png"/>
+    <title>注册界面</title>
 
     <!-- Plugin styles -->
     <link rel="stylesheet" href="../static/vendors/bundle.css" type="text/css">
@@ -43,27 +40,35 @@
 
     <h4>智慧养老系统后台</h4>
 
-    <h5>登录</h5>
+    <h5>注册</h5>
 
     <!-- form -->
-    <form action="login0" method="post">
+    <form action="signin" method="post">
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="管理员用户名" required autofocus name="username">
+            <input type="text" class="form-control" placeholder="管理员用户名" name="UserName" required autofocus>
         </div>
         <div class="form-group">
-            <input type="password" class="form-control" placeholder="密码" required name="password">
+            <input type="password" class="form-control" placeholder="密码" name="Password" required>
         </div>
-        <div class="form-group d-flex justify-content-between">
-            <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" checked="" id="customCheck1">
-                <label class="custom-control-label" for="customCheck1">记住用户名和密码</label>
-            </div>
-            <a href="modify-password.html">修改密码</a>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="用户真实姓名" name="REAL_NAME">
         </div>
-        <button class="btn btn-primary btn-block" type="submit">登录</button>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="性别" name="SEX">
+        </div>
+        <div class="form-group">
+            <input type="email" class="form-control" placeholder="邮箱" name="EMAIL">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="电话" name="PHONE">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="移动电话" name="MOBILE">
+        </div>
+        <button class="btn btn-primary btn-block">注册</button>
         <hr>
-        <p class="text-muted">没有账号？</p>
-        <a href="./register.html" class="btn btn-outline-light btn-sm" type="submit">注册</a>
+        <p class="text-muted">已经有账号了？</p>
+        <a href="login.html" class="btn btn-outline-light btn-sm" type="submit">登录</a>
     </form>
     <!-- ./ form -->
 
