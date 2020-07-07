@@ -80,7 +80,7 @@
                 </a>
             </li>
             <li>
-                <a href="toselectevent">
+                <a href="retev">
                     <i class="nav-link-icon" data-feather="clipboard"></i>
                     <span>事件记录</span>
                     <span class="badge badge-success">2</span>
@@ -93,7 +93,7 @@
                 </a>
                 <ul>
                     <li><a href="toaddold">信息录入</a></li>
-                    <li><a href="toselectold">信息查询</a></li>
+                    <li><a href="reto">信息查询</a></li>
                     <li><a href="tomodifyold">信息删改</a></li>
                     <li><a href="toanalyzeold">统计分析</a></li>
                 </ul>
@@ -105,7 +105,7 @@
                 </a>
                 <ul>
                     <li><a href="toaddworker">信息录入</a></li>
-                    <li><a href="toselectworker">信息查询</a></li>
+                    <li><a href="rete">信息查询</a></li>
                     <li><a href="tomodifyworker">信息删改</a></li>
                     <li><a href="toanalyzeworker">统计分析</a></li>
                 </ul>
@@ -117,7 +117,7 @@
                 </a>
                 <ul>
                     <li><a href="toaddvolunteer">信息录入</a></li>
-                    <li><a href="toselectvolunteer">信息查询</a></li>
+                    <li><a href="retv">信息查询</a></li>
                     <li><a href="tomodifyvolunteer">信息删改</a></li>
                     <li><a href="toanalyzevolunteer">统计分析</a></li>
                 </ul>
@@ -329,31 +329,8 @@
                                         <th>老人id</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>情感检测</td>
-                                        <td>2020/3/22</td>
-                                        <td>北京三里屯</td>
-                                        <td>老人大哭</td>
-                                        <td>222</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>禁止区域入侵检测</td>
-                                        <td>2019/9/25</td>
-                                        <td>某商场</td>
-                                        <td>老人与一个陌生人交谈</td>
-                                        <td>333</td>
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>情感检测</td>
-                                        <td>2017/2/2</td>
-                                        <td>阿龙海鲜</td>
-                                        <td>老人点餐吃饭</td>
-                                        <td>444</td>
-                                    </tr>
+                                    <tbody id="eventbody">
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -396,6 +373,27 @@
     input.onkeyup = function () {
         new Search(table, input)
     }
+</script>
+
+<script>
+    var infoorigin = {{ info|tojson }};
+    var info = eval('(' + infoorigin + ')');
+    console.log(info)
+    var tableData = "";
+
+    for (var i = 0; i < info.length; i++) {
+        tableData += "<tr>";
+        tableData += "<td>" + info[i].id + "</td>";
+        tableData += "<td>" + info[i].event_type + "</td>";
+        tableData += "<td>" + info[i].event_date + "</td>";
+        tableData += "<td>" + info[i].event_location + "</td>";
+        tableData += "<td>" + info[i].event_desc + "</td>";
+        tableData += "<td>" + info[i].oldperson_id + "</td>";
+        tableData += "</tr>";
+    }
+
+    $("#eventbody").html(tableData);
+
 </script>
 </body>
 </html>

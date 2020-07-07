@@ -5,6 +5,7 @@ import os
 import random
 import cv2
 import bodydetect
+import json
 
 app = Flask(__name__)
 conn = sqlite3.connect('old_care.sqlite', check_same_thread=False)
@@ -356,22 +357,46 @@ def del_volunteer(conn, uid):
     return 1
 
 
-def sel_old(conn, name):
+def sel_old(conn, id):
     table_name = 'oldperson_info'
-    where = 'username = \'' + name + '\''
-    return select(conn, table_name, where)
+    where = 'id = \'' + id + '\''
+    s = select(conn, table_name, where)
+    info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
+            'profile_photo': s[0][9], 'room_number': s[0][10], 'firstguardian_name': s[0][11],
+            'firstguardian_relationship': s[0][12], 'firstguardian_phone': s[0][13], 'firstguardian_wechat': s[0][14],
+            'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16], ' secondguardian_phone': s[0][17]
+        , 'secondguardian_wechat': s[0][18], 'health_state': s[0][19], 'DESCRIPTION': s[0][20], 'ISACTIVE': s[0][21],
+            'CREATED': s[0][22], 'CREATEDBY': s[0][23], 'UPDATED': s[0][24]
+        , 'UPDATEDBY': s[0][25], 'REMOVE': s[0][26]}
+    info = json.dumps(info)
+    return info
 
 
-def sel_emp(conn, name):
+def sel_emp(conn, id):
     table_name = 'employee_info'
-    where = 'username = \'' + name + '\''
-    return select(conn, table_name, where)
+    where = 'id = \'' + id + '\''
+    s = select(conn, table_name, where)
+    info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
+            'birthday': s[0][5], 'hire_date': s[0][6], 'resign_date': s[0][7], 'imgset_dir': s[0][8],
+            'profile_photo': s[0][9], 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
+            'CREATED': s[0][12], 'CREATEDBY': s[0][13], 'UPDATED': s[0][14]
+        , 'UPDATEDBY': s[0][15], 'REMOVE': s[0][16]}
+    info = json.dumps(info)
+    return info
 
 
-def sel_vol(conn, name):
+def sel_vol(conn, id):
     table_name = 'volunteer_info'
-    where = 'name = \'' + name + '\''
-    return select(conn, table_name, where)
+    where = 'id = \'' + id + '\''
+    s = select(conn, table_name, where)
+    info = {'id': s[0][0], 'name': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
+            'profile_photo': s[0][9], 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
+            'CREATED': s[0][12], 'CREATEDBY': s[0][13], 'UPDATED': s[0][14]
+        , 'UPDATEDBY': s[0][15], 'REMOVE': s[0][16]}
+    info = json.dumps(info)
+    return info
 
 
 @app.route('/')
@@ -661,13 +686,37 @@ def delo():
 @app.route('/selo', methods=['GET', 'POST'])
 def selo():
     form = request.form
-    username = form.get('username')
-    content = sel_old(conn, username)
+    id = form.get('id')
+    content = sel_old(conn, id)
     if content:
-        return render_template('/htmls/select_old.html', content=content)
+        return render_template('/htmls/old_info.html', content=content)
     else:
         content = '该用户不存在'
         return render_template('/htmls/select_old.html', content=content)
+
+
+@app.route('/selv', methods=['GET', 'POST'])
+def selv():
+    form = request.form
+    id = form.get('id')
+    content = sel_vol(conn, id)
+    if content:
+        return render_template('/htmls/volunteer_info.html', content=content)
+    else:
+        content = '该用户不存在'
+        return render_template('/htmls/select_volunteer.html', content=content)
+
+
+@app.route('/sele', methods=['GET', 'POST'])
+def sele():
+    form = request.form
+    id = form.get('id')
+    content = sel_emp(conn, id)
+    if content:
+        return render_template('/htmls/worker_info.html', content=content)
+    else:
+        content = '该用户不存在'
+        return render_template('/htmls/select_worker.html', content=content)
 
 
 @app.route('/adde', methods=['GET', 'POST'])
@@ -723,18 +772,6 @@ def dele():
         return render_template('dele.html', content=content)
 
 
-@app.route('/sele', methods=['GET', 'POST'])
-def sele():
-    form = request.form
-    username = form.get('username')
-    content = sel_emp(conn, username)
-    if content:
-        return render_template('/htmls/select_worker.html', content=content)
-    else:
-        content = '该用户不存在'
-        return render_template('/htmls/select_worker.html', content=content)
-
-
 @app.route('/addv', methods=['GET', 'POST'])
 def addv():
     # 新增志愿者
@@ -788,24 +825,49 @@ def delv():
         return render_template('delv.html', content=content)
 
 
-@app.route('/selv', methods=['GET', 'POST'])
-def selv():
-    form = request.form
-    username = form.get('username')
-    content = sel_vol(conn, username)
-    if content:
-        return render_template('/htmls/select_volunteer.html', content=content)
-    else:
-        content = '该用户不存在'
-        return render_template('/htmls/select_volunteer.html', content=content)
+@app.route('/reto', methods=['GET', 'POST'])
+def reto():
+    table_name = 'oldperson_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'roomnum': x[10]})
+    info = json.dumps(info)
+    return render_template('/htmls/select_old.html', info=info)
 
 
-@app.route('/reta', methods=['GET', 'POST'])
-def reta():
-    form = request.form
-    table_name = form.get('table_name')
-    content = select(conn, table_name, "")
-    return render_template(content=content)
+@app.route('/rete', methods=['GET', 'POST'])
+def rete():
+    table_name = 'employee_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'phone': x[3]})
+    info = json.dumps(info)
+    return render_template('/htmls/select_worker.html', info=info)
+
+
+@app.route('/retv', methods=['GET', 'POST'])
+def retv():
+    table_name = 'volunteer_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'id': x[0], 'name': x[1], 'gender': x[2], 'phone': x[3]})
+    info = json.dumps(info)
+    return render_template('/htmls/select_volunteer.html', info=info)
+
+
+@app.route('/retev', methods=['GET', 'POST'])
+def retev():
+    table_name = 'event_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'id': x[0], 'event_type': x[1], 'event_date': x[2], 'event_location': x[3], 'event_desc': x[4],
+                     'oldperson_id': x[5]})
+    info = json.dumps(info)
+    return render_template('/htmls/select_event.html', info=info)
 
 
 @app.route('/images', methods=['GET', 'POST'])
