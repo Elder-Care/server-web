@@ -5,11 +5,91 @@ import os
 import random
 import cv2
 import bodydetect
-from camera import VideoCamera
 
 app = Flask(__name__)
 conn = sqlite3.connect('old_care.sqlite', check_same_thread=False)
 cur_id = 0
+
+
+class VideoCamera1(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        bodydetect.detect_fall(image)
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera2(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture('./camera2.mp4')
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera3(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera4(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera5(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
 
 
 class camera(object):
@@ -25,6 +105,7 @@ class camera(object):
         ret, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
 
+
 def gen(camera):
     while True:
         frame = camera.get_frame()
@@ -32,10 +113,11 @@ def gen(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 
-@app.route('/video_feed')
-def video_feed():
-    return Response(gen(VideoCamera()),
+@app.route('/video_feed1')
+def video_feed1():
+    return Response(gen(VideoCamera1()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 def columns(table_name):
     if table_name == 'oldperson_info':
@@ -297,6 +379,11 @@ def login1():
     return render_template('/htmls/login.html')
 
 
+@app.route('/toregister', methods=['GET', 'POST'])
+def toregister():
+    return render_template('/htmls/register.html')
+
+
 @app.route('/tomodifypassword')
 def tomodifypassword():
     return render_template('/htmls/modify_password.html')
@@ -402,6 +489,11 @@ def toeventtable():
     return render_template('/htmls/event_table.html')
 
 
+@app.route('/tooldinfo', methods=['GET', 'POST'])
+def tooldinfo():
+    return render_template('/htmls/old_info.html')
+
+
 @app.route('/tomanagertable', methods=['GET', 'POST'])
 def tomanagertable():
     return render_template('/htmls/manager_table.html')
@@ -455,8 +547,9 @@ def login0():
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
     form = request.form
-    username = form.get('UserName')
-    password = form.get('Password')
+    username = form.get('username')
+    password = form.get('password')
+
     if not username:
         content = "请输入用户名"
         return render_template('/htmls/register.html', content=content)
@@ -464,14 +557,14 @@ def signin():
         content = "请输入密码"
         return render_template('/htmls/register.html', content=content)
     global conn
-    info = {'Username': username, 'password': password, 'REAL_NAME': form.get('REAL_NAME'), 'SEX': form.get('SEX'),
+    info = {'UserName': username, 'Password': password, 'REAL_NAME': form.get('REAL_NAME'), 'SEX': form.get('SEX'),
             'EMAIL': form.get('EMAIL'), 'PHONE': form.get('PHONE'), 'MOBILE': form.get('MOBILE')}
     if zhuce(conn, info):
         content = "注册成功"
-        return render_template('/htmls/index.html', content=content)
+        return render_template('/htmls/login.html', content=content)
     else:
         content = "用户名已存在"
-        return render_template('/htmls/index.html', content=content)
+        return render_template('/htmls/login.html', content=content)
 
 
 @app.route('/pinfo', methods=['GET', 'POST'])
@@ -718,7 +811,7 @@ def reta():
     form = request.form
     table_name = form.get('table_name')
     content = select(conn, table_name, "")
-    return render_template()
+    return render_template(content=content)
 
 
 @app.route('/images', methods=['GET', 'POST'])
