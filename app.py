@@ -5,11 +5,90 @@ import os
 import random
 import cv2
 import bodydetect
-from camera import VideoCamera
 
 app = Flask(__name__)
 conn = sqlite3.connect('old_care.sqlite', check_same_thread=False)
 cur_id = 0
+
+
+class VideoCamera1(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera2(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture('./camera2.mp4')
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera3(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera4(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera5(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
 
 
 class camera(object):
@@ -25,6 +104,7 @@ class camera(object):
         ret, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
 
+
 def gen(camera):
     while True:
         frame = camera.get_frame()
@@ -32,10 +112,11 @@ def gen(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 
-@app.route('/video_feed')
-def video_feed():
-    return Response(gen(VideoCamera()),
+@app.route('/video_feed1')
+def video_feed1():
+    return Response(gen(VideoCamera1()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 def columns(table_name):
     if table_name == 'oldperson_info':
@@ -402,6 +483,11 @@ def toeventtable():
     return render_template('/htmls/event_table.html')
 
 
+@app.route('/tooldinfo', methods=['GET', 'POST'])
+def tooldinfo():
+    return render_template('/htmls/old_info.html')
+
+
 @app.route('/tomanagertable', methods=['GET', 'POST'])
 def tomanagertable():
     return render_template('/htmls/manager_table.html')
@@ -718,7 +804,7 @@ def reta():
     form = request.form
     table_name = form.get('table_name')
     content = select(conn, table_name, "")
-    return render_template()
+    return render_template(content=content)
 
 
 @app.route('/images', methods=['GET', 'POST'])
