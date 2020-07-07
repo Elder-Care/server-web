@@ -379,6 +379,11 @@ def login1():
     return render_template('/htmls/login.html')
 
 
+@app.route('/toregister', methods=['GET', 'POST'])
+def toregister():
+    return render_template('/htmls/register.html')
+
+
 @app.route('/tomodifypassword')
 def tomodifypassword():
     return render_template('/htmls/modify_password.html')
@@ -542,8 +547,9 @@ def login0():
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
     form = request.form
-    username = form.get('UserName')
-    password = form.get('Password')
+    username = form.get('username')
+    password = form.get('password')
+
     if not username:
         content = "请输入用户名"
         return render_template('/htmls/register.html', content=content)
@@ -551,14 +557,14 @@ def signin():
         content = "请输入密码"
         return render_template('/htmls/register.html', content=content)
     global conn
-    info = {'Username': username, 'password': password, 'REAL_NAME': form.get('REAL_NAME'), 'SEX': form.get('SEX'),
+    info = {'UserName': username, 'Password': password, 'REAL_NAME': form.get('REAL_NAME'), 'SEX': form.get('SEX'),
             'EMAIL': form.get('EMAIL'), 'PHONE': form.get('PHONE'), 'MOBILE': form.get('MOBILE')}
     if zhuce(conn, info):
         content = "注册成功"
-        return render_template('/htmls/index.html', content=content)
+        return render_template('/htmls/login.html', content=content)
     else:
         content = "用户名已存在"
-        return render_template('/htmls/index.html', content=content)
+        return render_template('/htmls/login.html', content=content)
 
 
 @app.route('/pinfo', methods=['GET', 'POST'])
