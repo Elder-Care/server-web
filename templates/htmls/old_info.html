@@ -295,7 +295,8 @@
                     <div class="card">
                         <div class="card-body text-center">
                             <figure class="avatar avatar-lg m-b-20">
-                                <img src="../static/assets/media/image/user/11.jpg" class="rounded-circle" alt="...">
+                                <img src="../static/assets/media/image/user/11.jpg" class="rounded-circle"
+                                     alt="...">
                             </figure>
                             <h5 class="mb-1" id="username">李老汉</h5>
                             <p class="text-muted small">老年人</p>
@@ -318,10 +319,9 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-                <div class="col-md-8">
 
+                <div class="col-md-8">
                     <div class="card">
                         <div class="card-body">
                             <h6 class="card-title d-flex justify-content-between align-items-center">
@@ -458,15 +458,15 @@
         </div>
     </footer>
     <!-- end::footer -->
-
-    <form id="myform" action="/tomodifyoldinfo" method="post">
+    <form id="myform" action="/tomodifyoldbasicinfo" method="post">
         <input id="uid" name="uid" value="" style="display: none"/>
-        <input id="type" name="type" value="" style="display: none"/>
+    </form>
+    <form id="myform2" action="/tomodifyoldguardianinfo" method="post">
+        <input id="uid2" name="uid2" value="" style="display: none"/>
     </form>
 
 </div>
 <!-- end::main -->
-
 <!-- Plugin scripts -->
 <script src="../static/vendors/bundle.js"></script>
 
@@ -500,20 +500,18 @@
     document.getElementById("imgset_dir").innerHTML = info.imgset_dir
     document.getElementById("room_number").innerHTML = info.room_number
     document.getElementById("secondguardian_name").innerHTML = info.secondguardian_name
-    document.getElementById("firstguardian_phone").innerHTML = info.secondguardian_phone
+    document.getElementById("secondguardian_phone").innerHTML = info.secondguardian_phone
     document.getElementById("secondguardian_relationship").innerHTML = info.secondguardian_relationship
     document.getElementById("secondguardian_wechat").innerHTML = info.secondguardian_wechat
 
     function tooldbasic() {
         document.getElementById('uid').value = document.getElementById("id").innerHTML;
-        document.getElementById('type').value = 0;
         myform.submit();
     }
 
     function tooldguardian() {
-        document.getElementById('uid').value = document.getElementById("id").innerHTML;
-        document.getElementById('type').value = 1;
-        myform.submit();
+        document.getElementById('uid2').value = document.getElementById("id").innerHTML;
+        myform2.submit();
     }
 
 </script>

@@ -291,42 +291,6 @@
                     </nav>
                 </div>
                 <!-- end::page-header -->
-
-                <div class="col-md-10">
-
-                    <div class="card">
-                        <div class="card-body">
-                            <h6 class="card-title d-flex justify-content-between align-items-center">
-                                原信息
-                            </h6>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">真实姓名：</div>
-                                <div class="col-6">杨烁平</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">性别：</div>
-                                <div class="col-6">男</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">邮箱：</div>
-                                <div class="col-6">xxx@163.com</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">电话:</div>
-                                <div class="col-6">111</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">移动电话:</div>
-                                <div class="col-6">7777777</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">简介:</div>
-                                <div class="col-6">小程序员一枚。现就读于北京交通大学软件学院。</div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
                 <div class="col-md-12">
 
                     <div class="card">
@@ -336,46 +300,43 @@
                                 <div class="col-md-12">
 
                                     <div class="form">
-                                        <form action="" method="get">
+                                        <form action="/modifyprofile" method="post">
+                                            <input id="uid" name="uid" style="display: none"/>
                                             <div class="item">
                                                 <span>真实姓名：</span>
-                                                <label><input type="text" name="username" placeholder="输入真实姓名"/></label>
+                                                <label><input type="text" name="REAL_NAME" placeholder="输入真实姓名"
+                                                              id="REAL_NAME"/></label>
                                             </div>
                                             <div class="item">
                                                 <span>性别：</span>
-                                                <div class="col-sm-8">
-                                                    <input type="text" class="form-control" placeholder="请输入性别"
-                                                           name="gender">
-                                                </div>
+                                                <label> <input type="text" placeholder="请输入性别"
+                                                               name="SEX" id="SEX"/></label>
                                             </div>
                                             <div class="item">
                                                 <span>邮箱：</span>
-                                                <label><input type="email" placeholder="输入邮箱"/></label>
+                                                <label><input type="email" placeholder="输入邮箱" id="EMAIL" name="EMAIL"/></label>
                                                 <small id="emailHelp" class="form-text text-muted">我们不会和任何人分享您的邮箱信息。
                                                 </small>
                                             </div>
                                             <div class="item">
                                                 <span>电话：</span>
-                                                <label><input type="text" name="username"
-                                                              placeholder="输入您的电话号码"/></label>
+                                                <label><input type="text" name="PHONE"
+                                                              placeholder="输入您的电话号码" id="PHONE"/></label>
                                             </div>
                                             <div class="item">
                                                 <span>移动电话：</span>
-                                                <label><input type="text" name="username"
-                                                              placeholder="输入您的移动电话号码"/></label>
+                                                <label><input type="text" name="MOBILE"
+                                                              placeholder="输入您的移动电话号码" id="MOBILE"/></label>
                                             </div>
                                             <div class="item">
                                                 <span>简介：</span>
-                                                <label><textarea name="message" placeholder="个人简介"
-                                                                 class="width"></textarea></label>
+                                                <label><input type="text" name="DESCRIPTION" placeholder="个人简介"
+                                                              class="width" id="DESCRIPTION"/></label>
                                             </div>
                                             <div class="item">
                                                 <span></span>
                                                 <label>
                                                     <button type="submit">提交</button>
-                                                </label>
-                                                <label>
-                                                    <button type="reset">重置</button>
                                                 </label>
                                             </div>
                                         </form>
@@ -415,5 +376,16 @@
 
 <script type="text/javascript" src="../static/assets/js/jquery.min.js"></script>
 <script type="text/javascript" src="../static/assets/js/jquery.form.js"></script>
+<script>
+    var info = {{ info|tojson }};
+    console.log(info);
+    document.getElementById("uid").value = info.ID
+    document.getElementById("SEX").value = info.SEX
+    document.getElementById("DESCRIPTION").value = info.DESCRIPTION
+    document.getElementById("PHONE").value = info.PHONE
+    document.getElementById("MOBILE").value = info.MOBILE
+    document.getElementById("REAL_NAME").value = info.REAL_NAME
+    document.getElementById("EMAIL").value = info.EMAIL
+</script>
 </body>
 </html>

@@ -295,7 +295,8 @@
                     <div class="card">
                         <div class="card-body text-center">
                             <figure class="avatar avatar-lg m-b-20">
-                                <img src="../static/assets/media/image/user/12.jpg" class="rounded-circle" alt="...">
+                                <img src="../static/assets/media/image/user/12.jpg" class="rounded-circle"
+                                     alt="...">
                             </figure>
                             <h5 class="mb-1" id="username">小李</h5>
                             <p class="text-muted small">工作人员</p>
@@ -318,10 +319,9 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-                <div class="col-md-8">
 
+                <div class="col-md-8">
                     <div class="card">
                         <div class="card-body">
                             <h6 class="card-title d-flex justify-content-between align-items-center">
@@ -356,94 +356,93 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-title d-flex justify-content-between align-items-center">
-                            其他信息
-                        </h6>
-                        <div class="row mb-2">
-                            <div class="col-6 text-muted">是否有效：</div>
-                            <div class="col-6" id="ISACTIVE">是</div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-6 text-muted">创建时间：</div>
-                            <div class="col-6" id="CREATED">2020/6/30</div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-6 text-muted">创建人：</div>
-                            <div class="col-6" id="CREATEDBY">xxx</div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-6 text-muted">更新时间：</div>
-                            <div class="col-6" id="UPDATED">2020/6/30</div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-6 text-muted">更新人：</div>
-                            <div class="col-6" id="UPDATEDBY">xxx</div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-6 text-muted">删除标志：</div>
-                            <div class="col-6" id="REMOVE">1</div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title d-flex justify-content-between align-items-center">
+                                其他信息
+                            </h6>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">是否有效：</div>
+                                <div class="col-6" id="ISACTIVE">是</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">创建时间：</div>
+                                <div class="col-6" id="CREATED">2020/6/30</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">创建人：</div>
+                                <div class="col-6" id="CREATEDBY">xxx</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">更新时间：</div>
+                                <div class="col-6" id="UPDATED">2020/6/30</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">更新人：</div>
+                                <div class="col-6" id="UPDATEDBY">xxx</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6 text-muted">删除标志：</div>
+                                <div class="col-6" id="REMOVE">1</div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
+                </div>
+            </div>
+
+        </div>
+        <!-- end::container -->
+
+    </div>
+    <!-- end::main-content -->
+
+    <!-- begin::footer -->
+    <footer>
+        <div class="container">
+            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a
+                    href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a>
             </div>
         </div>
+    </footer>
+    <!-- end::footer -->
+    <form id="myform" action="/tomodifyworkerinfo" method="post">
+        <input id="uid" name="uid" value="" style="display: none"/>
+    </form>
 
-    </div>
-    <!-- end::container -->
+    <!-- end::main -->
+    <!-- Plugin scripts -->
+    <script src="../static/vendors/bundle.js"></script>
 
-</div>
-<!-- end::main-content -->
+    <!-- App scripts -->
+    <script src="../static/assets/js/app.min.js"></script>
 
-<!-- begin::footer -->
-<footer>
-    <div class="container">
-        <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a>
-        </div>
-    </div>
-</footer>
-<!-- end::footer -->
+    <script>
+        var infoorigin = {{ content|tojson }};
+        var info = eval('(' + infoorigin + ')');
+        console.log(info);
+        document.getElementById("username").innerHTML = info.username
+        document.getElementById("id").innerHTML = info.id
+        document.getElementById("gender").innerHTML = info.gender
+        document.getElementById("DESCRIPTION").innerHTML = info.DESCRIPTION
+        document.getElementById("phone").innerHTML = info.phone
+        document.getElementById("id_card").innerHTML = info.id_card
+        document.getElementById("birthday").innerHTML = info.birthday
+        document.getElementById("CREATED").innerHTML = info.CREATED
+        document.getElementById("CREATEDBY").innerHTML = info.CREATEDBY
+        document.getElementById("ISACTIVE").innerHTML = info.ISACTIVE
+        document.getElementById("REMOVE").innerHTML = info.REMOVE
+        document.getElementById("UPDATED").innerHTML = info.UPDATED
+        document.getElementById("UPDATEDBY").innerHTML = info.UPDATEDBY
+        document.getElementById("imgset_dir").innerHTML = info.imgset_dir
+        document.getElementById("hire_date").innerHTML = info.hire_date
+        document.getElementById("resign_date").innerHTML = info.resign_date
 
-</div>
-<!-- end::main -->
-<form id="myform" action="/tomodifyworkerinfo" method="post">
-    <input id="uid" name="uid" value="" style="display: none"/>
-</form>
-<!-- Plugin scripts -->
-<script src="../static/vendors/bundle.js"></script>
-
-<!-- App scripts -->
-<script src="../static/assets/js/app.min.js"></script>
-
-<script>
-    var infoorigin = {{ content|tojson }};
-    var info = eval('(' + infoorigin + ')');
-    console.log(info);
-    document.getElementById("username").innerHTML = info.username
-    document.getElementById("id").innerHTML = info.id
-    document.getElementById("gender").innerHTML = info.gender
-    document.getElementById("DESCRIPTION").innerHTML = info.DESCRIPTION
-    document.getElementById("phone").innerHTML = info.phone
-    document.getElementById("id_card").innerHTML = info.id_card
-    document.getElementById("birthday").innerHTML = info.birthday
-    document.getElementById("CREATED").innerHTML = info.CREATED
-    document.getElementById("CREATEDBY").innerHTML = info.CREATEDBY
-    document.getElementById("ISACTIVE").innerHTML = info.ISACTIVE
-    document.getElementById("REMOVE").innerHTML = info.REMOVE
-    document.getElementById("UPDATED").innerHTML = info.UPDATED
-    document.getElementById("UPDATEDBY").innerHTML = info.UPDATEDBY
-    document.getElementById("imgset_dir").innerHTML = info.imgset_dir
-    document.getElementById("hire_date").innerHTML = info.hire_date
-    document.getElementById("resign_date").innerHTML = info.resign_date
-
-    function toworkerbasic() {
-        document.getElementById('uid').value = document.getElementById("id").innerHTML;
-        myform.submit();
-    }
-</script>
+        function toworkerbasic() {
+            document.getElementById('uid').value = document.getElementById("id").innerHTML;
+            myform.submit();
+        }
+    </script>
 </body>
 </html>
