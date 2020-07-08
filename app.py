@@ -125,7 +125,7 @@ def columns(table_name):
         return ['id', 'usernamee', 'gender', 'phone', 'id_card', 'birthday', 'checkin_date', 'checkout_date',
                 'imgset_dir'
             , 'profile_photo', 'room_number', 'firstguardian_name', 'firstguardian_relationship', 'firstguardian_phone'
-            , 'firstguardian_wechat', 'secondguardian_name', 'secondguardian_relationship', ' secondguardian_phone'
+            , 'firstguardian_wechat', 'secondguardian_name', 'secondguardian_relationship', 'secondguardian_phone'
             , 'secondguardian_wechat', 'health_state', 'DESCRIPTION', 'ISACTIVE', 'CREATED', 'CREATEDBY', 'UPDATED'
             , 'UPDATEDBY', 'REMOVE']
     elif table_name == 'employee_info':
@@ -365,7 +365,7 @@ def sel_old(conn, id):
             'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
             'profile_photo': s[0][9], 'room_number': s[0][10], 'firstguardian_name': s[0][11],
             'firstguardian_relationship': s[0][12], 'firstguardian_phone': s[0][13], 'firstguardian_wechat': s[0][14],
-            'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16], ' secondguardian_phone': s[0][17]
+            'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16], 'secondguardian_phone': s[0][17]
         , 'secondguardian_wechat': s[0][18], 'health_state': s[0][19], 'DESCRIPTION': s[0][20], 'ISACTIVE': s[0][21],
             'CREATED': s[0][22], 'CREATEDBY': s[0][23], 'UPDATED': s[0][24]
         , 'UPDATEDBY': s[0][25], 'REMOVE': s[0][26]}
@@ -446,7 +446,13 @@ def toselectold():
 
 @app.route('/tomodifyold', methods=['GET', 'POST'])
 def tomodifyold():
-    return render_template('/htmls/modify_old.html')
+    table_name = 'oldperson_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'roomnum': x[10]})
+    info = json.dumps(info)
+    return render_template('/htmls/modify_old.html', info=info)
 
 
 @app.route('/toanalyzeold', methods=['GET', 'POST'])
@@ -466,6 +472,12 @@ def toselectworker():
 
 @app.route('/tomodifyworker', methods=['GET', 'POST'])
 def tomodifyworker():
+    table_name = 'employee_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'phone': x[3]})
+    info = json.dumps(info)
     return render_template('/htmls/modify_worker.html')
 
 
@@ -486,6 +498,12 @@ def toselectvolunteer():
 
 @app.route('/tomodifyvolunteer', methods=['GET', 'POST'])
 def tomodifyvolunteer():
+    table_name = 'volunteer_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'id': x[0], 'name': x[1], 'gender': x[2], 'phone': x[3]})
+    info = json.dumps(info)
     return render_template('/htmls/modify_volunteer.html')
 
 
