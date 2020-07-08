@@ -48,10 +48,10 @@
     <!-- form -->
     <form action="login0" method="post">
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="管理员用户名" required autofocus name="username">
+            <input type="text" class="form-control" placeholder="管理员用户名" autofocus name="username">
         </div>
         <div class="form-group">
-            <input type="password" class="form-control" placeholder="密码" required name="password">
+            <input type="password" class="form-control" placeholder="密码" name="password">
         </div>
         <div class="form-group d-flex justify-content-between">
             <div class="custom-control custom-checkbox">
@@ -60,6 +60,8 @@
             </div>
             <a href="modify-password.html">修改密码</a>
         </div>
+        <p>{{ content }}
+        </p>
         <button class="btn btn-primary btn-block" type="submit">登录</button>
         <hr>
         <p class="text-muted">没有账号？</p>

@@ -122,19 +122,7 @@
                 </ul>
             </li>
             <li class="navigation-divider">系统管理</li>
-            <li>
-                <a href="#">
-                    <i class="nav-link-icon" data-feather="database"></i>
-                    <span>数据管理</span>
-                </a>
-                <ul>
-                    <li><a href="tooldtable">老人信息表</a></li>
-                    <li><a href="toworkertable">工作人员信息表</a></li>
-                    <li><a href="tovolunteertable">义工信息表</a></li>
-                    <li><a href="toeventtable">事件信息表</a></li>
-                    <li><a href="tomanagertable">系统管理员信息表</a></li>
-                </ul>
-            </li>
+
             <li>
                 <a href="#">
                     <i class="nav-link-icon" data-feather="monitor"></i>
@@ -191,7 +179,7 @@
                 <li class="nav-item search-form">
                     <div class="row">
                         <div class="col-md-6">
-                                <h4>智慧养老系统后台</h4>
+                            <h4>智慧养老系统后台</h4>
                         </div>
                     </div>
                 </li>
@@ -307,12 +295,13 @@
                     <div class="card">
                         <div class="card-body text-center">
                             <figure class="avatar avatar-lg m-b-20">
-                                <img src="../static/assets/media/image/user/12.jpg" class="rounded-circle" alt="...">
+                                <img src="../static/assets/media/image/user/12.jpg" class="rounded-circle"
+                                     alt="...">
                             </figure>
-                            <h5 class="mb-1">小李</h5>
+                            <h5 class="mb-1" id="username">小李</h5>
                             <p class="text-muted small">工作人员</p>
-                            <p>家住在养老院附近。</p>
-                            <a href="modify_worker_basic.html" class="btn btn-outline-primary">
+                            <p id="DESCRIPTION">家住在养老院附近。</p>
+                            <a class="btn btn-outline-primary" onclick="toworkerbasic()">
                                 <i data-feather="edit-2" class="mr-2"></i>编辑工作人员信息
                             </a>
                         </div>
@@ -320,51 +309,50 @@
                         <div class="card-body">
                             <div class="row text-center">
                                 <div class="col-6 text-info">
-                                    <h4 class="font-weight-bold">2018-3-3</h4>
+                                    <h4 class="font-weight-bold" id="hire_date">2018-3-3</h4>
                                     <span>入职日期</span>
                                 </div>
                                 <div class="col-6 text-success">
-                                    <h4 class="font-weight-bold">2022-3-3</h4>
+                                    <h4 class="font-weight-bold" id="resign_date">2022-3-3</h4>
                                     <span>离职日期</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-                <div class="col-md-8">
 
+                <div class="col-md-8">
                     <div class="card">
                         <div class="card-body">
                             <h6 class="card-title d-flex justify-content-between align-items-center">
                                 基本信息
-                                <a href="modify_worker_basic.html" class="btn btn-outline-light btn-sm">
+                                <a class="btn btn-outline-light btn-sm" onclick="toworkerbasic()">
                                     <i data-feather="edit-2" class="mr-2"></i> 编辑
                                 </a>
                             </h6>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">工作人员ID：</div>
-                                <div class="col-6">777</div>
+                                <div class="col-6" id="id">777</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">性别：</div>
-                                <div class="col-6">男</div>
+                                <div class="col-6" id="gender">男</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">电话:</div>
-                                <div class="col-6">132432</div>
+                                <div class="col-6" id="phone">132432</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">身份证号:</div>
-                                <div class="col-6">7777777</div>
+                                <div class="col-6" id="id_card">7777777</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">出生日期:</div>
-                                <div class="col-6">1995-6-30</div>
+                                <div class="col-6" id="birthday">1995-6-30</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">图像目录：</div>
-                                <div class="col-6">xxx</div>
+                                <div class="col-6" id="imgset_dir">xxx</div>
                             </div>
                         </div>
                     </div>
@@ -376,27 +364,27 @@
                             </h6>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">是否有效：</div>
-                                <div class="col-6">是</div>
+                                <div class="col-6" id="ISACTIVE">是</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">创建时间：</div>
-                                <div class="col-6">2020/6/30</div>
+                                <div class="col-6" id="CREATED">2020/6/30</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">创建人：</div>
-                                <div class="col-6">xxx</div>
+                                <div class="col-6" id="CREATEDBY">xxx</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">更新时间：</div>
-                                <div class="col-6">2020/6/30</div>
+                                <div class="col-6" id="UPDATED">2020/6/30</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">更新人：</div>
-                                <div class="col-6">xxx</div>
+                                <div class="col-6" id="UPDATEDBY">xxx</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">删除标志：</div>
-                                <div class="col-6">1</div>
+                                <div class="col-6" id="REMOVE">1</div>
                             </div>
                         </div>
                     </div>
@@ -413,19 +401,48 @@
     <!-- begin::footer -->
     <footer>
         <div class="container">
-            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a></div>
+            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a
+                    href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a>
+            </div>
         </div>
     </footer>
     <!-- end::footer -->
+    <form id="myform" action="/tomodifyworkerinfo" method="post">
+        <input id="uid" name="uid" value="" style="display: none"/>
+    </form>
 
-</div>
-<!-- end::main -->
+    <!-- end::main -->
+    <!-- Plugin scripts -->
+    <script src="../static/vendors/bundle.js"></script>
 
-<!-- Plugin scripts -->
-<script src="../static/vendors/bundle.js"></script>
+    <!-- App scripts -->
+    <script src="../static/assets/js/app.min.js"></script>
 
-<!-- App scripts -->
-<script src="../static/assets/js/app.min.js"></script>
+    <script>
+        var infoorigin = {{ content|tojson }};
+        var info = eval('(' + infoorigin + ')');
+        console.log(info);
+        document.getElementById("username").innerHTML = info.username
+        document.getElementById("id").innerHTML = info.id
+        document.getElementById("gender").innerHTML = info.gender
+        document.getElementById("DESCRIPTION").innerHTML = info.DESCRIPTION
+        document.getElementById("phone").innerHTML = info.phone
+        document.getElementById("id_card").innerHTML = info.id_card
+        document.getElementById("birthday").innerHTML = info.birthday
+        document.getElementById("CREATED").innerHTML = info.CREATED
+        document.getElementById("CREATEDBY").innerHTML = info.CREATEDBY
+        document.getElementById("ISACTIVE").innerHTML = info.ISACTIVE
+        document.getElementById("REMOVE").innerHTML = info.REMOVE
+        document.getElementById("UPDATED").innerHTML = info.UPDATED
+        document.getElementById("UPDATEDBY").innerHTML = info.UPDATEDBY
+        document.getElementById("imgset_dir").innerHTML = info.imgset_dir
+        document.getElementById("hire_date").innerHTML = info.hire_date
+        document.getElementById("resign_date").innerHTML = info.resign_date
 
+        function toworkerbasic() {
+            document.getElementById('uid').value = document.getElementById("id").innerHTML;
+            myform.submit();
+        }
+    </script>
 </body>
 </html>
