@@ -179,7 +179,7 @@
                 <li class="nav-item search-form">
                     <div class="row">
                         <div class="col-md-6">
-                                <h4>智慧养老系统后台</h4>
+                            <h4>智慧养老系统后台</h4>
                         </div>
                     </div>
                 </li>
@@ -290,7 +290,8 @@
                 <div class="col-md-12">
 
                     <div class="card card-body p-0 overflow-hidden">
-                        <div class="page-header page-header-cover p-t-b-40 mb-0" data-backround-image="../static/assets/media/image/image1.png">
+                        <div class="page-header page-header-cover p-t-b-40 mb-0"
+                             data-backround-image="../static/assets/media/image/image1.png">
                             <div class="container">
                                 <div class="row d-flex justify-content-center">
                                     <div class="col-md-6">
@@ -298,26 +299,28 @@
 
                                         <form>
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control" aria-label="Example text with button addon" placeholder="请输入要查找的工作人员姓名..." aria-describedby="button-addon1" id="key" onkeydown="onSearch(this)">
-                                    <script type="text/javascript">
-                                    function onSearch(obj){//js函数开始
-                                        setTimeout(function(){//因为是即时查询，需要用setTimeout进行延迟，让值写入到input内，再读取
-                                            var storeId = document.getElementById('table-worker');//获取table的id标识
-                                            var rowsLength = storeId.rows.length;//表格总共有多少行
-                                            var key = obj.value;//获取输入框的值
-                                            var searchCol = 1;//要搜索的哪一列，这里是第一列，从0开始数起
-                                            for(var i=1;i<rowsLength;i++){//按表的行数进行循环，本例第一行是标题，所以i=1，从第二行开始筛选（从0数起）
-                                                var searchText = storeId.rows[i].cells[searchCol].innerHTML;//取得table行，列的值
-                                                if(searchText.match(key)){//用match函数进行筛选，如果input的值，即变量 key的值为空，返回的是ture，
-                                                storeId.rows[i].style.display='';//显示行操作，
-                                                }
-                                                else{
-                                                        storeId.rows[i].style.display='none';//隐藏行操作
-                                                }
-                                            }
-                                        },200);//200为延时时间
-                                    }
-                                    </script>
+                                                <input type="text" class="form-control"
+                                                       aria-label="Example text with button addon"
+                                                       placeholder="请输入要查找的工作人员姓名..." aria-describedby="button-addon1"
+                                                       id="key" onkeydown="onSearch(this)">
+                                                <script type="text/javascript">
+                                                    function onSearch(obj) {//js函数开始
+                                                        setTimeout(function () {//因为是即时查询，需要用setTimeout进行延迟，让值写入到input内，再读取
+                                                            var storeId = document.getElementById('table-worker');//获取table的id标识
+                                                            var rowsLength = storeId.rows.length;//表格总共有多少行
+                                                            var key = obj.value;//获取输入框的值
+                                                            var searchCol = 1;//要搜索的哪一列，这里是第一列，从0开始数起
+                                                            for (var i = 1; i < rowsLength; i++) {//按表的行数进行循环，本例第一行是标题，所以i=1，从第二行开始筛选（从0数起）
+                                                                var searchText = storeId.rows[i].cells[searchCol].innerHTML;//取得table行，列的值
+                                                                if (searchText.match(key)) {//用match函数进行筛选，如果input的值，即变量 key的值为空，返回的是ture，
+                                                                    storeId.rows[i].style.display = '';//显示行操作，
+                                                                } else {
+                                                                    storeId.rows[i].style.display = 'none';//隐藏行操作
+                                                                }
+                                                            }
+                                                        }, 200);//200为延时时间
+                                                    }
+                                                </script>
                                             </div>
                                         </form>
 
@@ -341,7 +344,7 @@
                                         <th scope="col"></th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="workerbody">
                                     <tr>
                                         <td>1</td>
                                         <td>李哥</td>
@@ -349,8 +352,10 @@
                                         <td>1111</td>
 
                                         <td>
-                                            <button type="button" class="btn btn-danger btn-floating" data-toggle="modal" data-target="#delete-verify" data-whatever="@fat">
-                                                    <i class="ti-trash"></i>
+                                            <button type="button" class="btn btn-danger btn-floating"
+                                                    data-toggle="modal" data-target="#delete-verify"
+                                                    data-whatever="@fat">
+                                                <i class="ti-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
@@ -361,8 +366,10 @@
                                         <td>2221</td>
 
                                         <td>
-                                            <button type="button" class="btn btn-danger btn-floating" data-toggle="modal" data-target="#delete-verify" data-whatever="@fat">
-                                                    <i class="ti-trash"></i>
+                                            <button type="button" class="btn btn-danger btn-floating"
+                                                    data-toggle="modal" data-target="#delete-verify"
+                                                    data-whatever="@fat">
+                                                <i class="ti-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
@@ -373,8 +380,10 @@
                                         <td>3331</td>
 
                                         <td>
-                                            <button type="button" class="btn btn-danger btn-floating" data-toggle="modal" data-target="#delete-verify" data-whatever="@fat">
-                                                    <i class="ti-trash"></i>
+                                            <button type="button" class="btn btn-danger btn-floating"
+                                                    data-toggle="modal" data-target="#delete-verify"
+                                                    data-whatever="@fat">
+                                                <i class="ti-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
@@ -393,41 +402,44 @@
     </div>
     <!-- end::main-content -->
 
-<!-- modal -->
-<div class="modal fade" id="delete-verify" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">删除信息验证</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <i class="ti-close"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label">请输入删除标志：</label>
-            <input type="text" class="form-control" id="recipient-name">
-          </div>
-          <div class="modal-footer">
-             <button type="button" class="btn btn-secondary" data-dismiss="modal">取消
-             </button>
-             <button type="button" class="btn btn-primary">确定</button>
-          </div>
-         </form>
-       </div>
-     </div>
-  </div>
-</div>
+    <!-- modal -->
+    <div class="modal fade" id="delete-verify" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">删除信息验证</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="ti-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">请输入删除标志：</label>
+                            <input type="text" class="form-control" id="recipient-name">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消
+                            </button>
+                            <button type="button" class="btn btn-primary">确定</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- begin::footer -->
     <footer>
         <div class="container">
-            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a></div>
+            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a>
+            </div>
         </div>
     </footer>
     <!-- end::footer -->
-
+    <form id="myform" action="/dele" method="post">
+        <input id="uid" name="uid" value="" style="display: none"/>
+    </form>
 </div>
 <!-- end::main -->
 
@@ -436,6 +448,34 @@
 
 <!-- App scripts -->
 <script src="../static/assets/js/app.min.js"></script>
+<script>
+    var infoorigin = {{ info|tojson }};
+    var info = eval('(' + infoorigin + ')');
+    console.log(info)
+    var tableData = "";
 
+    for (var i = 0; i < info.length; i++) {
+        tableData += "<tr>";
+        tableData += "<td>" + info[i].id + "</td>";
+        tableData += "<td>" + info[i].username + "</td>";
+        tableData += "<td>" + info[i].gender + "</td>";
+        tableData += "<td>" + info[i].phone + "</td>";
+        tableData += "<td>\n" +
+            "                                                <button type=\"button\" class=\"btn btn-outline-primary\" onclick=\"submittable(this)\">删除</button>\n" +
+            "                                            </a>\n" +
+            "                                        </td>";
+        tableData += "</tr>";
+    }
+
+    $("#workerbody").html(tableData);
+
+    function submittable(x) {
+        var i = x.parentNode.parentNode.rowIndex
+        var table = document.getElementById('table-worker')
+        var id = table.rows[i].cells[0].innerHTML
+        document.getElementById('uid').value = id;
+        myform.submit();
+    }
+</script>
 </body>
 </html>

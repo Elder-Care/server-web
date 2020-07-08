@@ -478,7 +478,7 @@ def tomodifyworker():
     for x in s:
         info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'phone': x[3]})
     info = json.dumps(info)
-    return render_template('/htmls/modify_worker.html')
+    return render_template('/htmls/modify_worker.html', info=info)
 
 
 @app.route('/toanalyzeworker', methods=['GET', 'POST'])
@@ -504,7 +504,7 @@ def tomodifyvolunteer():
     for x in s:
         info.append({'id': x[0], 'name': x[1], 'gender': x[2], 'phone': x[3]})
     info = json.dumps(info)
-    return render_template('/htmls/modify_volunteer.html')
+    return render_template('/htmls/modify_volunteer.html', info=info)
 
 
 @app.route('/toanalyzevolunteer', methods=['GET', 'POST'])
@@ -701,7 +701,13 @@ def delo():
     global conn
     if del_elder(conn, uid):
         content = "删除成功"
-        return render_template('delo.html', content=content)
+        table_name = 'oldperson_info'
+        s = select(conn, table_name, "")
+        info = []
+        for x in s:
+            info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'roomnum': x[10]})
+        info = json.dumps(info)
+        return render_template('/htmls/modify_old.html', info=info)
     else:
         content = "该id不存在"
         return render_template('delo.html', content=content)
@@ -790,7 +796,13 @@ def dele():
     global conn
     if del_employee(conn, uid):
         content = "删除成功"
-        return render_template('dele.html', content=content)
+        table_name = 'employee_info'
+        s = select(conn, table_name, "")
+        info = []
+        for x in s:
+            info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'phone': x[3]})
+        info = json.dumps(info)
+        return render_template('/htmls/modify_worker.html', info=info)
     else:
         content = "该id不存在"
         return render_template('dele.html', content=content)
@@ -843,7 +855,13 @@ def delv():
     global conn
     if del_volunteer(conn, uid):
         content = "删除成功"
-        return render_template('delv.html', content=content)
+        table_name = 'volunteer_info'
+        s = select(conn, table_name, "")
+        info = []
+        for x in s:
+            info.append({'id': x[0], 'name': x[1], 'gender': x[2], 'phone': x[3]})
+        info = json.dumps(info)
+        return render_template('/htmls/modify_volunteer.html', info=info)
     else:
         content = "该id不存在"
         return render_template('delv.html', content=content)
