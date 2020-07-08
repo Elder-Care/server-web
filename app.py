@@ -695,10 +695,10 @@ def selo():
     id = form.get('id')
     content = sel_old(conn, id)
     if content:
-        return render_template('/htmls/old_info.html', content=content)
+        return render_template('/htmls/old_info.html', info=content)
     else:
         content = '该用户不存在'
-        return render_template('/htmls/select_old.html', content=content)
+        return render_template('/htmls/select_old.html', info=content)
 
 
 @app.route('/selv', methods=['GET', 'POST'])
