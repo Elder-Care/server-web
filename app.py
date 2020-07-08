@@ -451,7 +451,14 @@ def tomodifyold():
 
 @app.route('/toanalyzeold', methods=['GET', 'POST'])
 def toanalyzeold():
-    return render_template('/htmls/analyze_old.html')
+    table_name = 'oldperson_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'gender': x[2], 'birthday': x[5], 'checkin_date': x[6], 'checkout_date': x[7]})
+    info = json.dumps(info)
+    print(info, type(info))
+    return render_template('/htmls/analyze_old.html', info=info)
 
 
 @app.route('/toaddworker', methods=['GET', 'POST'])
@@ -471,7 +478,14 @@ def tomodifyworker():
 
 @app.route('/toanalyzeworker', methods=['GET', 'POST'])
 def toanalyzeworker():
-    return render_template('/htmls/analyze_worker.html')
+    table_name = 'employee_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'gender': x[2],'birthday': x[5], 'hire_date': x[6], 'resign_date': x[7]})
+    info = json.dumps(info)
+    print(info, type(info))
+    return render_template('/htmls/analyze_worker.html', info=info)
 
 
 @app.route('/toaddvolunteer', methods=['GET', 'POST'])
@@ -491,7 +505,14 @@ def tomodifyvolunteer():
 
 @app.route('/toanalyzevolunteer', methods=['GET', 'POST'])
 def toanalyzevolunteer():
-    return render_template('/htmls/analyze_volunteer.html')
+    table_name = 'volunteer_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'gender': x[2],'birthday': x[5], 'checkin_date': x[6], 'checkout_date': x[7]})
+    info = json.dumps(info)
+    print(info, type(info))
+    return render_template('/htmls/analyze_volunteer.html', info=info)
 
 
 @app.route('/tooldtable', methods=['GET', 'POST'])
