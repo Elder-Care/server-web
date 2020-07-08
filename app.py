@@ -5,10 +5,92 @@ import os
 import random
 import cv2
 import bodydetect
+import json
 
 app = Flask(__name__)
 conn = sqlite3.connect('old_care.sqlite', check_same_thread=False)
 cur_id = 0
+
+
+class VideoCamera1(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        bodydetect.detect_fall(image)
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera2(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture('./camera2.mp4')
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera3(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera4(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+
+class VideoCamera5(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
+
+    def __del__(self):
+        self.video.release()
+
+    def get_frame(self):
+        success, image = self.video.read()
+        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
+        # so we must encode it into JPEG in order to correctly display the
+        # video stream.
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
 
 
 class camera(object):
@@ -23,6 +105,19 @@ class camera(object):
         success, image = self.video.read()
         ret, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
+
+
+def gen(camera):
+    while True:
+        frame = camera.get_frame()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
+
+@app.route('/video_feed1')
+def video_feed1():
+    return Response(gen(VideoCamera1()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 def columns(table_name):
@@ -117,14 +212,15 @@ def login(conn, name, password):
         return 1
 
 
-def zhuce(conn, name, password):
+def zhuce(conn, info):
     # 用户注册
     table_name = 'sys_user'
-    where = 'UserName = \'' + name + '\''
+    where = 'UserName = \'' + info['UserName'] + '\''
     l = select(conn, table_name, where)
     if len(l) == 0:
         t = time.strftime('%Y-%m-%d', time.localtime())
-        value = {'UserName': name, 'Password': password, 'CREATED': t}
+        value = info
+        value['CREATED'] = str(t)
         insert(conn, table_name, value)
         return 1
     else:
@@ -191,13 +287,14 @@ def del_elder(conn, uid):
     return 1
 
 
-def add_employee(conn, name):
+def add_employee(conn, info):
     table_name = 'employee_info'
-    where = 'username = \'' + name + '\''
+    where = 'username = \'' + info['username'] + '\''
     l = select(conn, table_name, where)
     if len(l) == 0:
         t = time.strftime('%Y-%m-%d', time.localtime())
-        value = {'username': name, 'CREATED': t}
+        value = info
+        value['CREATED'] = str(t)
         insert(conn, table_name, value)
         return 1
     else:
@@ -225,13 +322,14 @@ def del_employee(conn, uid):
     return 1
 
 
-def add_volunteer(conn, name):
+def add_volunteer(conn, info):
     table_name = 'volunteer_info'
-    where = 'name = \'' + name + '\''
+    where = 'name = \'' + info['name'] + '\''
     l = select(conn, table_name, where)
     if len(l) == 0:
         t = time.strftime('%Y-%m-%d', time.localtime())
-        value = {'name': name, 'CREATED': t}
+        value = info
+        value['CREATED'] = str(t)
         insert(conn, table_name, value)
         return 1
     else:
@@ -259,9 +357,56 @@ def del_volunteer(conn, uid):
     return 1
 
 
+def sel_old(conn, id):
+    table_name = 'oldperson_info'
+    where = 'id = \'' + id + '\''
+    s = select(conn, table_name, where)
+    info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
+            'profile_photo': s[0][9], 'room_number': s[0][10], 'firstguardian_name': s[0][11],
+            'firstguardian_relationship': s[0][12], 'firstguardian_phone': s[0][13], 'firstguardian_wechat': s[0][14],
+            'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16], ' secondguardian_phone': s[0][17]
+        , 'secondguardian_wechat': s[0][18], 'health_state': s[0][19], 'DESCRIPTION': s[0][20], 'ISACTIVE': s[0][21],
+            'CREATED': s[0][22], 'CREATEDBY': s[0][23], 'UPDATED': s[0][24]
+        , 'UPDATEDBY': s[0][25], 'REMOVE': s[0][26]}
+    info = json.dumps(info)
+    return info
+
+
+def sel_emp(conn, id):
+    table_name = 'employee_info'
+    where = 'id = \'' + id + '\''
+    s = select(conn, table_name, where)
+    info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
+            'birthday': s[0][5], 'hire_date': s[0][6], 'resign_date': s[0][7], 'imgset_dir': s[0][8],
+            'profile_photo': s[0][9], 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
+            'CREATED': s[0][12], 'CREATEDBY': s[0][13], 'UPDATED': s[0][14]
+        , 'UPDATEDBY': s[0][15], 'REMOVE': s[0][16]}
+    info = json.dumps(info)
+    return info
+
+
+def sel_vol(conn, id):
+    table_name = 'volunteer_info'
+    where = 'id = \'' + id + '\''
+    s = select(conn, table_name, where)
+    info = {'id': s[0][0], 'name': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
+            'profile_photo': s[0][9], 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
+            'CREATED': s[0][12], 'CREATEDBY': s[0][13], 'UPDATED': s[0][14]
+        , 'UPDATEDBY': s[0][15], 'REMOVE': s[0][16]}
+    info = json.dumps(info)
+    return info
+
+
 @app.route('/')
 def login1():
     return render_template('/htmls/login.html')
+
+
+@app.route('/toregister', methods=['GET', 'POST'])
+def toregister():
+    return render_template('/htmls/register.html')
 
 
 @app.route('/tomodifypassword')
@@ -306,7 +451,14 @@ def tomodifyold():
 
 @app.route('/toanalyzeold', methods=['GET', 'POST'])
 def toanalyzeold():
-    return render_template('/htmls/analyze_old.html')
+    table_name = 'oldperson_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'gender': x[2], 'birthday': x[5], 'checkin_date': x[6], 'checkout_date': x[7]})
+    info = json.dumps(info)
+    print(info, type(info))
+    return render_template('/htmls/analyze_old.html', info=info)
 
 
 @app.route('/toaddworker', methods=['GET', 'POST'])
@@ -326,7 +478,14 @@ def tomodifyworker():
 
 @app.route('/toanalyzeworker', methods=['GET', 'POST'])
 def toanalyzeworker():
-    return render_template('/htmls/analyze_worker.html')
+    table_name = 'employee_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'gender': x[2],'birthday': x[5], 'hire_date': x[6], 'resign_date': x[7]})
+    info = json.dumps(info)
+    print(info, type(info))
+    return render_template('/htmls/analyze_worker.html', info=info)
 
 
 @app.route('/toaddvolunteer', methods=['GET', 'POST'])
@@ -346,7 +505,14 @@ def tomodifyvolunteer():
 
 @app.route('/toanalyzevolunteer', methods=['GET', 'POST'])
 def toanalyzevolunteer():
-    return render_template('/htmls/analyze_volunteer.html')
+    table_name = 'volunteer_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'gender': x[2],'birthday': x[5], 'checkin_date': x[6], 'checkout_date': x[7]})
+    info = json.dumps(info)
+    print(info, type(info))
+    return render_template('/htmls/analyze_volunteer.html', info=info)
 
 
 @app.route('/tooldtable', methods=['GET', 'POST'])
@@ -367,6 +533,11 @@ def tovolunteertable():
 @app.route('/toeventtable', methods=['GET', 'POST'])
 def toeventtable():
     return render_template('/htmls/event_table.html')
+
+
+@app.route('/tooldinfo', methods=['GET', 'POST'])
+def tooldinfo():
+    return render_template('/htmls/old_info.html')
 
 
 @app.route('/tomanagertable', methods=['GET', 'POST'])
@@ -424,19 +595,22 @@ def signin():
     form = request.form
     username = form.get('username')
     password = form.get('password')
+
     if not username:
         content = "请输入用户名"
-        return render_template('signin.html', content=content)
+        return render_template('/htmls/register.html', content=content)
     if not password:
         content = "请输入密码"
-        return render_template('signin.html', content=content)
+        return render_template('/htmls/register.html', content=content)
     global conn
-    if zhuce(conn, username, password):
+    info = {'UserName': username, 'Password': password, 'REAL_NAME': form.get('REAL_NAME'), 'SEX': form.get('SEX'),
+            'EMAIL': form.get('EMAIL'), 'PHONE': form.get('PHONE'), 'MOBILE': form.get('MOBILE')}
+    if zhuce(conn, info):
         content = "注册成功"
-        return render_template('login.html', content=content)
+        return render_template('/htmls/login.html', content=content)
     else:
         content = "用户名已存在"
-        return render_template('signin.html', content=content)
+        return render_template('/htmls/login.html', content=content)
 
 
 @app.route('/pinfo', methods=['GET', 'POST'])
@@ -536,13 +710,49 @@ def delo():
         return render_template('delo.html', content=content)
 
 
+@app.route('/selo', methods=['GET', 'POST'])
+def selo():
+    form = request.form
+    id = form.get('id')
+    content = sel_old(conn, id)
+    if content:
+        return render_template('/htmls/old_info.html', content=content)
+    else:
+        content = '该用户不存在'
+        return render_template('/htmls/select_old.html', content=content)
+
+
+@app.route('/selv', methods=['GET', 'POST'])
+def selv():
+    form = request.form
+    id = form.get('id')
+    content = sel_vol(conn, id)
+    if content:
+        return render_template('/htmls/volunteer_info.html', content=content)
+    else:
+        content = '该用户不存在'
+        return render_template('/htmls/select_volunteer.html', content=content)
+
+
+@app.route('/sele', methods=['GET', 'POST'])
+def sele():
+    form = request.form
+    id = form.get('id')
+    content = sel_emp(conn, id)
+    if content:
+        return render_template('/htmls/worker_info.html', content=content)
+    else:
+        content = '该用户不存在'
+        return render_template('/htmls/select_worker.html', content=content)
+
+
 @app.route('/adde', methods=['GET', 'POST'])
 def adde():
     # 新增员工
     form = request.form
     if not form.get('username'):
         content = "请输入用户名"
-        return render_template('/htmls/add_volunteer', content=content)
+        return render_template('/htmls/add_worker.html', content=content)
     info = {'username': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
             'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'hire_date': form.get("hire_date"),
@@ -551,10 +761,10 @@ def adde():
     global conn
     if add_employee(conn, info):
         content = "增添成功"
-        return render_template('adde.html', content=content)
+        return render_template('/htmls/index.html', content=content)
     else:
         content = "用户名已存在"
-        return render_template('adde.html', content=content)
+        return render_template('/htmls/index.html', content=content)
 
 
 @app.route('/einfo', methods=['GET', 'POST'])
@@ -593,21 +803,21 @@ def dele():
 def addv():
     # 新增志愿者
     form = request.form
-    if not form.get('username'):
+    if not form.get('name'):
         content = "请输入用户名"
-        return render_template('addv.html', content=content)
-    info = {'name': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
+        return render_template('/htmls/add_volunteer.html', content=content)
+    info = {'name': form.get('name'), 'gender': form.get('gender'), 'phone': form.get('phone'),
             'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
-            'checkout_date': form.get('checkout_date'), 'profile_photo':
-                form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
+            'checkout_date': form.get('checkout_date'), 'imgset_dir':
+                form.get('imgset_dir'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     global conn
     if add_volunteer(conn, info):
         content = "增添成功"
-        return render_template('addv.html', content=content)
+        return render_template('/htmls/index.html', content=content)
     else:
         content = "用户名已存在"
-        return render_template('addv.html', content=content)
+        return render_template('/htmls/index.html', content=content)
 
 
 @app.route('/vinfo', methods=['GET', 'POST'])
@@ -640,6 +850,51 @@ def delv():
     else:
         content = "该id不存在"
         return render_template('delv.html', content=content)
+
+
+@app.route('/reto', methods=['GET', 'POST'])
+def reto():
+    table_name = 'oldperson_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'roomnum': x[10]})
+    info = json.dumps(info)
+    return render_template('/htmls/select_old.html', info=info)
+
+
+@app.route('/rete', methods=['GET', 'POST'])
+def rete():
+    table_name = 'employee_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'phone': x[3]})
+    info = json.dumps(info)
+    return render_template('/htmls/select_worker.html', info=info)
+
+
+@app.route('/retv', methods=['GET', 'POST'])
+def retv():
+    table_name = 'volunteer_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'id': x[0], 'name': x[1], 'gender': x[2], 'phone': x[3]})
+    info = json.dumps(info)
+    return render_template('/htmls/select_volunteer.html', info=info)
+
+
+@app.route('/retev', methods=['GET', 'POST'])
+def retev():
+    table_name = 'event_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'id': x[0], 'event_type': x[1], 'event_date': x[2], 'event_location': x[3], 'event_desc': x[4],
+                     'oldperson_id': x[5]})
+    info = json.dumps(info)
+    return render_template('/htmls/select_event.html', info=info)
 
 
 @app.route('/images', methods=['GET', 'POST'])
@@ -701,15 +956,9 @@ def gen(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-@app.route('/video_feed')
-def video_feed():
-    return Response(gen(camera()),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
 @app.route('/fall', methods=['GET', 'POST'])
 def fall():
-    f = bodydetect.detect_fall('D:\\dasanxxq\\fallimage\\fall-02-cam0-rgb-001.png')
+    f = bodydetect.detect_fall('./pic/test.png')
     if f:
         content = '摔倒'
     else:
