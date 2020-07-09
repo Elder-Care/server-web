@@ -49,7 +49,7 @@
             <img src="../static/assets/media/image/user/1.png" class="rounded-circle" alt="image">
         </figure>
         <div>
-            <h5>杨烁平</h5>
+            <h5 id="sidename">杨烁平</h5>
             <p class="text-muted">管理员</p>
             <ul class="nav">
                 <li class="nav-item">
@@ -613,4 +613,8 @@ $(document).ready(function () {
 </div>
 
 </body>
-</html>
+<script>
+    var realname = document.cookie.split(";")[1].split("=")[1];
+    console.log(realname);
+    document.getElementById("sidename").innerHTML = realname;
+</script></html>

@@ -84,4 +84,8 @@
 <!-- App scripts -->
 <script src="../static/assets/js/app.min.js"></script>
 </body>
-</html>
+<script>
+    var realname = document.cookie.split(";")[1].split("=")[1];
+    console.log(realname);
+    document.getElementById("sidename").innerHTML = realname;
+</script></html>

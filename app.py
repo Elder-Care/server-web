@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response, make_response
+from flask import Flask, render_template, request, Response, make_response, jsonify
 import sqlite3
 import time
 import os
@@ -415,7 +415,6 @@ def tologin1():
 
 @app.route('/toprofile', methods=['GET', 'POST'])
 def toprofile():
-    form = request.form
     id = request.cookies.get('id')
     table_name = 'sys_user'
     where = 'ID = \'' + str(id) + '\''
@@ -598,7 +597,6 @@ def modifyworkerbasic():
             'resign_date': form.get('resign_date'), 'imgset_dir': form.get('imgset_dir'), 'profile_photo':
                 form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     uid = form.get('id')
-    print(info)
     emp_info(conn, uid, info)
     content = sel_emp(conn, uid)
     return render_template('/htmls/worker_info.html', content=content)
@@ -664,7 +662,6 @@ def toanalyzeold():
     for x in s:
         info.append({'gender': x[2], 'birthday': x[5], 'checkin_date': x[6], 'checkout_date': x[7]})
     info = json.dumps(info)
-    print(info, type(info))
     return render_template('/htmls/analyze_old.html', info=info)
 
 
@@ -695,9 +692,8 @@ def toanalyzeworker():
     s = select(conn, table_name, "")
     info = []
     for x in s:
-        info.append({'gender': x[2],'birthday': x[5], 'hire_date': x[6], 'resign_date': x[7]})
+        info.append({'gender': x[2], 'birthday': x[5], 'hire_date': x[6], 'resign_date': x[7]})
     info = json.dumps(info)
-    print(info, type(info))
     return render_template('/htmls/analyze_worker.html', info=info)
 
 
@@ -728,9 +724,8 @@ def toanalyzevolunteer():
     s = select(conn, table_name, "")
     info = []
     for x in s:
-        info.append({'gender': x[2],'birthday': x[5], 'checkin_date': x[6], 'checkout_date': x[7]})
+        info.append({'gender': x[2], 'birthday': x[5], 'checkin_date': x[6], 'checkout_date': x[7]})
     info = json.dumps(info)
-    print(info, type(info))
     return render_template('/htmls/analyze_volunteer.html', info=info)
 
 
@@ -804,6 +799,12 @@ def login0():
     if login(conn, username, password) != 0:
         content = "登录成功"
         userid = login(conn, username, password)
+        id = request.cookies.get('id')
+        table_name = 'sys_user'
+        where = 'ID = \'' + str(userid) + '\''
+        s = select(conn, table_name, where)
+        realname = s[0][3]
+        realname = realname.encode('utf-8').decode('latin-1')
         table_name = 'oldperson_info'
         s = select(conn, table_name, "")
         info = []
@@ -811,8 +812,8 @@ def login0():
             info.append({'checkin_date': x[6], 'checkout_date': x[7]})
         info = json.dumps(info)
         response = make_response(render_template('/htmls/index.html', content=content, info=info))
-
         response.set_cookie('id', str(userid))
+        response.set_cookie('realname', str(realname))
         return response
     else:
         content = "用户名或密码错误"
@@ -1138,6 +1139,67 @@ def retev():
                      'oldperson_id': x[5]})
     info = json.dumps(info)
     return render_template('/htmls/select_event.html', info=info)
+
+
+@app.route('/getallmembers', methods=['GET', 'POST'])
+def getallmembers():
+    table_name = 'oldperson_info'
+    s = select(conn, table_name, "")
+    olds = len(s)
+    table_name = 'employee_info'
+    s = select(conn, table_name, "")
+    workers = len(s)
+    table_name = 'volunteer_info'
+    s = select(conn, table_name, "")
+    volunteers = len(s)
+    return jsonify({'olds': olds, 'workers': workers, 'volunteers': volunteers})
+
+
+@app.route('/getinout', methods=['GET', 'POST'])
+def getinout():
+    table_name = 'oldperson_info'
+    s = select(conn, table_name, "")
+    ms = []
+    ms2 = []
+    oldin = []
+    oldout = []
+    for x in s:
+        if x[6]:
+            m = x[6][0:6]
+            if not m in ms:
+                ms.append(m)
+                ms.sort(reverse=True)
+            oldin[ms.index(m)] += 1
+        if x[7]:
+            m = x[7][0:6]
+            if not m in ms2:
+                ms2.append(m)
+                ms2.sort(reverse=True)
+            oldout[ms2.index(m)] += 1
+    table_name = 'employee_info'
+    s = select(conn, table_name, "")
+    ms3 = []
+    empin = []
+    for x in s:
+        if x[6]:
+            m = x[6][0:6]
+            if not m in ms3:
+                ms3.append(m)
+                ms3.sort(reverse=True)
+            empin[ms3.index(m)] += 1
+    table_name = 'volunteer_info'
+    s = select(conn, table_name, "")
+    ms4 = []
+    volin = []
+    for x in s:
+        if x[6]:
+            m = x[6][0:6]
+            if not m in ms4:
+                ms4.append(m)
+                ms4.sort(reverse=True)
+            volin[ms4.index(m)] += 1
+    inout = [oldin, oldout, empin, volin]
+    return inout
 
 
 @app.route('/images', methods=['GET', 'POST'])
