@@ -12,7 +12,7 @@
     <!-- App styles -->
     <link rel="stylesheet" href="../static/assets/css/app.min.css" type="text/css">
 
-    <link type="text/css" href="../static/assets/css/style.css" rel="stylesheet" />
+    <link type="text/css" href="../static/assets/css/style.css" rel="stylesheet"/>
 </head>
 <body>
 
@@ -123,19 +123,7 @@
                 </ul>
             </li>
             <li class="navigation-divider">系统管理</li>
-            <li>
-                <a href="#">
-                    <i class="nav-link-icon" data-feather="database"></i>
-                    <span>数据管理</span>
-                </a>
-                <ul>
-                    <li><a href="tooldtable">老人信息表</a></li>
-                    <li><a href="toworkertable">工作人员信息表</a></li>
-                    <li><a href="tovolunteertable">义工信息表</a></li>
-                    <li><a href="toeventtable">事件信息表</a></li>
-                    <li><a href="tomanagertable">系统管理员信息表</a></li>
-                </ul>
-            </li>
+
             <li>
                 <a href="#">
                     <i class="nav-link-icon" data-feather="monitor"></i>
@@ -192,7 +180,7 @@
                 <li class="nav-item search-form">
                     <div class="row">
                         <div class="col-md-6">
-                                <h4>智慧养老系统后台</h4>
+                            <h4>智慧养老系统后台</h4>
                         </div>
                     </div>
                 </li>
@@ -287,58 +275,22 @@
 
             <div class="row">
 
-            <!-- begin::page-header -->
-            <div class="page-header">
-                <h4>信息删改</h4>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="#">个人信息管理</a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a href="toprofile">个人信息</a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">信息删改</li>
-                    </ol>
-                </nav>
-            </div>
-            <!-- end::page-header -->
-
-                <div class="col-md-10">
-
-                    <div class="card">
-                        <div class="card-body">
-                            <h6 class="card-title d-flex justify-content-between align-items-center">
-                                原信息
-                            </h6>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">真实姓名：</div>
-                                <div class="col-6">杨烁平</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">性别：</div>
-                                <div class="col-6">男</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">邮箱：</div>
-                                <div class="col-6">xxx@163.com</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">电话:</div>
-                                <div class="col-6">111</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">移动电话:</div>
-                                <div class="col-6">7777777</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">简介:</div>
-                                <div class="col-6">小程序员一枚。现就读于北京交通大学软件学院。</div>
-                            </div>
-                        </div>
-                    </div>
-
+                <!-- begin::page-header -->
+                <div class="page-header">
+                    <h4>信息删改</h4>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="#">个人信息管理</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="toprofile">个人信息</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">信息删改</li>
+                        </ol>
+                    </nav>
                 </div>
+                <!-- end::page-header -->
                 <div class="col-md-12">
 
                     <div class="card">
@@ -348,39 +300,44 @@
                                 <div class="col-md-12">
 
                                     <div class="form">
-                                        <form action="" method="get">
+                                        <form action="/modifyprofile" method="post">
+                                            <input id="uid" name="uid" style="display: none"/>
                                             <div class="item">
                                                 <span>真实姓名：</span>
-                                                <label><input type="text" name="username" placeholder="输入真实姓名" /></label>
+                                                <label><input type="text" name="REAL_NAME" placeholder="输入真实姓名"
+                                                              id="REAL_NAME"/></label>
                                             </div>
                                             <div class="item">
-                                                <span>性&nbsp; &nbsp; &nbsp; &nbsp;别：</span>
-                                                <label><input type="radio" checked name="gender" value="1">男</label>&nbsp;
-                                                <label><input type="radio" name="gender" value="2">女</label>&nbsp;
-                                                <label><input type="radio" name="gender" value="0" disabled />人妖</label>
+                                                <span>性别：</span>
+                                                <label> <input type="text" placeholder="请输入性别"
+                                                               name="SEX" id="SEX"/></label>
                                             </div>
                                             <div class="item">
-                                                <span>邮&nbsp; &nbsp; &nbsp; &nbsp;箱：</span>
-                                                <label><input type="email" placeholder="输入邮箱" /></label>
+                                                <span>邮箱：</span>
+                                                <label><input type="email" placeholder="输入邮箱" id="EMAIL" name="EMAIL"/></label>
                                                 <small id="emailHelp" class="form-text text-muted">我们不会和任何人分享您的邮箱信息。
                                                 </small>
                                             </div>
                                             <div class="item">
-                                                <span>电&nbsp; &nbsp; &nbsp; &nbsp;话：</span>
-                                                <label><input type="text" name="username" placeholder="输入您的电话号码" /></label>
+                                                <span>电话：</span>
+                                                <label><input type="text" name="PHONE"
+                                                              placeholder="输入您的电话号码" id="PHONE"/></label>
                                             </div>
                                             <div class="item">
                                                 <span>移动电话：</span>
-                                                <label><input type="text" name="username" placeholder="输入您的移动电话号码" /></label>
+                                                <label><input type="text" name="MOBILE"
+                                                              placeholder="输入您的移动电话号码" id="MOBILE"/></label>
                                             </div>
                                             <div class="item">
                                                 <span>简介：</span>
-                                                <label><textarea name="message" placeholder="个人简介" class="width"></textarea></label>
+                                                <label><input type="text" name="DESCRIPTION" placeholder="个人简介"
+                                                              class="width" id="DESCRIPTION"/></label>
                                             </div>
                                             <div class="item">
                                                 <span></span>
-                                                <label><button type="submit">提交</button></label>
-                                                <label><button type="reset">重置</button></label>
+                                                <label>
+                                                    <button type="submit">提交</button>
+                                                </label>
                                             </div>
                                         </form>
 
@@ -402,7 +359,8 @@
     <!-- begin::footer -->
     <footer>
         <div class="container">
-            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a></div>
+            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a>
+            </div>
         </div>
     </footer>
     <!-- end::footer -->
@@ -418,5 +376,16 @@
 
 <script type="text/javascript" src="../static/assets/js/jquery.min.js"></script>
 <script type="text/javascript" src="../static/assets/js/jquery.form.js"></script>
+<script>
+    var info = {{ info|tojson }};
+    console.log(info);
+    document.getElementById("uid").value = info.ID
+    document.getElementById("SEX").value = info.SEX
+    document.getElementById("DESCRIPTION").value = info.DESCRIPTION
+    document.getElementById("PHONE").value = info.PHONE
+    document.getElementById("MOBILE").value = info.MOBILE
+    document.getElementById("REAL_NAME").value = info.REAL_NAME
+    document.getElementById("EMAIL").value = info.EMAIL
+</script>
 </body>
 </html>

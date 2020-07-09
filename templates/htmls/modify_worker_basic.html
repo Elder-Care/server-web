@@ -12,61 +12,102 @@
     <!-- App styles -->
     <link rel="stylesheet" href="../static/assets/css/app.min.css" type="text/css">
 
-<link href="../static/assets/css/bootstrap-fileinput.css" rel="stylesheet">
+    <link href="../static/assets/css/bootstrap-fileinput.css" rel="stylesheet">
 
-<style>
-body{padding:0;margin:0 10px;}
-.title{padding:0;margin:10px 0;font:700 18px/1.5 \5fae\8f6f\96c5\9ed1;text-align:center;}
-.title a{font:400 14px/1.5 Tahoma;margin-left:20px;}
-.example{position:absolute;top:150px;left:50%;margin-left:-275px;font-size:12px;}
-.example .item{border:1px solid #85BEE5;}
-.example input{color:#404040;padding:3px;width:170px;height:18px;line-height:18px;border:1px solid #AFAFAF;font:12px/18px Arial;}
-.example button{margin-right:50px;}
-.checkie6{padding:3px;width:178px;border:1px solid #AFAFAF;font:12px/1.5 Arial;}
-</style>  
-<script src="../static/vendors/datepicker/yui-min.js"></script>
-<script>
-YUI({
-    modules: {
-        'trip-calendar': {
-            fullpath: '../static/vendors/datepicker/trip-calendar.js',
-            type    : 'js',
-            requires: ['trip-calendar-css']
-        },
-        'trip-calendar-css': {
-            fullpath: '../static/vendors/datepicker/trip-calendar.css',
-            type    : 'css'
+    <style>
+        body {
+            padding: 0;
+            margin: 0 10px;
         }
-    }
-}).use('trip-calendar', function(Y) {
 
-    /**
-     * 弹出式日历实例
-     * 将日历与指定的触发元素绑定
-     * 日历可根据浏览器窗口大小，自动调整显示位置
-     */
-    var oCal = new Y.TripCalendar({
-        //绑定日历的节点，支持选择器模式，可批量设置（必选）
-        triggerNode: '.J_Item, #J_Item-1, #J_Item-2, button, .J_Link'
-    });
-    
-    oCal.on('dateclick', function(e) {
-        this.getCurrentNode().setAttribute('data-date', e.date);
-    });
-    
-    //显示日历时自定义事件
-    oCal.on('show', function() {
-        var v = this.getCurrentNode().getAttribute('data-date');
-        this.set('date', v || new Date);
-        this.set('selectedDate', v).render();
-    });
-    
-    //解决chrome的foucs事件bug
-    Y.on('click', function(e) {
-        e.currentTarget.focus();
-    }, '.J_Item, button, .J_Link');
-});
-</script>
+        .title {
+            padding: 0;
+            margin: 10px 0;
+            font: 700 18px/1.5 \5fae\8f6f\96c5\9ed1;
+            text-align: center;
+        }
+
+        .title a {
+            font: 400 14px/1.5 Tahoma;
+            margin-left: 20px;
+        }
+
+        .example {
+            position: absolute;
+            top: 150px;
+            left: 50%;
+            margin-left: -275px;
+            font-size: 12px;
+        }
+
+        .example .item {
+            border: 1px solid #85BEE5;
+        }
+
+        .example input {
+            color: #404040;
+            padding: 3px;
+            width: 170px;
+            height: 18px;
+            line-height: 18px;
+            border: 1px solid #AFAFAF;
+            font: 12px/18px Arial;
+        }
+
+        .example button {
+            margin-right: 50px;
+        }
+
+        .checkie6 {
+            padding: 3px;
+            width: 178px;
+            border: 1px solid #AFAFAF;
+            font: 12px/1.5 Arial;
+        }
+    </style>
+    <script src="../static/vendors/datepicker/yui-min.js"></script>
+    <script>
+        YUI({
+            modules: {
+                'trip-calendar': {
+                    fullpath: '../static/vendors/datepicker/trip-calendar.js',
+                    type: 'js',
+                    requires: ['trip-calendar-css']
+                },
+                'trip-calendar-css': {
+                    fullpath: '../static/vendors/datepicker/trip-calendar.css',
+                    type: 'css'
+                }
+            }
+        }).use('trip-calendar', function (Y) {
+
+            /**
+             * 弹出式日历实例
+             * 将日历与指定的触发元素绑定
+             * 日历可根据浏览器窗口大小，自动调整显示位置
+             */
+            var oCal = new Y.TripCalendar({
+                //绑定日历的节点，支持选择器模式，可批量设置（必选）
+                triggerNode: '.J_Item, #J_Item-1, #J_Item-2, button, .J_Link'
+            });
+
+            oCal.on('dateclick', function (e) {
+                this.getCurrentNode().setAttribute('data-date', e.date);
+            });
+
+            //显示日历时自定义事件
+            oCal.on('show', function () {
+                var v = this.getCurrentNode().getAttribute('data-date');
+                this.set('date', v || new Date);
+                this.set('selectedDate', v).render();
+            });
+
+            //解决chrome的foucs事件bug
+            Y.on('click', function (e) {
+                e.currentTarget.focus();
+            }, '.J_Item, button, .J_Link');
+        });
+    </script>
 </head>
 <body>
 
@@ -177,19 +218,7 @@ YUI({
                 </ul>
             </li>
             <li class="navigation-divider">系统管理</li>
-            <li>
-                <a href="#">
-                    <i class="nav-link-icon" data-feather="database"></i>
-                    <span>数据管理</span>
-                </a>
-                <ul>
-                    <li><a href="tooldtable">老人信息表</a></li>
-                    <li><a href="toworkertable">工作人员信息表</a></li>
-                    <li><a href="tovolunteertable">义工信息表</a></li>
-                    <li><a href="toeventtable">事件信息表</a></li>
-                    <li><a href="tomanagertable">系统管理员信息表</a></li>
-                </ul>
-            </li>
+
             <li>
                 <a href="#">
                     <i class="nav-link-icon" data-feather="monitor"></i>
@@ -246,7 +275,7 @@ YUI({
                 <li class="nav-item search-form">
                     <div class="row">
                         <div class="col-md-6">
-                                <h4>智慧养老系统后台</h4>
+                            <h4>智慧养老系统后台</h4>
                         </div>
                     </div>
                 </li>
@@ -357,57 +386,8 @@ YUI({
             <!-- end::page-header -->
 
             <div class="row">
-                <div class="col-md-10">
 
-                    <div class="card">
-                        <div class="card-body">
-                            <h6 class="card-title d-flex justify-content-between align-items-center">
-                                原信息
-                            </h6>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">姓名：</div>
-                                <div class="col-6">小李</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">性别：</div>
-                                <div class="col-6">男</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">电话:</div>
-                                <div class="col-6">132432</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">身份证号:</div>
-                                <div class="col-6">7777777</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">出生日期:</div>
-                                <div class="col-6">1995-6-30</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">入职日期:</div>
-                                <div class="col-6">2018-3-3</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">离职日期:</div>
-                                <div class="col-6">2022-3-3</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">图像目录:</div>
-                                <div class="col-6">xxx</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">头像路径:</div>
-                                <div class="col-6">xxx</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">描述:</div>
-                                <div class="col-6">家住在养老院附近。</div>
-                            </div>
-                        </div>
-                    </div>
 
-                </div>
                 <div class="col-md-12">
 
                     <div class="card">
@@ -417,91 +397,96 @@ YUI({
 
                             <div class="row">
                                 <div class="col-md-8">
-                                    <form>
+                                    <form action="/modifyworkerbasic" method="post">
+                                        <input id="id" name="id" style="display: none"/>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">姓名</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" placeholder="请输入工作人员姓名">
+                                                <input type="text" class="form-control" placeholder="请输入工作人员姓名"
+                                                       id="username" name="username">
                                             </div>
                                         </div>
-                                <fieldset class="form-group">
-                                    <div class="row">
-                                        <div class="col-form-label col-sm-4 pt-0">性别</div>
-                                        <div class="col-sm-8">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
-                                                <label class="form-check-label" for="gridRadios1">
-                                                    男
-                                                </label>
+                                        <fieldset class="form-group">
+                                            <div class="row">
+                                                <div class="col-form-label col-sm-4 pt-0">性别</div>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" placeholder="请输入性别"
+                                                           name="gender" id="gender">
+                                                </div>
                                             </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
-                                                <label class="form-check-label" for="gridRadios2">
-                                                    女
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </fieldset>
+                                        </fieldset>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">电话</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" placeholder="请输入电话号码">
+                                                <input type="text" class="form-control" placeholder="请输入电话号码" id="phone"
+                                                       name="phone">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">身份证号</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" placeholder="请输入身份证号">
+                                                <input type="text" class="form-control" placeholder="请输入身份证号"
+                                                       id="id_card" name="id_card">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">出生日期</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="J_Item" autocomplete="off" />
+                                                <input type="text" class="J_Item" autocomplete="off" id="birthday"
+                                                       name="birthday"/>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">入职日期</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="J_Item" autocomplete="off" />
+                                                <input type="text" class="J_Item" autocomplete="off" name="hire_date"
+                                                       id="hire_date"/>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">离职日期</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="J_Item" autocomplete="off" />
+                                                <input type="text" class="J_Item" autocomplete="off" name="resign_date"
+                                                       id="resign_date"/>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">图像目录</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" placeholder="请输入图像目录">
+                                                <input type="text" class="form-control" placeholder="请输入图像目录"
+                                                       name="imgset_dir" id="imgset_dir">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">头像路径</label>
                                             <div class="col-sm-8">
-                <div class="fileinput fileinput-new" data-provides="fileinput"  id="exampleInputUpload">
-                    <div class="fileinput-new thumbnail" style="width: 200px;height: auto;max-height:150px;">
-                        <img id='picImg' style="width: 100%;height: auto;max-height: 140px;" src="../static/assets/media/images/noimage.png" alt="" />
-                    </div>
-                    <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>
-                    <div>
+                                                <div class="fileinput fileinput-new" data-provides="fileinput"
+                                                     id="exampleInputUpload">
+                                                    <div class="fileinput-new thumbnail"
+                                                         style="width: 200px;height: auto;max-height:150px;">
+                                                        <img id='picImg'
+                                                             style="width: 100%;height: auto;max-height: 140px;"
+                                                             src="../static/assets/media/images/noimage.png" alt=""/>
+                                                    </div>
+                                                    <div class="fileinput-preview fileinput-exists thumbnail"
+                                                         style="max-width: 200px; max-height: 150px;"></div>
+                                                    <div>
                         <span class="btn btn-primary btn-file">
                             <span class="fileinput-new">选择文件</span>
                             <span class="fileinput-exists">换一张</span>
-                            <input type="file" name="pic1" id="picID" accept="image/gif,image/jpeg,image/x-png">
+                            <input type="file" name="pic1" id="profile_photo" accept="image/gif,image/jpeg,image/x-png">
                         </span>
-                        <a href="javascript:;" class="btn btn-warning fileinput-exists" data-dismiss="fileinput">移除</a>
-                    </div>
-                </div>
+                                                        <a href="javascript:;" class="btn btn-warning fileinput-exists"
+                                                           data-dismiss="fileinput">移除</a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">描述</label>
                                             <div class="col-sm-8">
-                                                <textarea class="form-control" rows="3" placeholder="请输入描述内容"></textarea>
+                                                <input type="text" class="form-control"
+                                                       placeholder="请输入描述内容" name="DESCRIPTION" id="DESCRIPTION"/>
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary">修改信息</button>
@@ -524,7 +509,8 @@ YUI({
     <!-- begin::footer -->
     <footer>
         <div class="container">
-            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a></div>
+            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a>
+            </div>
         </div>
     </footer>
     <!-- end::footer -->
@@ -541,5 +527,21 @@ YUI({
 
 <script src="../static/assets/js/jquery.min.js"></script>
 <script src="../static/assets/js/bootstrap-fileinput.js"></script>
+<script>
+    var infoorigin = {{ info|tojson }};
+    var info = eval('(' + infoorigin + ')');
+    console.log(info);
+    document.getElementById("id").value = info.id
+    document.getElementById("gender").value = info.gender
+    document.getElementById("username").value = info.username
+    document.getElementById("phone").value = info.phone
+    document.getElementById("id_card").value = info.id_card
+    document.getElementById("birthday").value = info.birthday
+    document.getElementById("hire_date").value = info.hire_date
+    document.getElementById("resign_date").value = info.resign_date
+    document.getElementById("imgset_dir").value = info.imgset_dir
+    document.getElementById("DESCRIPTION").value = info.DESCRIPTION
+
+</script>
 </body>
 </html>
