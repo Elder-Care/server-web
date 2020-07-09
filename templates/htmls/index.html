@@ -418,6 +418,34 @@
 </div>
 <!-- end::main -->
 
+<script>
+    var info = {{ info|safe }};
+    console.log(info);
+
+    var twentyNineteen = ["-07-","-08-","-09-","-10-","-11-","-12-"];
+    var twentyNineteen_enter_number = [0,0,0,0,0,0];
+    var twentyNineteen_out_number = [0,0,0,0,0,0];
+
+    for(i in info){
+
+        for (j in twentyNineteen){
+            if (info[i]['checkin_date']!=null && info[i]['checkin_date'].indexOf(twentyNineteen[j]) !== -1 && info[i]['checkin_date'].indexOf("2019") !== -1){
+                twentyNineteen_enter_number[j]+=1;
+                break;
+            }
+            if (info[i]['checkout_date']!=null && info[i]['checkout_date'].indexOf(twentyNineteen[j]) !== -1 && info[i]['checkout_date'].indexOf("2019") !== -1){
+                twentyNineteen_out_number[j]+=1;
+                break;
+            }
+        }
+
+    }
+
+    console.log(twentyNineteen_enter_number);
+    console.log(twentyNineteen_out_number);
+
+</script>
+
 <!-- Plugin scripts -->
 <script src="../static/vendors/bundle.js"></script>
 
@@ -456,25 +484,25 @@ $(document).ready(function () {
                     label: "入院",
                     type: "line",
                     borderColor: colors.warning,
-                    data: [4,44,22,111,22,1],
+                    data: twentyNineteen_enter_number,
                     fill: false
                 }, {
                     label: "出院",
                     type: "line",
                     borderColor: colors.success,
-                    data: [0,43,21,12,91,4],
+                    data: twentyNineteen_out_number,
                     fill: false
                 }, {
                     label: "入院",
                     type: "bar",
                     backgroundColor: colors.secondary,
-                    data: [4,44,22,111,22,1],
+                    data: twentyNineteen_enter_number
                 }, {
                     label: "出院",
                     type: "bar",
                     backgroundColor: colors.primary,
                     backgroundColorHover: "#3e95cd",
-                    data: [0,43,21,12,91,4]
+                    data: twentyNineteen_out_number
                 }
                 ]
             },
