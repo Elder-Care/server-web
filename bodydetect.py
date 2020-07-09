@@ -25,7 +25,7 @@ def getOutputsNames(net):
 
 
 # 绘制预测框
-def drawPred(frame,classId, conf, left, top, right, bottom):
+def drawPred(frame, classId, conf, left, top, right, bottom):
     # 绘制框体
 
     cv.rectangle(frame, (left, top), (right, bottom), (255, 178, 50), 3)
@@ -43,8 +43,6 @@ def drawPred(frame,classId, conf, left, top, right, bottom):
     cv.rectangle(frame, (left, top - round(1.5 * labelSize[1])), (left + round(1.5 * labelSize[0]), top + baseLine),
                  (255, 255, 255), cv.FILLED)
     cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 0), 1)
-
-
 
 
 # Remove the bounding boxes with low confidence using non-maxima suppression
@@ -83,7 +81,7 @@ def postprocess(frame, outs):
         top = box[1]
         width = box[2]
         height = box[3]
-        drawPred(frame,classIds[i], confidences[i], left, top, left + width, top + height)
+        drawPred(frame, classIds[i], confidences[i], left, top, left + width, top + height)
 
     for i in classIds:
         if i == 1:
@@ -92,49 +90,26 @@ def postprocess(frame, outs):
             return 0
 
 
+# winName = 'Yolodetect'
 
+# cv.namedWindow(winName, cv.WINDOW_NORMAL)
 
-#winName = 'Yolodetect'
+def detect_fall(frame):
+    # Create a 4D blob from a frame.
+    blob = cv.dnn.blobFromImage(frame, 1 / 255, (inpWidth, inpHeight), [0, 0, 0], 1, crop=False)
 
-#cv.namedWindow(winName, cv.WINDOW_NORMAL)
+    # Sets the input to the network
+    net.setInput(blob)
 
-def detect_fall(resource_path):
-    cap = cv.VideoCapture(resource_path)
+    # Runs the forward pass to get output of the output layers
+    outs = net.forward(getOutputsNames(net))
 
-    fps = cap.get(cv.CAP_PROP_FPS)
-    size = (int(cap.get(cv.CAP_PROP_FRAME_WIDTH)),
-            int(cap.get(cv.CAP_PROP_FRAME_HEIGHT)))
+    # Remove the bounding boxes with low confidence
+    fallcount = postprocess(frame, outs)
 
-    fallcount = 0
+    # Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
+    t, _ = net.getPerfProfile()
+    label = 'Time Costs: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
+    cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
 
-    while True:
-        # get frame from the video
-        hasFrame, frame = cap.read()
-        # Stop the program if reached end of video
-        if not hasFrame:
-            print("处理完成")
-            break
-        # Create a 4D blob from a frame.
-        blob = cv.dnn.blobFromImage(frame, 1 / 255, (inpWidth, inpHeight), [0, 0, 0], 1, crop=False)
-
-        # Sets the input to the network
-        net.setInput(blob)
-
-        # Runs the forward pass to get output of the output layers
-        outs = net.forward(getOutputsNames(net))
-
-        # Remove the bounding boxes with low confidence
-        fallcount = postprocess(frame, outs)
-
-        # Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
-        t, _ = net.getPerfProfile()
-        label = 'Time Costs: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
-        cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
-
-        cv.imwrite('./result.jpg', frame)
-
-        cv.waitKey(30)
-
-    cap.release()
-    cv.destroyAllWindows()
-    return fallcount
+    cv.waitKey(30)

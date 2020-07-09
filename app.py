@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request, Response, make_response
 import sqlite3
 import time
 import os
@@ -125,7 +125,7 @@ def columns(table_name):
         return ['id', 'usernamee', 'gender', 'phone', 'id_card', 'birthday', 'checkin_date', 'checkout_date',
                 'imgset_dir'
             , 'profile_photo', 'room_number', 'firstguardian_name', 'firstguardian_relationship', 'firstguardian_phone'
-            , 'firstguardian_wechat', 'secondguardian_name', 'secondguardian_relationship', ' secondguardian_phone'
+            , 'firstguardian_wechat', 'secondguardian_name', 'secondguardian_relationship', 'secondguardian_phone'
             , 'secondguardian_wechat', 'health_state', 'DESCRIPTION', 'ISACTIVE', 'CREATED', 'CREATEDBY', 'UPDATED'
             , 'UPDATEDBY', 'REMOVE']
     elif table_name == 'employee_info':
@@ -142,7 +142,6 @@ def columns(table_name):
                 'CREATED', 'CREATEDBY', 'UPDATED', 'UPDATEDBY', 'REMOVE', 'DATAFILTER', 'theme', 'defaultpage',
                 'logoimage', 'qqopenid', 'appversion', 'jsonauth']
     else:
-        print("表名不对")
         return 0
 
 
@@ -164,7 +163,6 @@ def insert(conn, table_name, value):  # 通用表格插入操作
                 sql_insert += ','
         sql_insert = sql_insert[:-1]
         sql_insert += ')'
-        # print(sql_insert)
         conn.execute(sql_insert)
         conn.commit()
 
@@ -173,7 +171,6 @@ def delete(conn, table_name, where):
     sql_delete = "DELETE FROM " + table_name + " WHERE " + where + ";"
     conn.execute(sql_delete)
     conn.commit()
-    # print(sql_delete)
 
 
 def update(conn, table_name, set, where):
@@ -181,7 +178,6 @@ def update(conn, table_name, set, where):
     if where != "":
         sql_update = sql_update + " WHERE " + where
     sql_update = sql_update + ";"
-    print(sql_update)
     conn.execute(sql_update)
     conn.commit()
 
@@ -193,7 +189,6 @@ def select(conn, table_name, where):
         if where != "":
             sql_select = sql_select + " WHERE " + where
         sql_select = sql_select + ";"
-        print(sql_select)
         curs = conn.execute(sql_select)
         return list(curs)
 
@@ -208,8 +203,7 @@ def login(conn, name, password):
     else:
         global cur_id
         cur_id = l1[0][0]
-        print(cur_id)
-        return 1
+        return cur_id
 
 
 def zhuce(conn, info):
@@ -365,7 +359,7 @@ def sel_old(conn, id):
             'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
             'profile_photo': s[0][9], 'room_number': s[0][10], 'firstguardian_name': s[0][11],
             'firstguardian_relationship': s[0][12], 'firstguardian_phone': s[0][13], 'firstguardian_wechat': s[0][14],
-            'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16], ' secondguardian_phone': s[0][17]
+            'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16], 'secondguardian_phone': s[0][17]
         , 'secondguardian_wechat': s[0][18], 'health_state': s[0][19], 'DESCRIPTION': s[0][20], 'ISACTIVE': s[0][21],
             'CREATED': s[0][22], 'CREATEDBY': s[0][23], 'UPDATED': s[0][24]
         , 'UPDATEDBY': s[0][25], 'REMOVE': s[0][26]}
@@ -421,12 +415,219 @@ def tologin1():
 
 @app.route('/toprofile', methods=['GET', 'POST'])
 def toprofile():
-    return render_template('/htmls/profile.html')
+    form = request.form
+    id = request.cookies.get('id')
+    table_name = 'sys_user'
+    where = 'ID = \'' + str(id) + '\''
+    s = select(conn, table_name, where)
+    info = {'ID': s[0][0], 'UserName': s[0][1], 'Password': s[0][2], 'REAL_NAME': s[0][3], 'SEX': s[0][4],
+            'EMAIL': s[0][5], 'PHONE': s[0][6], 'MOBILE': s[0][7], 'DESCRIPTION': s[0][8], 'ISACTIVE': s[0][9],
+            'CREATED': s[0][10], 'CREATEDBY': s[0][11], 'UPDATED': s[0][12], 'UPDATEDBY': s[0][13], 'REMOVE': s[0][14]}
+    json.dumps(info)
+    return render_template('/htmls/profile.html', info=info)
+
+
+@app.route('/tomodifyprofile', methods=['GET', 'POST'])
+def tomodifyprofile():
+    form = request.form
+    id = form.get('id')
+    table_name = 'sys_user'
+    where = 'ID = \'' + str(id) + '\''
+    s = select(conn, table_name, where)
+    info = {'ID': s[0][0], 'UserName': s[0][1], 'Password': s[0][2], 'REAL_NAME': s[0][3], 'SEX': s[0][4],
+            'EMAIL': s[0][5], 'PHONE': s[0][6], 'MOBILE': s[0][7], 'DESCRIPTION': s[0][8], 'ISACTIVE': s[0][9],
+            'CREATED': s[0][10], 'CREATEDBY': s[0][11], 'UPDATED': s[0][12], 'UPDATEDBY': s[0][13], 'REMOVE': s[0][14]}
+    return render_template('/htmls/modify_profile.html', info=info)
+
+
+@app.route('/tomodifyoldbasicinfo', methods=['GET', 'POST'])
+def tomodifyoldbasicinfo():
+    form = request.form
+    uid = form.get('uid')
+    table_name = 'oldperson_info'
+    where = 'id = \'' + str(uid) + '\''
+    s = select(conn, table_name, where)
+    info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
+            'profile_photo': s[0][9], 'room_number': s[0][10], 'firstguardian_name': s[0][11],
+            'firstguardian_relationship': s[0][12], 'firstguardian_phone': s[0][13], 'firstguardian_wechat': s[0][14],
+            'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16], 'secondguardian_phone': s[0][17]
+        , 'secondguardian_wechat': s[0][18], 'health_state': s[0][19], 'DESCRIPTION': s[0][20], 'ISACTIVE': s[0][21],
+            'CREATED': s[0][22], 'CREATEDBY': s[0][23], 'UPDATED': s[0][24]
+        , 'UPDATEDBY': s[0][25], 'REMOVE': s[0][26]}
+    info = json.dumps(info)
+    return render_template('/htmls/modify_old_basic.html', info=info)
+
+
+@app.route('/tomodifyoldguardianinfo', methods=['GET', 'POST'])
+def tomodifyoldguardianinfo():
+    form = request.form
+    uid = form.get('uid2')
+    table_name = 'oldperson_info'
+    where = 'id = \'' + str(uid) + '\''
+    s = select(conn, table_name, where)
+    info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
+            'profile_photo': s[0][9], 'room_number': s[0][10], 'firstguardian_name': s[0][11],
+            'firstguardian_relationship': s[0][12], 'firstguardian_phone': s[0][13], 'firstguardian_wechat': s[0][14],
+            'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16], 'secondguardian_phone': s[0][17]
+        , 'secondguardian_wechat': s[0][18], 'health_state': s[0][19], 'DESCRIPTION': s[0][20], 'ISACTIVE': s[0][21],
+            'CREATED': s[0][22], 'CREATEDBY': s[0][23], 'UPDATED': s[0][24]
+        , 'UPDATEDBY': s[0][25], 'REMOVE': s[0][26]}
+    info = json.dumps(info)
+    return render_template('/htmls/modify_old_guardian.html', info=info)
+
+
+@app.route('/tomodifyvolunteerinfo', methods=['GET', 'POST'])
+def tomodifyvolunteerinfo():
+    form = request.form
+    uid = form.get('uid')
+    table_name = 'volunteer_info'
+    where = 'id = \'' + str(uid) + '\''
+    s = select(conn, table_name, where)
+    info = {'id': s[0][0], 'name': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
+            'profile_photo': s[0][9], 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
+            'CREATED': s[0][12], 'CREATEDBY': s[0][13], 'UPDATED': s[0][14]
+        , 'UPDATEDBY': s[0][15], 'REMOVE': s[0][16]}
+    info = json.dumps(info)
+    return render_template('/htmls/modify_volunteer_basic.html', info=info)
+
+
+@app.route('/tomodifyworkerinfo', methods=['GET', 'POST'])
+def tomodifyworkerinfo():
+    form = request.form
+    uid = form.get('uid')
+    table_name = 'employee_info'
+    where = 'id = \'' + str(uid) + '\''
+    s = select(conn, table_name, where)
+    info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
+            'birthday': s[0][5], 'hire_date': s[0][6], 'resign_date': s[0][7], 'imgset_dir': s[0][8],
+            'profile_photo': s[0][9], 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
+            'CREATED': s[0][12], 'CREATEDBY': s[0][13], 'UPDATED': s[0][14]
+        , 'UPDATEDBY': s[0][15], 'REMOVE': s[0][16]}
+    info = json.dumps(info)
+    return render_template('/htmls/modify_worker_basic.html', info=info)
+
+
+@app.route('/modifyprofile', methods=['GET', 'POST'])
+def modifyprofile():
+    form = request.form
+    info = {'REAL_NAME': form.get('REAL_NAME'), 'SEX': form.get('SEX'), 'PHONE': form.get('PHONE'),
+            'MOBILE': form.get('MOBILE'), 'DESCRIPTION': form.get('DESCRIPTION')}
+    uid = form.get('uid')
+    if person_info(conn, uid, info):
+        table_name = 'sys_user'
+        where = 'ID = \'' + str(uid) + '\''
+        s = select(conn, table_name, where)
+        info = {'ID': s[0][0], 'UserName': s[0][1], 'Password': s[0][2], 'REAL_NAME': s[0][3], 'SEX': s[0][4],
+                'EMAIL': s[0][5], 'PHONE': s[0][6], 'MOBILE': s[0][7], 'DESCRIPTION': s[0][8], 'ISACTIVE': s[0][9],
+                'CREATED': s[0][10], 'CREATEDBY': s[0][11], 'UPDATED': s[0][12], 'UPDATEDBY': s[0][13],
+                'REMOVE': s[0][14]}
+        json.dumps(info)
+    else:
+        info = ''
+    return render_template('/htmls/profile.html', info=info)
+
+
+@app.route('/modifyoldbasic', methods=['GET', 'POST'])
+def modifyoldbasic():
+    form = request.form
+    uid = form.get('id')
+    info = {'username': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
+            'id_card': form.get('id_card'),
+            'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
+            'checkout_date': form.get('checkout_date'), 'room_number': form.get('room_number'),
+            'health_state': form.get('health_state'), 'imgset_dir': form.get('imgset_dir'),
+            'DESCRIPTION': form.get('DESCRIPTION')}
+    elder_info(conn, uid, info)
+    table_name = 'oldperson_info'
+    where = 'id = \'' + str(uid) + '\''
+    s = select(conn, table_name, where)
+    info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
+            'profile_photo': s[0][9], 'room_number': s[0][10], 'firstguardian_name': s[0][11],
+            'firstguardian_relationship': s[0][12], 'firstguardian_phone': s[0][13],
+            'firstguardian_wechat': s[0][14],
+            'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16],
+            'secondguardian_phone': s[0][17]
+        , 'secondguardian_wechat': s[0][18], 'health_state': s[0][19], 'DESCRIPTION': s[0][20],
+            'ISACTIVE': s[0][21],
+            'CREATED': s[0][22], 'CREATEDBY': s[0][23], 'UPDATED': s[0][24]
+        , 'UPDATEDBY': s[0][25], 'REMOVE': s[0][26]}
+    info = json.dumps(info)
+    return render_template('/htmls/old_info.html', info=info)
+
+
+@app.route('/modifyoldguardian', methods=['GET', 'POST'])
+def modifyoldguardian():
+    form = request.form
+    info = {'firstguardian_name':
+                form.get('firstguardian_name'), 'firstguardian_relationship': form.get('firstguardian_relationship'),
+            'firstguardian_phone': form.get('firstguardian_phone'), 'firstguardian_wechat':
+                form.get('firstguardian_wechat'), 'secondguardian_name':
+                form.get('secondguardian_name'), 'secondguardian_relationship': form.get('secondguardian_relationship'),
+            'secondguardian_phone': form.get('secondguardian_phone'), 'secondguardian_wechat':
+                form.get('secondguardian_wechat')}
+    uid = form.get('id')
+    elder_info(conn, uid, info)
+    table_name = 'oldperson_info'
+    where = 'id = \'' + str(uid) + '\''
+    s = select(conn, table_name, where)
+    info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
+            'profile_photo': s[0][9], 'room_number': s[0][10], 'firstguardian_name': s[0][11],
+            'firstguardian_relationship': s[0][12], 'firstguardian_phone': s[0][13],
+            'firstguardian_wechat': s[0][14],
+            'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16],
+            'secondguardian_phone': s[0][17]
+        , 'secondguardian_wechat': s[0][18], 'health_state': s[0][19], 'DESCRIPTION': s[0][20],
+            'ISACTIVE': s[0][21],
+            'CREATED': s[0][22], 'CREATEDBY': s[0][23], 'UPDATED': s[0][24]
+        , 'UPDATEDBY': s[0][25], 'REMOVE': s[0][26]}
+    info = json.dumps(info)
+    return render_template('/htmls/old_info.html', info=info)
+
+
+@app.route('/modifyworkerbasic', methods=['GET', 'POST'])
+def modifyworkerbasic():
+    form = request.form
+    info = {'username': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
+            'id_card': form.get('id_card'),
+            'birthday': form.get('birthday'), 'hire_date': form.get("hire_date"),
+            'resign_date': form.get('resign_date'), 'imgset_dir': form.get('imgset_dir'), 'profile_photo':
+                form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
+    uid = form.get('id')
+    print(info)
+    emp_info(conn, uid, info)
+    content = sel_emp(conn, uid)
+    return render_template('/htmls/worker_info.html', content=content)
+
+
+@app.route('/modifyvolunteerbasic', methods=['GET', 'POST'])
+def modifyvolunteerbasic():
+    form = request.form
+    info = {'name': form.get('name'), 'gender': form.get('gender'), 'phone': form.get('phone'),
+            'id_card': form.get('id_card'),
+            'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
+            'checkout_date': form.get('checkout_date'), 'imgset_dir': form.get('imgset_dir'), 'profile_photo':
+                form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
+    uid = form.get('id')
+    vol_info(conn, uid, info)
+    content = sel_vol(conn, uid)
+    return render_template('/htmls/volunteer_info.html', content=content)
 
 
 @app.route('/tomain', methods=['GET', 'POST'])
 def tomain():
-    return render_template('/htmls/index.html')
+    table_name = 'oldperson_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'checkin_date': x[6], 'checkout_date': x[7]})
+    info = json.dumps(info)
+    print(info, type(info))
+    return render_template('/htmls/index.html', info=info)
 
 
 @app.route('/toselectevent', methods=['GET', 'POST'])
@@ -446,7 +647,13 @@ def toselectold():
 
 @app.route('/tomodifyold', methods=['GET', 'POST'])
 def tomodifyold():
-    return render_template('/htmls/modify_old.html')
+    table_name = 'oldperson_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'roomnum': x[10]})
+    info = json.dumps(info)
+    return render_template('/htmls/modify_old.html', info=info)
 
 
 @app.route('/toanalyzeold', methods=['GET', 'POST'])
@@ -473,7 +680,13 @@ def toselectworker():
 
 @app.route('/tomodifyworker', methods=['GET', 'POST'])
 def tomodifyworker():
-    return render_template('/htmls/modify_worker.html')
+    table_name = 'employee_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'phone': x[3]})
+    info = json.dumps(info)
+    return render_template('/htmls/modify_worker.html', info=info)
 
 
 @app.route('/toanalyzeworker', methods=['GET', 'POST'])
@@ -500,7 +713,13 @@ def toselectvolunteer():
 
 @app.route('/tomodifyvolunteer', methods=['GET', 'POST'])
 def tomodifyvolunteer():
-    return render_template('/htmls/modify_volunteer.html')
+    table_name = 'volunteer_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'id': x[0], 'name': x[1], 'gender': x[2], 'phone': x[3]})
+    info = json.dumps(info)
+    return render_template('/htmls/modify_volunteer.html', info=info)
 
 
 @app.route('/toanalyzevolunteer', methods=['GET', 'POST'])
@@ -582,9 +801,19 @@ def login0():
         content = "请输入密码"
         return render_template('/htmls/login.html', content=content)
     global conn
-    if login(conn, username, password):
+    if login(conn, username, password) != 0:
         content = "登录成功"
-        return render_template('/htmls/index.html', content=content)
+        userid = login(conn, username, password)
+        table_name = 'oldperson_info'
+        s = select(conn, table_name, "")
+        info = []
+        for x in s:
+            info.append({'checkin_date': x[6], 'checkout_date': x[7]})
+        info = json.dumps(info)
+        print(info, type(info))
+        response = make_response(render_template('/htmls/index.html', content=content, info=info))
+        response.set_cookie('id', str(userid))
+        return response
     else:
         content = "用户名或密码错误"
         return render_template('/htmls/login.html', content=content)
@@ -647,7 +876,6 @@ def addo():
     # 新增老人
     form = request.form
     if not form.get('username'):
-        print("noname")
         content = "请输入用户名"
         return render_template('/htmls/add_old.html', content=content)
     info = {'username': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
@@ -697,14 +925,19 @@ def oinfo():
 def delo():
     form = request.form
     uid = form.get('uid')
-    print(uid)
     if not uid:
         content = "请输入ID"
         return render_template('delo.html', content=content)
     global conn
     if del_elder(conn, uid):
         content = "删除成功"
-        return render_template('delo.html', content=content)
+        table_name = 'oldperson_info'
+        s = select(conn, table_name, "")
+        info = []
+        for x in s:
+            info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'roomnum': x[10]})
+        info = json.dumps(info)
+        return render_template('/htmls/modify_old.html', info=info)
     else:
         content = "该id不存在"
         return render_template('delo.html', content=content)
@@ -716,10 +949,10 @@ def selo():
     id = form.get('id')
     content = sel_old(conn, id)
     if content:
-        return render_template('/htmls/old_info.html', content=content)
+        return render_template('/htmls/old_info.html', info=content)
     else:
         content = '该用户不存在'
-        return render_template('/htmls/select_old.html', content=content)
+        return render_template('/htmls/select_old.html', info=content)
 
 
 @app.route('/selv', methods=['GET', 'POST'])
@@ -786,14 +1019,19 @@ def einfo():
 def dele():
     form = request.form
     uid = form.get('uid')
-    print(uid)
     if not uid:
         content = "请输入ID"
         return render_template('dele.html', content=content)
     global conn
     if del_employee(conn, uid):
         content = "删除成功"
-        return render_template('dele.html', content=content)
+        table_name = 'employee_info'
+        s = select(conn, table_name, "")
+        info = []
+        for x in s:
+            info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'phone': x[3]})
+        info = json.dumps(info)
+        return render_template('/htmls/modify_worker.html', info=info)
     else:
         content = "该id不存在"
         return render_template('dele.html', content=content)
@@ -839,14 +1077,19 @@ def vinfo():
 def delv():
     form = request.form
     uid = form.get('uid')
-    print(uid)
     if not uid:
         content = "请输入ID"
         return render_template('delv.html', content=content)
     global conn
     if del_volunteer(conn, uid):
         content = "删除成功"
-        return render_template('delv.html', content=content)
+        table_name = 'volunteer_info'
+        s = select(conn, table_name, "")
+        info = []
+        for x in s:
+            info.append({'id': x[0], 'name': x[1], 'gender': x[2], 'phone': x[3]})
+        info = json.dumps(info)
+        return render_template('/htmls/modify_volunteer.html', info=info)
     else:
         content = "该id不存在"
         return render_template('delv.html', content=content)

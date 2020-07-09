@@ -79,7 +79,7 @@
                 </a>
             </li>
             <li>
-                <a href="toselectevent">
+                <a href="retev">
                     <i class="nav-link-icon" data-feather="clipboard"></i>
                     <span>事件记录</span>
                     <span class="badge badge-success">2</span>
@@ -92,7 +92,7 @@
                 </a>
                 <ul>
                     <li><a href="toaddold">信息录入</a></li>
-                    <li><a href="toselectold">信息查询</a></li>
+                    <li><a href="reto">信息查询</a></li>
                     <li><a href="tomodifyold">信息删改</a></li>
                     <li><a href="toanalyzeold">统计分析</a></li>
                 </ul>
@@ -104,7 +104,7 @@
                 </a>
                 <ul>
                     <li><a href="toaddworker">信息录入</a></li>
-                    <li><a href="toselectworker">信息查询</a></li>
+                    <li><a href="rete">信息查询</a></li>
                     <li><a href="tomodifyworker">信息删改</a></li>
                     <li><a href="toanalyzeworker">统计分析</a></li>
                 </ul>
@@ -116,25 +116,13 @@
                 </a>
                 <ul>
                     <li><a href="toaddvolunteer">信息录入</a></li>
-                    <li><a href="toselectvolunteer">信息查询</a></li>
+                    <li><a href="retv">信息查询</a></li>
                     <li><a href="tomodifyvolunteer">信息删改</a></li>
                     <li><a href="toanalyzevolunteer">统计分析</a></li>
                 </ul>
             </li>
             <li class="navigation-divider">系统管理</li>
-            <li>
-                <a href="#">
-                    <i class="nav-link-icon" data-feather="database"></i>
-                    <span>数据管理</span>
-                </a>
-                <ul>
-                    <li><a href="tooldtable">老人信息表</a></li>
-                    <li><a href="toworkertable">工作人员信息表</a></li>
-                    <li><a href="tovolunteertable">义工信息表</a></li>
-                    <li><a href="toeventtable">事件信息表</a></li>
-                    <li><a href="tomanagertable">系统管理员信息表</a></li>
-                </ul>
-            </li>
+
             <li>
                 <a href="#">
                     <i class="nav-link-icon" data-feather="monitor"></i>
@@ -191,7 +179,7 @@
                 <li class="nav-item search-form">
                     <div class="row">
                         <div class="col-md-6">
-                                <h4>智慧养老系统后台</h4>
+                            <h4>智慧养老系统后台</h4>
                         </div>
                     </div>
                 </li>
@@ -293,7 +281,7 @@
                             <a href="#">老年人信息管理</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="toselectold">信息查询</a>
+                            <a href="reto">信息查询</a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">老年人详细信息</li>
                     </ol>
@@ -307,12 +295,13 @@
                     <div class="card">
                         <div class="card-body text-center">
                             <figure class="avatar avatar-lg m-b-20">
-                                <img src="../static/assets/media/image/user/11.jpg" class="rounded-circle" alt="...">
+                                <img src="../static/assets/media/image/user/11.jpg" class="rounded-circle"
+                                     alt="...">
                             </figure>
-                            <h5 class="mb-1">李老汉</h5>
+                            <h5 class="mb-1" id="username">李老汉</h5>
                             <p class="text-muted small">老年人</p>
-                            <p>空巢老人，有两个子女常年在外地打工。</p>
-                            <a href="modify_old_basic.html" class="btn btn-outline-primary">
+                            <p id="DESCRIPTION">空巢老人，有两个子女常年在外地打工。</p>
+                            <a class="btn btn-outline-primary" onclick="tooldbasic()">
                                 <i data-feather="edit-2" class="mr-2"></i>编辑老人信息
                             </a>
                         </div>
@@ -320,59 +309,58 @@
                         <div class="card-body">
                             <div class="row text-center">
                                 <div class="col-6 text-info">
-                                    <h4 class="font-weight-bold">2018-3-3</h4>
+                                    <h4 class="font-weight-bold" id="checkin_date">2018-3-3</h4>
                                     <span>入养老院日期</span>
                                 </div>
                                 <div class="col-6 text-success">
-                                    <h4 class="font-weight-bold">2022-3-3</h4>
+                                    <h4 class="font-weight-bold" id="checkout_date">2022-3-3</h4>
                                     <span>离开养老院日期</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-                <div class="col-md-8">
 
+                <div class="col-md-8">
                     <div class="card">
                         <div class="card-body">
                             <h6 class="card-title d-flex justify-content-between align-items-center">
                                 基本信息
-                                <a href="modify_old_basic.html" class="btn btn-outline-light btn-sm">
+                                <a class="btn btn-outline-light btn-sm" onclick="tooldbasic()">
                                     <i data-feather="edit-2" class="mr-2"></i> 编辑
                                 </a>
                             </h6>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">老人ID：</div>
-                                <div class="col-6">777</div>
+                                <div class="col-6" id="id"></div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">性别：</div>
-                                <div class="col-6">男</div>
+                                <div class="col-6" id="gender">男</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">电话:</div>
-                                <div class="col-6">111</div>
+                                <div class="col-6" id="phone">111</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">身份证号:</div>
-                                <div class="col-6">7777777</div>
+                                <div class="col-6" id="id_card">7777777</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">出生日期:</div>
-                                <div class="col-6">1955-6-30</div>
+                                <div class="col-6" id="birthday">1955-6-30</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">图像目录：</div>
-                                <div class="col-6">xxx</div>
+                                <div class="col-6" id="imgset_dir">xxx</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">房间号：</div>
-                                <div class="col-6">111</div>
+                                <div class="col-6" id="room_number"></div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">健康状况：</div>
-                                <div class="col-6">健康</div>
+                                <div class="col-6" id="health_state">健康</div>
                             </div>
                         </div>
                     </div>
@@ -381,42 +369,42 @@
                         <div class="card-body">
                             <h6 class="card-title d-flex justify-content-between align-items-center">
                                 监护人信息
-                                <a href="modify_old_guardian.html" class="btn btn-outline-light btn-sm">
+                                <a class="btn btn-outline-light btn-sm" onclick="tooldguardian()">
                                     <i data-feather="edit-2" class="mr-2"></i> 编辑
                                 </a>
                             </h6>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">第一监护人姓名：</div>
-                                <div class="col-6">小李</div>
+                                <div class="col-6" id="firstguardian_name">小李</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">与第一监护人关系：</div>
-                                <div class="col-6">父子</div>
+                                <div class="col-6" id="firstguardian_relationship">父子</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">第一监护人电话：</div>
-                                <div class="col-6">1233444</div>
+                                <div class="col-6" id="firstguardian_phone">1233444</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">第一监护人微信：</div>
-                                <div class="col-6">xxx</div>
+                                <div class="col-6" id="firstguardian_wechat">xxx</div>
                             </div>
                             <hr class="m-0">
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">第二监护人姓名：</div>
-                                <div class="col-6">小小李</div>
+                                <div class="col-6" id="secondguardian_name">小小李</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">与第二监护人关系：</div>
-                                <div class="col-6">爷孙</div>
+                                <div class="col-6" id="secondguardian_relationship">爷孙</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">第二监护人电话：</div>
-                                <div class="col-6">1223243444</div>
+                                <div class="col-6" id="secondguardian_phone">1223243444</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">第二监护人微信：</div>
-                                <div class="col-6">xxxxxx</div>
+                                <div class="col-6" id="secondguardian_wechat">xxxxxx</div>
                             </div>
                         </div>
                     </div>
@@ -428,27 +416,27 @@
                             </h6>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">是否有效：</div>
-                                <div class="col-6">是</div>
+                                <div class="col-6" id="ISACTIVE">是</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">创建时间：</div>
-                                <div class="col-6">2020/6/30</div>
+                                <div class="col-6" id="CREATED">2020/6/30</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">创建人：</div>
-                                <div class="col-6">xxx</div>
+                                <div class="col-6" id="CREATEDBY">xxx</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">更新时间：</div>
-                                <div class="col-6">2020/6/30</div>
+                                <div class="col-6" id="UPDATED">2020/6/30</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">更新人：</div>
-                                <div class="col-6">xxx</div>
+                                <div class="col-6" id="UPDATEDBY">xxx</div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">删除标志：</div>
-                                <div class="col-6">1</div>
+                                <div class="col-6" id="REMOVE">1</div>
                             </div>
                         </div>
                     </div>
@@ -465,19 +453,68 @@
     <!-- begin::footer -->
     <footer>
         <div class="container">
-            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a></div>
+            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a>
+            </div>
         </div>
     </footer>
     <!-- end::footer -->
+    <form id="myform" action="/tomodifyoldbasicinfo" method="post">
+        <input id="uid" name="uid" value="" style="display: none"/>
+    </form>
+    <form id="myform2" action="/tomodifyoldguardianinfo" method="post">
+        <input id="uid2" name="uid2" value="" style="display: none"/>
+    </form>
 
 </div>
 <!-- end::main -->
-
 <!-- Plugin scripts -->
 <script src="../static/vendors/bundle.js"></script>
 
 <!-- App scripts -->
 <script src="../static/assets/js/app.min.js"></script>
+
+<script>
+    var infoorigin = {{ info|tojson }};
+    var info = eval('(' + infoorigin + ')');
+    console.log(info);
+    document.getElementById("username").innerHTML = info.username
+    document.getElementById("id").innerHTML = info.id
+    document.getElementById("gender").innerHTML = info.gender
+    document.getElementById("DESCRIPTION").innerHTML = info.DESCRIPTION
+    document.getElementById("phone").innerHTML = info.phone
+    document.getElementById("id_card").innerHTML = info.id_card
+    document.getElementById("birthday").innerHTML = info.birthday
+    document.getElementById("CREATED").innerHTML = info.CREATED
+    document.getElementById("CREATEDBY").innerHTML = info.CREATEDBY
+    document.getElementById("ISACTIVE").innerHTML = info.ISACTIVE
+    document.getElementById("REMOVE").innerHTML = info.REMOVE
+    document.getElementById("UPDATED").innerHTML = info.UPDATED
+    document.getElementById("UPDATEDBY").innerHTML = info.UPDATEDBY
+    document.getElementById("checkin_date").innerHTML = info.checkin_date
+    document.getElementById("checkout_date").innerHTML = info.checkout_date
+    document.getElementById("firstguardian_name").innerHTML = info.firstguardian_name
+    document.getElementById("firstguardian_phone").innerHTML = info.firstguardian_phone
+    document.getElementById("firstguardian_relationship").innerHTML = info.firstguardian_relationship
+    document.getElementById("firstguardian_wechat").innerHTML = info.firstguardian_wechat
+    document.getElementById("health_state").innerHTML = info.health_state
+    document.getElementById("imgset_dir").innerHTML = info.imgset_dir
+    document.getElementById("room_number").innerHTML = info.room_number
+    document.getElementById("secondguardian_name").innerHTML = info.secondguardian_name
+    document.getElementById("secondguardian_phone").innerHTML = info.secondguardian_phone
+    document.getElementById("secondguardian_relationship").innerHTML = info.secondguardian_relationship
+    document.getElementById("secondguardian_wechat").innerHTML = info.secondguardian_wechat
+
+    function tooldbasic() {
+        document.getElementById('uid').value = document.getElementById("id").innerHTML;
+        myform.submit();
+    }
+
+    function tooldguardian() {
+        document.getElementById('uid2').value = document.getElementById("id").innerHTML;
+        myform2.submit();
+    }
+
+</script>
 
 </body>
 </html>

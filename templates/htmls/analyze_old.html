@@ -122,19 +122,7 @@
                 </ul>
             </li>
             <li class="navigation-divider">系统管理</li>
-            <li>
-                <a href="#">
-                    <i class="nav-link-icon" data-feather="database"></i>
-                    <span>数据管理</span>
-                </a>
-                <ul>
-                    <li><a href="tooldtable">老人信息表</a></li>
-                    <li><a href="toworkertable">工作人员信息表</a></li>
-                    <li><a href="tovolunteertable">义工信息表</a></li>
-                    <li><a href="toeventtable">事件信息表</a></li>
-                    <li><a href="tomanagertable">系统管理员信息表</a></li>
-                </ul>
-            </li>
+
             <li>
                 <a href="#">
                     <i class="nav-link-icon" data-feather="monitor"></i>
@@ -355,7 +343,6 @@
 
     var eightYears = ["2013","2014","2015","2016","2017","2018","2019","2020"];
     var eightYears_enter_number = [0,0,0,0,0,0,0,0];
-    var eightYears_out_number = [0,0,0,0,0,0,0,0];
 
     var twentyNineteen = ["-01-","-02-","-03-","-04-","-05-","-06-","-07-","-08-","-09-","-10-","-11-","-12-"];
     var twentyNineteen_enter_number = [0,0,0,0,0,0,0,0,0,0,0,0];
@@ -366,10 +353,6 @@
         for (j in eightYears){
             if (info[i]['checkin_date']!=null && info[i]['checkin_date'].indexOf(eightYears[j]) !== -1){
                 eightYears_enter_number[j]+=1;
-                break;
-            }
-            if (info[i]['checkout_date']!=null && info[i]['checkout_date'].indexOf(eightYears[j]) !== -1){
-                eightYears_out_number[j]+=1;
                 break;
             }
         }
@@ -415,7 +398,6 @@
     }
 
     console.log(eightYears_enter_number);
-    console.log(eightYears_out_number);
 
     console.log(gender_number);
 
@@ -443,7 +425,7 @@ $(document).ready(function () {
         var options = {
                 title: {
                     display: true,
-                    text: '近八年老年人进入养老院和离开养老院人数统计图'
+                    text: '近八年老年人进入养老院人数统计图'
                 },
             chart: {
                 height: 350,
@@ -467,9 +449,6 @@ $(document).ready(function () {
             series: [{
                 name: '入院人数',
                 data: eightYears_enter_number
-            },{
-                name: '离院人数',
-                data: eightYears_out_number
             }],
             xaxis: {
                 categories: ['2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020'],

@@ -78,7 +78,7 @@
                 </a>
             </li>
             <li>
-                <a href="toselectevent">
+                <a href="retev">
                     <i class="nav-link-icon" data-feather="clipboard"></i>
                     <span>事件记录</span>
                     <span class="badge badge-success">2</span>
@@ -91,7 +91,7 @@
                 </a>
                 <ul>
                     <li><a href="toaddold">信息录入</a></li>
-                    <li><a href="toselectold">信息查询</a></li>
+                    <li><a href="reto">信息查询</a></li>
                     <li><a href="tomodifyold">信息删改</a></li>
                     <li><a href="toanalyzeold">统计分析</a></li>
                 </ul>
@@ -103,7 +103,7 @@
                 </a>
                 <ul>
                     <li><a href="toaddworker">信息录入</a></li>
-                    <li><a href="toselectworker">信息查询</a></li>
+                    <li><a href="rete">信息查询</a></li>
                     <li><a href="tomodifyworker">信息删改</a></li>
                     <li><a href="toanalyzeworker">统计分析</a></li>
                 </ul>
@@ -115,25 +115,13 @@
                 </a>
                 <ul>
                     <li><a href="toaddvolunteer">信息录入</a></li>
-                    <li><a href="toselectvolunteer">信息查询</a></li>
+                    <li><a href="retv">信息查询</a></li>
                     <li><a href="tomodifyvolunteer">信息删改</a></li>
                     <li><a href="toanalyzevolunteer">统计分析</a></li>
                 </ul>
             </li>
             <li class="navigation-divider">系统管理</li>
-            <li>
-                <a href="#">
-                    <i class="nav-link-icon" data-feather="database"></i>
-                    <span>数据管理</span>
-                </a>
-                <ul>
-                    <li><a href="tooldtable">老人信息表</a></li>
-                    <li><a href="toworkertable">工作人员信息表</a></li>
-                    <li><a href="tovolunteertable">义工信息表</a></li>
-                    <li><a href="toeventtable">事件信息表</a></li>
-                    <li><a href="tomanagertable">系统管理员信息表</a></li>
-                </ul>
-            </li>
+
             <li>
                 <a href="#">
                     <i class="nav-link-icon" data-feather="monitor"></i>
@@ -430,6 +418,34 @@
 </div>
 <!-- end::main -->
 
+<script>
+    var info = {{ info|safe }};
+    console.log(info);
+
+    var twentyNineteen = ["-07-","-08-","-09-","-10-","-11-","-12-"];
+    var twentyNineteen_enter_number = [0,0,0,0,0,0];
+    var twentyNineteen_out_number = [0,0,0,0,0,0];
+
+    for(i in info){
+
+        for (j in twentyNineteen){
+            if (info[i]['checkin_date']!=null && info[i]['checkin_date'].indexOf(twentyNineteen[j]) !== -1 && info[i]['checkin_date'].indexOf("2019") !== -1){
+                twentyNineteen_enter_number[j]+=1;
+                break;
+            }
+            if (info[i]['checkout_date']!=null && info[i]['checkout_date'].indexOf(twentyNineteen[j]) !== -1 && info[i]['checkout_date'].indexOf("2019") !== -1){
+                twentyNineteen_out_number[j]+=1;
+                break;
+            }
+        }
+
+    }
+
+    console.log(twentyNineteen_enter_number);
+    console.log(twentyNineteen_out_number);
+
+</script>
+
 <!-- Plugin scripts -->
 <script src="../static/vendors/bundle.js"></script>
 
@@ -467,25 +483,25 @@ $(document).ready(function () {
                     label: "入院",
                     type: "line",
                     borderColor: colors.warning,
-                    data: [4,44,22,111,22,1],
+                    data: twentyNineteen_enter_number,
                     fill: false
                 }, {
                     label: "出院",
                     type: "line",
                     borderColor: colors.success,
-                    data: [0,43,21,12,91,4],
+                    data: twentyNineteen_out_number,
                     fill: false
                 }, {
                     label: "入院",
                     type: "bar",
                     backgroundColor: colors.secondary,
-                    data: [4,44,22,111,22,1],
+                    data: twentyNineteen_enter_number
                 }, {
                     label: "出院",
                     type: "bar",
                     backgroundColor: colors.primary,
                     backgroundColorHover: "#3e95cd",
-                    data: [0,43,21,12,91,4]
+                    data: twentyNineteen_out_number
                 }
                 ]
             },

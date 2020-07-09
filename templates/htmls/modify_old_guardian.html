@@ -79,7 +79,7 @@
                 </a>
             </li>
             <li>
-                <a href="toselectevent">
+                <a href="retev">
                     <i class="nav-link-icon" data-feather="clipboard"></i>
                     <span>事件记录</span>
                     <span class="badge badge-success">2</span>
@@ -92,7 +92,7 @@
                 </a>
                 <ul>
                     <li><a href="toaddold">信息录入</a></li>
-                    <li><a href="toselectold">信息查询</a></li>
+                    <li><a href="reto">信息查询</a></li>
                     <li><a href="tomodifyold">信息删改</a></li>
                     <li><a href="toanalyzeold">统计分析</a></li>
                 </ul>
@@ -104,7 +104,7 @@
                 </a>
                 <ul>
                     <li><a href="toaddworker">信息录入</a></li>
-                    <li><a href="toselectworker">信息查询</a></li>
+                    <li><a href="rete">信息查询</a></li>
                     <li><a href="tomodifyworker">信息删改</a></li>
                     <li><a href="toanalyzeworker">统计分析</a></li>
                 </ul>
@@ -116,25 +116,13 @@
                 </a>
                 <ul>
                     <li><a href="toaddvolunteer">信息录入</a></li>
-                    <li><a href="toselectvolunteer">信息查询</a></li>
+                    <li><a href="retv">信息查询</a></li>
                     <li><a href="tomodifyvolunteer">信息删改</a></li>
                     <li><a href="toanalyzevolunteer">统计分析</a></li>
                 </ul>
             </li>
             <li class="navigation-divider">系统管理</li>
-            <li>
-                <a href="#">
-                    <i class="nav-link-icon" data-feather="database"></i>
-                    <span>数据管理</span>
-                </a>
-                <ul>
-                    <li><a href="tooldtable">老人信息表</a></li>
-                    <li><a href="toworkertable">工作人员信息表</a></li>
-                    <li><a href="tovolunteertable">义工信息表</a></li>
-                    <li><a href="toeventtable">事件信息表</a></li>
-                    <li><a href="tomanagertable">系统管理员信息表</a></li>
-                </ul>
-            </li>
+
             <li>
                 <a href="#">
                     <i class="nav-link-icon" data-feather="monitor"></i>
@@ -191,7 +179,7 @@
                 <li class="nav-item search-form">
                     <div class="row">
                         <div class="col-md-6">
-                                <h4>智慧养老系统后台</h4>
+                            <h4>智慧养老系统后台</h4>
                         </div>
                     </div>
                 </li>
@@ -302,49 +290,6 @@
             <!-- end::page-header -->
 
             <div class="row">
-                <div class="col-md-10">
-
-                    <div class="card">
-                        <div class="card-body">
-                            <h6 class="card-title d-flex justify-content-between align-items-center">
-                                原信息
-                            </h6>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">第一监护人姓名：</div>
-                                <div class="col-6">小李</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">与第一监护人关系：</div>
-                                <div class="col-6">父子</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">第一监护人电话:</div>
-                                <div class="col-6">1233444</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">第一监护人微信:</div>
-                                <div class="col-6">xxx</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">第二监护人姓名:</div>
-                                <div class="col-6">小小李</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">与第二监护人关系:</div>
-                                <div class="col-6">爷孙</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">第二监护人电话:</div>
-                                <div class="col-6">1223243444</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-4 text-muted">第二监护人微信:</div>
-                                <div class="col-6">xxxxxx</div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
                 <div class="col-md-12">
 
                     <div class="card">
@@ -354,53 +299,64 @@
 
                             <div class="row">
                                 <div class="col-md-8">
-                                    <form>
+                                    <form action="/modifyoldguardian" method="post">
+                                        <input id="id" name="id" style="display: none"/>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">第一监护人姓名</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" placeholder="请输入第一监护人姓名">
+                                                <input type="text" class="form-control" placeholder="请输入第一监护人姓名"
+                                                       id="firstguardian_name" name="firstguardian_name"/>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">与第一监护人关系</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" placeholder="请输入与第一监护人的关系">
+                                                <input type="text" class="form-control" placeholder="请输入与第一监护人的关系"
+                                                       id="firstguardian_relationship"
+                                                       name="firstguardian_relationship"/>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">第一监护人电话</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" placeholder="请输入第一监护人的电话号码">
+                                                <input type="text" class="form-control" placeholder="请输入第一监护人的电话号码"
+                                                       id="firstguardian_phone" name="firstguardian_phone"/>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">第一监护人微信</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" placeholder="请输入第一监护人的微信号">
+                                                <input type="text" class="form-control" placeholder="请输入第一监护人的微信号"
+                                                       id="firstguardian_wechat" name="firstguardian_wechat"/>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">第二监护人姓名</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" placeholder="请输入第二监护人姓名">
+                                                <input type="text" class="form-control" placeholder="请输入第二监护人姓名"
+                                                       id="secondguardian_name" name="secondguardian_name"/>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">与第二监护人关系</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" placeholder="请输入与第二监护人的关系">
+                                                <input type="text" class="form-control" placeholder="请输入与第二监护人的关系"
+                                                       id="secondguardian_relationship"
+                                                       name="secondguardian_relationship"/>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">第二监护人电话</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" placeholder="请输入第二监护人的电话号码">
+                                                <input type="text" class="form-control" placeholder="请输入第二监护人的电话号码"
+                                                       id="secondguardian_phone" name="secondguardian_phone"/>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">第二监护人微信</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" placeholder="请输入第二监护人的微信号">
+                                                <input type="text" class="form-control" placeholder="请输入第二监护人的微信号"
+                                                       id="secondguardian_wechat" name="secondguardian_wechat"/>
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary">修改信息</button>
@@ -423,7 +379,8 @@
     <!-- begin::footer -->
     <footer>
         <div class="container">
-            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a></div>
+            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a>
+            </div>
         </div>
     </footer>
     <!-- end::footer -->
@@ -436,6 +393,19 @@
 
 <!-- App scripts -->
 <script src="../static/assets/js/app.min.js"></script>
-
+<script>
+    var infoorigin = {{ info|tojson }};
+    var info = eval('(' + infoorigin + ')');
+    console.log(info);
+    document.getElementById("id").value = info.id
+    document.getElementById("firstguardian_name").value = info.firstguardian_name
+    document.getElementById("firstguardian_phone").value = info.firstguardian_phone
+    document.getElementById("firstguardian_relationship").value = info.firstguardian_relationship
+    document.getElementById("firstguardian_wechat").value = info.firstguardian_wechat
+    document.getElementById("secondguardian_name").value = info.secondguardian_name
+    document.getElementById("secondguardian_phone").value = info.secondguardian_phone
+    document.getElementById("secondguardian_relationship").value = info.secondguardian_relationship
+    document.getElementById("secondguardian_wechat").value = info.secondguardian_wechat
+</script>
 </body>
 </html>
