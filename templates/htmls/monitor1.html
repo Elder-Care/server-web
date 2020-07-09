@@ -308,10 +308,127 @@
                                 </button>
                             </div>
                             <br />
-                            <video id="v" style="width: 640px;height: 480px;"></video>
+                            <video
+                                    id="my-player"
+                                    style="width: 640px;
+                                    height: 480px;"
+                                    class="video-js"
+                                    controls {# 向用户展示控件 #}
+                                    preload="auto"{# 如果出现该属性，则视频在页面加载时进行加载，并预备播放。如果使用 "autoplay"，则忽略该属性。 #}
+                                    poster="//vjs.zencdn.net/v/oceans.png"
+                                    data-setup='{}'   {# data-*实际上上就是data-前缀加上自定义的属性名，使用这样的结构可以进行数据存放 #}
+                                    autoplay{# 就绪后自动播放 #}>
+                                        s<ource
+                                                src="src="http://10.255.78.136:8070/home.m3u8""
+                                                type="application/x-mpegURL">
+                                <p class="vjs-no-js">
+                                    To view this video please enable JavaScript, and consider upgrading to a web browser that
+                                    <a href="http://videojs.com/html5-video-support/" target="_blank">
+                                        supports HTML5 video
+                                    </a>
+                                </p>
+                            </video>
+
+
+{#                           <video id="v" style="width: 640px;height: 480px;"></video>#}
+{#如果是放视频，src里面放视频的地址<video src="images/xxx.mov" width="300px" heigth="300px" controls="controls" autoplay></video>#}
                             <canvas id="canvas" style="display:none;"></canvas>
+
                             <br />
                             <img src="http://placehold.it/640&text=Your%20image%20here%20..." id="photo" alt="photo">
+
+<script>
+    var player = videojs('my-player');
+    var options = {};
+    var player = videojs('my-player', options, function onPlayerReady() {
+        videojs.log('Your player is ready!');
+        // In this context, `this` is the player that was created by Video.js.
+        this.play();
+        // How about an event listener?
+        this.on('ended', function() {
+            videojs.log('Awww...over so soon?!');
+        });
+    });
+</script>
+
+
+<script>
+    <!--js代码-->
+    var video = document.getElementById('video');
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+
+//访问用户媒体设备的兼容方法
+function getUserMedia(constraints, success, error) {
+    if (navigator.mediaDevices.getUserMedia) {
+        //最新的标准API
+        navigator.mediaDevices.getUserMedia(constraints).then(success).catch(error);
+    } else if (navigator.webkitGetUserMedia) {
+        //webkit核心浏览器
+        navigator.webkitGetUserMedia(constraints,success, error)
+    } else if (navigator.mozGetUserMedia)                {
+        //firfox浏览器
+        navigator.mozGetUserMedia(constraints, success, error);
+    } else if (navigator.getUserMedia) {
+        //旧版API
+        navigator.getUserMedia(constraints, success, error);
+    }
+}
+
+function success(stream) {
+    //兼容webkit核心浏览器
+    // var CompatibleURL = window.URL || window.webkitURL;
+    //video.src = CompatibleURL.createObjectURL(stream);
+    //将视频流设置为video元素的源
+    video.srcObject = stream;
+    video.play();
+}
+
+function error(error) {
+    console.log('访问用户媒体设备失败${error.name}, ${error.message}');
+}
+
+if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
+    getUserMedia({video : {width:200, height:200}}, success, error);
+} else {
+    alert('不支持访问用户媒体');
+}
+//图片上传到服务器
+//获取Canvas的编码。
+function uploadImage(){
+    canvas.width = 300;
+    canvas.height = 300;
+    context.drawImage(video, 0, 0, 300, 300);
+    var imgData = canvas.toDataURL();
+    //上传到后台。
+    var uploadAjax = $.ajax({
+        type: "post",
+        //后端需要调用的地址
+        url:"test",
+        data: JSON.stringify({"imgData": imgData}),
+		contentType:"json/application",
+		//设置超时
+        timeout:10000,
+        async: true,
+        success: function (htmlVal) {
+        	//成功后回调
+		},
+        error: function(data) {
+        },
+        //调用执行后调用的函数
+        complete: function (XMLHttpRequest, textStatus) {
+            if(textStatus == 'timeout'){
+                uploadAjax.abort(); //取消请求
+                //超时提示：请求超时，请重试
+                alert("请求超时，请重试")
+                //请求超时返回首页
+                closeCard();
+            }
+        }
+    });
+}
+
+</script>
 
     <script>
         !(function () {
@@ -357,6 +474,7 @@
             }).catch(err => {
                 console.error(err.name + ": " + err.message);
             })
+            {#照片的获取#}
             document.getElementById('take').addEventListener('click', function () {
                 if (videoPlaying) {
                     let canvas = document.getElementById('canvas');
