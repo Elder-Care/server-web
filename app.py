@@ -810,8 +810,8 @@ def login0():
         for x in s:
             info.append({'checkin_date': x[6], 'checkout_date': x[7]})
         info = json.dumps(info)
-        print(info, type(info))
         response = make_response(render_template('/htmls/index.html', content=content, info=info))
+
         response.set_cookie('id', str(userid))
         return response
     else:
