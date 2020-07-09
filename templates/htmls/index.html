@@ -48,7 +48,7 @@
             <img src="../static/assets/media/image/user/1.png" class="rounded-circle" alt="image">
         </figure>
         <div>
-            <h5>杨烁平</h5>
+            <h5 id="sidename">杨烁平</h5>
             <p class="text-muted">管理员</p>
             <ul class="nav">
                 <li class="nav-item">
@@ -178,7 +178,7 @@
                 <li class="nav-item search-form">
                     <div class="row">
                         <div class="col-md-6">
-                                <h4>智慧养老系统后台</h4>
+                            <h4>智慧养老系统后台</h4>
                         </div>
                     </div>
                 </li>
@@ -272,7 +272,7 @@
         <div class="container">
 
             <div class="page-header">
-                <h4>欢迎， <span class="text-primary">杨烁平</span></h4>
+                <h4>欢迎， <span class="text-primary" id="welcomename">杨烁平</span></h4>
             </div>
 
             <div class="row">
@@ -295,7 +295,7 @@
                                                         </div>
                                                         <div>
                                                             <h6 class="text-uppercase font-size-11">目前养老院的老年人数量</h6>
-                                                            <h4 class="mb-0">133</h4>
+                                                            <h4 class="mb-0" id="olds">133</h4>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -308,7 +308,7 @@
                                                         </div>
                                                         <div>
                                                             <h6 class="text-uppercase font-size-11">目前养老院的工作人员数量</h6>
-                                                            <h4 class="mb-0">26</h4>
+                                                            <h4 class="mb-0" id="workers">26</h4>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -321,7 +321,7 @@
                                                         </div>
                                                         <div>
                                                             <h6 class="text-uppercase font-size-11">目前养老院的义工数量</h6>
-                                                            <h4 class="mb-0">11</h4>
+                                                            <h4 class="mb-0" id="volunteers">11</h4>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -410,7 +410,8 @@
     <!-- begin::footer -->
     <footer>
         <div class="container">
-            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a></div>
+            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a>
+            </div>
         </div>
     </footer>
     <!-- end::footer -->
@@ -419,77 +420,97 @@
 <!-- end::main -->
 
 <!-- Plugin scripts -->
-<script src="../static/vendors/bundle.js"></script>
+<script src="/static/vendors/bundle.js"></script>
 
 <!-- App scripts -->
-<script src="../static/assets/js/app.min.js"></script>
+<script src="/static/assets/js/app.min.js"></script>
 
 <!-- Chartjs -->
-<script src="../static/vendors/charts/chartjs/chart.min.js"></script>
+<script src="/static/vendors/charts/chartjs/chart.min.js"></script>
+
+
 <script>
-$(document).ready(function () {
+    $(document).ready(function () {
 
-    var colors = {
-        primary: $('.colors .bg-primary').css('background-color'),
-        primaryLight: $('.colors .bg-primary-bright').css('background-color'),
-        secondary: $('.colors .bg-secondary').css('background-color'),
-        secondaryLight: $('.colors .bg-secondary-bright').css('background-color'),
-        info: $('.colors .bg-info').css('background-color'),
-        infoLight: $('.colors .bg-info-bright').css('background-color'),
-        success: $('.colors .bg-success').css('background-color'),
-        successLight: $('.colors .bg-success-bright').css('background-color'),
-        danger: $('.colors .bg-danger').css('background-color'),
-        dangerLight: $('.colors .bg-danger-bright').css('background-color'),
-        warning: $('.colors .bg-warning').css('background-color'),
-        warningLight: $('.colors .bg-warning-bright').css('background-color'),
-    };
+        var colors = {
+            primary: $('.colors .bg-primary').css('background-color'),
+            primaryLight: $('.colors .bg-primary-bright').css('background-color'),
+            secondary: $('.colors .bg-secondary').css('background-color'),
+            secondaryLight: $('.colors .bg-secondary-bright').css('background-color'),
+            info: $('.colors .bg-info').css('background-color'),
+            infoLight: $('.colors .bg-info-bright').css('background-color'),
+            success: $('.colors .bg-success').css('background-color'),
+            successLight: $('.colors .bg-success-bright').css('background-color'),
+            danger: $('.colors .bg-danger').css('background-color'),
+            dangerLight: $('.colors .bg-danger-bright').css('background-color'),
+            warning: $('.colors .bg-warning').css('background-color'),
+            warningLight: $('.colors .bg-warning-bright').css('background-color'),
+        };
 
-    function chartjs_old() {
-        var element = document.getElementById("chartjs_old");
-        element.height = 100;
-        new Chart(element, {
-            type: 'bar',
-            data: {
-                labels: ["7月", "8月", "9月", "10月", "11月", "12月"],
-                datasets: [{
-                    label: "入院",
-                    type: "line",
-                    borderColor: colors.warning,
-                    data: [4,44,22,111,22,1],
-                    fill: false
-                }, {
-                    label: "出院",
-                    type: "line",
-                    borderColor: colors.success,
-                    data: [0,43,21,12,91,4],
-                    fill: false
-                }, {
-                    label: "入院",
-                    type: "bar",
-                    backgroundColor: colors.secondary,
-                    data: [4,44,22,111,22,1],
-                }, {
-                    label: "出院",
-                    type: "bar",
-                    backgroundColor: colors.primary,
-                    backgroundColorHover: "#3e95cd",
-                    data: [0,43,21,12,91,4]
-                }
-                ]
-            },
-            options: {
-                title: {
-                    display: true,
-                    text: '2019年下半年养老院每月老年人数量变化图'
+        function chartjs_old() {
+            var element = document.getElementById("chartjs_old");
+            element.height = 100;
+            new Chart(element, {
+                type: 'bar',
+                data: {
+                    labels: ["7月", "8月", "9月", "10月", "11月", "12月"],
+                    datasets: [{
+                        label: "入院",
+                        type: "line",
+                        borderColor: colors.warning,
+                        data: [4, 44, 22, 111, 22, 1],
+                        fill: false
+                    }, {
+                        label: "出院",
+                        type: "line",
+                        borderColor: colors.success,
+                        data: [0, 43, 21, 12, 91, 4],
+                        fill: false
+                    }, {
+                        label: "入院",
+                        type: "bar",
+                        backgroundColor: colors.secondary,
+                        data: [4, 44, 22, 111, 22, 1],
+                    }, {
+                        label: "出院",
+                        type: "bar",
+                        backgroundColor: colors.primary,
+                        backgroundColorHover: "#3e95cd",
+                        data: [0, 43, 21, 12, 91, 4]
+                    }
+                    ]
                 },
-                legend: { display: false }
+                options: {
+                    title: {
+                        display: true,
+                        text: '2019年下半年养老院每月老年人数量变化图'
+                    },
+                    legend: {display: false}
+                }
+            });
+        }
+
+        chartjs_old();
+
+        $.ajax({
+            method: 'POST',
+            url: "http://127.0.0.1:5000/getallmembers",
+            success: function (data) {
+                document.getElementById("olds").innerHTML = data.olds;
+                document.getElementById("workers").innerHTML = data.workers;
+                document.getElementById("volunteers").innerHTML = data.volunteers;
             }
         });
-    }
 
-    chartjs_old();
+        $.ajax({
+            method: 'POST',
+            url: "http://127.0.0.1:5000/geiinout",
+            success: function (data) {
 
-});
+            }
+        });
+
+    });
 </script>
 <div class="colors"> <!-- To use theme colors with Javascript -->
     <div class="bg-primary"></div>
@@ -505,6 +526,10 @@ $(document).ready(function () {
     <div class="bg-warning"></div>
     <div class="bg-warning-bright"></div>
 </div>
-
 </body>
+<script>
+    var realname = document.cookie.split(";")[1].split("=")[1];
+    document.getElementById("sidename").innerHTML = realname;
+    document.getElementById("welcomename").innerHTML = realname;
+</script>
 </html>

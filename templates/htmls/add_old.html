@@ -146,7 +146,7 @@
             <img src="../static/assets/media/image/user/1.png" class="rounded-circle" alt="image">
         </figure>
         <div>
-            <h5>杨烁平</h5>
+            <h5 id="sidename">杨烁平</h5>
             <p class="text-muted">管理员</p>
             <ul class="nav">
                 <li class="nav-item">
@@ -309,36 +309,6 @@
                                                 老年人信息录入成功
                                             </p>
                                             <span class="text-muted small">1分钟前</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
-                                        <div class="flex-grow-1">
-                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
-                                                工作人员信息录入成功
-                                            </p>
-                                            <span class="text-muted small">5分钟前</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
-                                        <div class="flex-grow-1">
-                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
-                                                老年人信息删除成功
-                                            </p>
-                                            <span class="text-muted small">1小时前</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="list-group-item d-flex align-items-center hide-show-toggler">
-                                        <div class="flex-grow-1">
-                                            <p class="mb-0 line-height-20 d-flex justify-content-between">
-                                                义工信息删除成功
-                                            </p>
-                                            <span class="text-muted small">2小时前</span>
                                         </div>
                                     </a>
                                 </li>
@@ -597,4 +567,8 @@
 <script src="../static/assets/js/bootstrap-fileinput.js"></script>
 
 </body>
-</html>
+<script>
+    var realname = document.cookie.split(";")[1].split("=")[1];
+    console.log(realname);
+    document.getElementById("sidename").innerHTML = realname;
+</script>
