@@ -498,14 +498,20 @@
                 method: 'POST',
                 url: "http://127.0.0.1:5000/getinout",
                 success: function (data) {
+                    var data = eval('(' + data + ')');
                     var month = 7;
-                    /*for (var i = 0; i < data[0].length; i++) {
+                    var tableData = ""
+                    for (var i = 0; i < 6; i++) {
                         tableData += "<tr>";
                         tableData += "<td>" + "2020/0" + month + "</td>";
-                        tableData += "<td>" + data[i] + month + "</td>";
+                        tableData += "<td>" + data.oldin[i] + "</td>";
+                        tableData += "<td>" + data.oldout[i] + "</td>";
+                        tableData += "<td>" + data.empin[i] + "</td>";
+                        tableData += "<td>" + data.volin[i] + "</td>";
                         tableData += "</tr>";
+                        month--;
                     }
-                    $("#inoutbody").html(tableData);*/
+                    $("#inoutbody").html(tableData);
                 }
             });
 

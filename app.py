@@ -1217,6 +1217,7 @@ def getinout():
                 volin[ms.index(m)] += 1
     inout = {'oldin': oldin, 'oldout': oldout, 'empin': empin, 'volin': volin}
     inout = json.dumps(inout)
+    print(inout)
     return inout
 
 
