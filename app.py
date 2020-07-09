@@ -7,118 +7,71 @@ import cv2
 import bodydetect
 import json
 from urllib.parse import quote
+import threading
 
 app = Flask(__name__)
 conn = sqlite3.connect('old_care.sqlite', check_same_thread=False)
 cur_id = 0
 
 
-class VideoCamera1(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture(0)
+class Producer(threading.Thread):
+    """docstring for Producer"""
 
-    def __del__(self):
-        self.video.release()
+    def __init__(self, rtmp_str):
+        super(Producer, self).__init__()
 
-    def get_frame(self):
-        success, image = self.video.read()
-        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
-        # so we must encode it into JPEG in order to correctly display the
-        # video stream.
-        bodydetect.detect_fall(image)
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
+        self.rtmp_str = rtmp_str
 
+        # 通过cv2中的类获取视频流操作对象cap
+        self.cap = cv2.VideoCapture(self.rtmp_str)
 
-class VideoCamera2(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture('./camera2.mp4')
+        # 调用cv2方法获取cap的视频帧（帧：每秒多少张图片）
+        # fps = self.cap.get(cv2.CAP_PROP_FPS)
+        self.fps = self.cap.get(cv2.CAP_PROP_FPS)
+        print(self.fps)
 
-    def __del__(self):
-        self.video.release()
+        # 获取cap视频流的每帧大小
+        self.width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        self.height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        self.size = (self.width, self.height)
+        print(self.size)
 
-    def get_frame(self):
-        success, image = self.video.read()
-        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
-        # so we must encode it into JPEG in order to correctly display the
-        # video stream.
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
+        # 定义编码格式mpge-4
+        # self.fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', '2')
 
+        # 定义视频文件输入对象
+        # self.outVideo = cv2.VideoWriter('saveDir1.avi', self.fourcc, self.fps, self.size)
 
-class VideoCamera3(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture(0)
+    def run(self):
+        print('in producer')
 
-    def __del__(self):
-        self.video.release()
+        ret, image = self.cap.read()
+        count = 0
+        while ret:
+            # if ret == True:
 
-    def get_frame(self):
-        success, image = self.video.read()
-        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
-        # so we must encode it into JPEG in order to correctly display the
-        # video stream.
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
+            # self.outVideo.write(image)
 
+            # cv2.imshow('video', image)
 
-class VideoCamera4(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture(0)
+            cv2.waitKey(int(1000 / int(self.fps)))  # 延迟
 
-    def __del__(self):
-        self.video.release()
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     self.outVideo.release()
+            #
+            #     self.cap.release()
+            #
+            #     cv2.destroyAllWindows()
+            #
+            #     break
+            count += count
+            if count % 5 == 0:
+                # 此处为识别代码
+                i = 0
+            ret, image = self.cap.read()
 
-    def get_frame(self):
-        success, image = self.video.read()
-        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
-        # so we must encode it into JPEG in order to correctly display the
-        # video stream.
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
-
-
-class VideoCamera5(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture(0)
-
-    def __del__(self):
-        self.video.release()
-
-    def get_frame(self):
-        success, image = self.video.read()
-        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
-        # so we must encode it into JPEG in order to correctly display the
-        # video stream.
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
-
-
-class camera(object):
-    def __init__(self):
-        self.frames = [open(f + '.jpg', 'rb').read() for f in ['1', '2', '3']]
-        self.video = cv2.VideoCapture(0)
-
-    def __del__(self):
-        self.video.release()
-
-    def get_frame(self):
-        success, image = self.video.read()
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
-
-
-def gen(camera):
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-
-
-@app.route('/video_feed1')
-def video_feed1():
-    return Response(gen(VideoCamera1()),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+        self.cap.release()
+        cv2.destroyAllWindows()
 
 
 def columns(table_name):
@@ -1431,5 +1384,8 @@ if __name__ == '__main__':
                      )
                      '''
     # 用 execute 执行一条 sql 语句
+    rtmp_str = 'rtmp://192.168.0.5/live/camstream'
+    producer = Producer(rtmp_str)
+    producer.start()
     conn.execute(sql_create)
-    app.run(debug=True)
+    app.run(debug=True, threaded=True)

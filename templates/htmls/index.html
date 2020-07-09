@@ -499,17 +499,22 @@
                 url: "http://127.0.0.1:5000/getinout",
                 success: function (data) {
                     var data = eval('(' + data + ')');
-                    var month = 7;
+                    var myDate = new Date();
+                    var tYear = myDate.getFullYear();
+                    var tMonth = myDate.getMonth() + 1;
                     var tableData = ""
                     for (var i = 0; i < 6; i++) {
+                        if (tMonth - i == 0) {
+                            tMonth = 12;
+                            tYear = tYear - 1
+                        }
                         tableData += "<tr>";
-                        tableData += "<td>" + "2020/0" + month + "</td>";
+                        tableData += "<td>" + tYear + "/" + (tMonth - i) + "</td>";
                         tableData += "<td>" + data.oldin[i] + "</td>";
                         tableData += "<td>" + data.oldout[i] + "</td>";
                         tableData += "<td>" + data.empin[i] + "</td>";
                         tableData += "<td>" + data.volin[i] + "</td>";
                         tableData += "</tr>";
-                        month--;
                     }
                     $("#inoutbody").html(tableData);
                 }
