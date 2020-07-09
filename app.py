@@ -618,7 +618,14 @@ def modifyvolunteerbasic():
 
 @app.route('/tomain', methods=['GET', 'POST'])
 def tomain():
-    return render_template('/htmls/index.html')
+    table_name = 'oldperson_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'checkin_date': x[6], 'checkout_date': x[7]})
+    info = json.dumps(info)
+    print(info, type(info))
+    return render_template('/htmls/index.html', info=info)
 
 
 @app.route('/toselectevent', methods=['GET', 'POST'])
@@ -792,13 +799,19 @@ def login0():
     if login(conn, username, password) != 0:
         content = "登录成功"
         userid = login(conn, username, password)
-        response = make_response(render_template('/htmls/index.html', content=content))
         id = request.cookies.get('id')
         table_name = 'sys_user'
         where = 'ID = \'' + str(userid) + '\''
         s = select(conn, table_name, where)
         realname = s[0][3]
         realname = realname.encode('utf-8').decode('latin-1')
+        table_name = 'oldperson_info'
+        s = select(conn, table_name, "")
+        info = []
+        for x in s:
+            info.append({'checkin_date': x[6], 'checkout_date': x[7]})
+        info = json.dumps(info)
+        response = make_response(render_template('/htmls/index.html', content=content, info=info))
         response.set_cookie('id', str(userid))
         response.set_cookie('realname', str(realname))
         return response
