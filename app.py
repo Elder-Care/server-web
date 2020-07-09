@@ -421,7 +421,15 @@ def tologin1():
 
 @app.route('/toprofile', methods=['GET', 'POST'])
 def toprofile():
-    return render_template('/htmls/profile.html')
+    form = request.form
+    id = form.get('id')
+    table_name = 'sys_user'
+    where = 'ID = \'' + str(id) + '\''
+    s = select(conn, table_name, where)
+    info = {'ID': s[0][0], 'UserName': s[0][1], 'Password': s[0][2], 'REAL_NAME': s[0][3], 'SEX': s[0][4],
+            'EMAIL': s[0][5], 'PHONE': s[0][6], 'MOBILE': s[0][7], 'DESCRIPTION': s[0][8], 'ISACTIVE': s[0][9],
+            'CREATED': s[0][10], 'CREATEDBY': s[0][11], 'UPDATED': s[0][12], 'UPDATEDBY': s[0][13], 'REMOVE': s[0][14]}
+    return render_template('/htmls/profile.html', info=info)
 
 
 @app.route('/tomain', methods=['GET', 'POST'])
@@ -874,6 +882,152 @@ def retev():
                      'oldperson_id': x[5]})
     info = json.dumps(info)
     return render_template('/htmls/select_event.html', info=info)
+
+
+@app.route('/tomodifyoldinfo', methods=['GET', 'POST'])
+def tomodifyoldinfo():
+    form = request.form
+    uid = form.get('uid')
+    type = form.get('type')
+    table_name = 'oldperson_info'
+    where = 'id = \'' + str(uid) + '\''
+    s = select(conn, table_name, where)
+    info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
+            'profile_photo': s[0][9], 'room_number': s[0][10], 'firstguardian_name': s[0][11],
+            'firstguardian_relationship': s[0][12], 'firstguardian_phone': s[0][13], 'firstguardian_wechat': s[0][14],
+            'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16], ' secondguardian_phone': s[0][17]
+        , 'secondguardian_wechat': s[0][18], 'health_state': s[0][19], 'DESCRIPTION': s[0][20], 'ISACTIVE': s[0][21],
+            'CREATED': s[0][22], 'CREATEDBY': s[0][23], 'UPDATED': s[0][24]
+        , 'UPDATEDBY': s[0][25], 'REMOVE': s[0][26]}
+    info = json.dumps(info)
+    if type:
+        return render_template('/htmls/modify_old_guardian.html', info=info)
+    else:
+        return render_template('/htmls/modify_old_basic.html', info=info)
+
+
+@app.route('/tomodifyvolunteerinfo', methods=['GET', 'POST'])
+def tomodifyvolunteerinfo():
+    form = request.form
+    uid = form.get('uid')
+    table_name = 'volunteer_info'
+    where = 'id = \'' + str(uid) + '\''
+    s = select(conn, table_name, where)
+    info = {'id': s[0][0], 'name': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
+            'profile_photo': s[0][9], 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
+            'CREATED': s[0][12], 'CREATEDBY': s[0][13], 'UPDATED': s[0][14]
+        , 'UPDATEDBY': s[0][15], 'REMOVE': s[0][16]}
+    info = json.dumps(info)
+    return render_template('/htmls/modify_volunteer_basic.html', info=info)
+
+
+@app.route('/tomodifyworkerinfo', methods=['GET', 'POST'])
+def tomodifyworkerinfo():
+    form = request.form
+    uid = form.get('uid')
+    table_name = 'employee_info'
+    where = 'id = \'' + str(uid) + '\''
+    s = select(conn, table_name, where)
+    info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
+            'birthday': s[0][5], 'hire_date': s[0][6], 'resign_date': s[0][7], 'imgset_dir': s[0][8],
+            'profile_photo': s[0][9], 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
+            'CREATED': s[0][12], 'CREATEDBY': s[0][13], 'UPDATED': s[0][14]
+        , 'UPDATEDBY': s[0][15], 'REMOVE': s[0][16]}
+    info = json.dumps(info)
+    return render_template('/htmls/modify_worker_basic.html', info=info)
+
+
+@app.route('/tomodifyprofile', methods=['GET', 'POST'])
+def tomodifyprofile():
+    form = request.form
+    id = form.get('id')
+    table_name = 'sys_user'
+    where = 'ID = \'' + str(id) + '\''
+    s = select(conn, table_name, where)
+    info = {'ID': s[0][0], 'UserName': s[0][1], 'Password': s[0][2], 'REAL_NAME': s[0][3], 'SEX': s[0][4],
+            'EMAIL': s[0][5], 'PHONE': s[0][6], 'MOBILE': s[0][7], 'DESCRIPTION': s[0][8], 'ISACTIVE': s[0][9],
+            'CREATED': s[0][10], 'CREATEDBY': s[0][11], 'UPDATED': s[0][12], 'UPDATEDBY': s[0][13], 'REMOVE': s[0][14]}
+    return render_template('/htmls/modify_profile.html', info=info)
+
+
+@app.route('/modifyprofile', methods=['GET', 'POST'])
+def modifyprofile():
+    form = request.form
+    info = {'REAL_NAME': form.get('REAL_NAME'), 'SEX': form.get('SEX'), 'PHONE': form.get('PHONE'),
+            'MOBILE': form.get('MOBILE'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
+    uid = form.get('id')
+    if person_info(conn, uid, info):
+        content = "用户信息更新成功"
+    else:
+        content = ''
+    return render_template('/htmls/profile.html', content=content)
+
+
+@app.route('/modifyoldbasic', methods=['GET', 'POST'])
+def modifyoldbasic():
+    form = request.form
+    info = {'gender': form.get('gender'), 'phone': form.get('phone'), 'id_card': form.get('id_card'),
+            'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
+            'checkout_date': form.get('checkout_date'), 'profile_photo':
+                form.get('profile_photo'), 'room_number': form.get('room_number'),
+            'health_state': form.get('health_state'),
+            'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
+    uid = form.get('id')
+    if elder_info(conn, uid, info):
+        content = "用户信息更新成功"
+    else:
+        content = ''
+    return render_template('/htmls/old_info.html', content=content)
+
+
+@app.route('/modifyoldguardian', methods=['GET', 'POST'])
+def modifyoldguardian():
+    form = request.form
+    info = {'firstguardian_name':
+                form.get('firstguardian_name'), 'firstguardian_relationship': form.get('firstguardian_relationship'),
+            'firstguardian_phone': form.get('firstguardian_phone'), 'firstguardian_wechat':
+                form.get('firstguardian_wechat'), 'secondguardian_name':
+                form.get('secondguardian_name'), 'secondguardian_relationship': form.get('secondguardian_relationship'),
+            'secondguardian_phone': form.get('secondguardian_phone'), 'secondguardian_wechat':
+                form.get('secondguardian_wechat')}
+    uid = form.get('id')
+    if elder_info(conn, uid, info):
+        content = "用户信息更新成功"
+    else:
+        content = ''
+    return render_template('/htmls/old_info.html', content=content)
+
+
+@app.route('/modifyworkerbasic', methods=['GET', 'POST'])
+def modifyworkerbasic():
+    form = request.form
+    info = {'gender': form.get('gender'), 'phone': form.get('phone'), 'id_card': form.get('id_card'),
+            'birthday': form.get('birthday'), 'hire_date': form.get("hire_date"),
+            'resign_date': form.get('resign_date'), 'imgset_dir': form.get('imgset_dir'), 'profile_photo':
+                form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
+    uid = form.get('id')
+    if emp_info(conn, uid, info):
+        content = "员工信息更新成功"
+    else:
+        content = ''
+    return render_template('/htmls/worker_info.html', content=content)
+
+
+@app.route('/modifyvolunteerbasic', methods=['GET', 'POST'])
+def modifyvolunteerbasic():
+    form = request.form
+    info = {'gender': form.get('gender'), 'phone': form.get('phone'), 'id_card': form.get('id_card'),
+            'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
+            'checkout_date': form.get('checkout_date'), 'imgset_dir': form.get('imgset_dir'), 'profile_photo':
+                form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
+    uid = form.get('id')
+    if vol_info(conn, uid, info):
+        content = "志愿者信息更新成功"
+    else:
+        content = ''
+    return render_template('/htmls/volunteer_info.html', content=content)
 
 
 @app.route('/images', methods=['GET', 'POST'])
