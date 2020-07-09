@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>摄像头2</title>
 
@@ -11,6 +11,11 @@
 
     <!-- App styles -->
     <link rel="stylesheet" href="../static/assets/css/app.min.css" type="text/css">
+
+    <!-- 摄像头中的js -->
+    <link href="http://vjs.zencdn.net/5.5.3/video-js.css" rel="stylesheet">
+    <!-- If you'd like to support IE8 -->
+    <script src="http://vjs.zencdn.net/ie8/1.1.1/videojs-ie8.min.js"></script>
 </head>
 <body>
 
@@ -273,13 +278,13 @@
 
             <!-- begin::page-header -->
             <div class="page-header">
-                <h4>摄像头2</h4>
+                <h4>摄像头1</h4>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
                             <a href="#">摄像头管理</a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">摄像头2</li>
+                        <li class="breadcrumb-item active" aria-current="page">摄像头1</li>
                     </ol>
                 </nav>
             </div>
@@ -296,11 +301,40 @@
                                 </button>
                             </div>
                             <br />
-                            <video id="v" style="width: 640px;height: 480px;"></video>
-                            <canvas id="canvas" style="display:none;"></canvas>
-                            <br />
-                            <img src="http://placehold.it/640&text=Your%20image%20here%20..." id="photo" alt="photo">
+<!--请谨慎修改，video中的参数，比如加auto自动播放，就无法播放了。未知原因—— 张泽光 -->
+                            <video id="my-video"
+                                   class="video-js"
+                                   controls preload="auto"
+                                   width="640"
+                                   height="480"
+                                   loop=true
+                                   poster=""
+                                   data-setup="{}">
+                                <source src="rtmp://192.168.0.108/live/8" type="rtmp/flv">
+                                <p class="vjs-no-js vjs-big-play-centered">播放视频需要启用 JavaScript，推荐使用支持HTML5的浏览器访问。
+                                    To view this video please enable JavaScript, and consider upgrading to a web browser that
+                                    <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                                </p>
+                            </video>
+                            <script src="http://vjs.zencdn.net/5.5.3/video.js"></script>
+                            <!--vjs-big-play-centered 播放按钮居中-->
+                            <!--poster默认的显示界面，就是还没点播放，给你显示的界面-->
+                            <!--controls 规定浏览器应该为视频提供播放控件-->
+                            <!--preload="auto" 是否提前加载-->
+                            <!--autoplay 自动播放-->
+                            <!--loop=true 自动循环-->
+                            <!--data-setup='{"example_option":true}' 可以把一些属性写到这个里面来，如data-setup={"autoplay":true}-->
 
+{#以下是video的其它应用方法，这里以防万一，作为保留。v是本地摄像头，src选取播放本地视频#}
+{#<video id="v"  style="width: 640px;height: 480px;" controls="controls" autoplay></video>#}
+{#<video src="images/xxx.mov" width="300px" heigth="300px" controls="controls" autoplay></video>#}
+{#                            拍照的画布，不知道是否有用，保留#}
+
+                            <canvas id="canvas" style="display:none;"></canvas>#}
+                            <br />#}
+                            <img src="http://placehold.it/640&text=Your%20image%20here%20..." id="photo" alt="photo">#}
+
+{#调用的本地摄像头的js，他可能涉及拍照功能，所以我没有删去。如果用RTMP请忽略。#}
     <script>
         !(function () {
             // 老的浏览器可能根本没有实现 mediaDevices，所以我们可以先设置一个空的对象
@@ -345,6 +379,7 @@
             }).catch(err => {
                 console.error(err.name + ": " + err.message);
             })
+            照片的获取
             document.getElementById('take').addEventListener('click', function () {
                 if (videoPlaying) {
                     let canvas = document.getElementById('canvas');
