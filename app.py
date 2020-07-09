@@ -429,6 +429,7 @@ def toprofile():
     info = {'ID': s[0][0], 'UserName': s[0][1], 'Password': s[0][2], 'REAL_NAME': s[0][3], 'SEX': s[0][4],
             'EMAIL': s[0][5], 'PHONE': s[0][6], 'MOBILE': s[0][7], 'DESCRIPTION': s[0][8], 'ISACTIVE': s[0][9],
             'CREATED': s[0][10], 'CREATEDBY': s[0][11], 'UPDATED': s[0][12], 'UPDATEDBY': s[0][13], 'REMOVE': s[0][14]}
+    info = json.dumps(info)
     return render_template('/htmls/profile.html', info=info)
 
 
