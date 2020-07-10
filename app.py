@@ -12,14 +12,14 @@ import threading
 app = Flask(__name__)
 conn = sqlite3.connect('old_care.sqlite', check_same_thread=False)
 cur_id = 0
+rtmp_str = 'rtmp://192.168.0.5/live/camstream'
+db_path = 'old_care.sqlite'
 
 
 class Producer(threading.Thread):
-    """docstring for Producer"""
 
     def __init__(self, rtmp_str):
         super(Producer, self).__init__()
-
         self.rtmp_str = rtmp_str
 
         # 通过cv2中的类获取视频流操作对象cap
@@ -28,16 +28,16 @@ class Producer(threading.Thread):
         # 调用cv2方法获取cap的视频帧（帧：每秒多少张图片）
         # fps = self.cap.get(cv2.CAP_PROP_FPS)
         self.fps = self.cap.get(cv2.CAP_PROP_FPS)
-        print(self.fps)
+        # print(self.fps)
 
         # 获取cap视频流的每帧大小
         self.width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self.size = (self.width, self.height)
-        print(self.size)
+        # print(self.size)
 
         # 定义编码格式mpge-4
-        # self.fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', '2')
+        self.fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', '2')
 
         # 定义视频文件输入对象
         # self.outVideo = cv2.VideoWriter('saveDir1.avi', self.fourcc, self.fps, self.size)
@@ -49,7 +49,6 @@ class Producer(threading.Thread):
         count = 0
         while ret:
             # if ret == True:
-
             # self.outVideo.write(image)
 
             # cv2.imshow('video', image)
@@ -64,14 +63,18 @@ class Producer(threading.Thread):
             #     cv2.destroyAllWindows()
             #
             #     break
-            count += count
+            count += 1
             if count % 5 == 0:
-                # 此处为识别代码
-                i = 0
+                # 识别代码
+                f = bodydetect.detect_fall(image)
+                if f:
+                    content = '摔倒'
+                else:
+                    content = '正常'
+                print(content)
             ret, image = self.cap.read()
 
         self.cap.release()
-        cv2.destroyAllWindows()
 
 
 def columns(table_name):
@@ -1207,66 +1210,8 @@ def images():
     return render_template('images.html')
 
 
-@app.route('/videos', methods=['GET', 'POST'])
-def videos():
-    f = request.files.get('file')
-    path = 'D:\\dasanxxq\\videos'
-    if not os.path.exists(path):
-        os.mkdir(path)
-    path += '\\'
-    path += str(random.randint(0, 999999))
-    path += '.avi'
-    if f:
-        f.save(path)
-    return render_template('videos.html')
-
-
-@app.route('/vindex', methods=['GET', 'POST'])
-def vindex():
-    return render_template('vindex.html')
-
-
-def gen(camera):
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-
-@app.route('/fall', methods=['GET', 'POST'])
-def fall():
-    f = bodydetect.detect_fall('./pic/test.png')
-    if f:
-        content = '摔倒'
-    else:
-        content = '正常'
-    return render_template('fall.html', content=content)
-
-
-@app.route('/camera')
-def camera():
-    # cap = cv2.VideoCapture('person.mp4')
-    cap = cv2.VideoCapture()
-    count = 1
-    while True:
-        success, image = cap.read()
-        if success:
-            if count % 36 == 1:
-                cv2.imwrite("picture/frame%d.jpg" % count, image)
-                if cv2.waitKey(10) == 27:
-                    break
-            count += 1
-        else:
-            break
-    cap.release()
-    cv2.destroyAllWindows()
-    pass
-
-
-if __name__ == '__main__':
-    db_path = 'old_care.sqlite'
-    conn = sqlite3.connect(db_path, check_same_thread=False)
-    sql_create = '''
+conn = sqlite3.connect(db_path, check_same_thread=False)
+sql_create = '''
         CREATE TABLE IF NOT EXISTS oldperson_info (
           ID INTEGER PRIMARY KEY,
           username TEXT,
@@ -1297,9 +1242,9 @@ if __name__ == '__main__':
           REMOVE TEXT
         )
         '''
-    # 用 execute 执行一条 sql 语句
-    conn.execute(sql_create)
-    sql_create = '''
+# 用 execute 执行一条 sql 语句
+conn.execute(sql_create)
+sql_create = '''
             CREATE TABLE IF NOT EXISTS employee_info (
             id INTEGER PRIMARY KEY,
             username TEXT,
@@ -1320,9 +1265,9 @@ if __name__ == '__main__':
             REMOVE TEXT
             )
             '''
-    # 用 execute 执行一条 sql 语句
-    conn.execute(sql_create)
-    sql_create = '''
+# 用 execute 执行一条 sql 语句
+conn.execute(sql_create)
+sql_create = '''
               CREATE TABLE IF NOT EXISTS volunteer_info (
                 id INTEGER PRIMARY KEY,
                 name TEXT,
@@ -1343,9 +1288,9 @@ if __name__ == '__main__':
                 REMOVE TEXT
               )
               '''
-    # 用 execute 执行一条 sql 语句
-    conn.execute(sql_create)
-    sql_create = '''
+# 用 execute 执行一条 sql 语句
+conn.execute(sql_create)
+sql_create = '''
                  CREATE TABLE IF NOT EXISTS event_info (
                     id INTEGER PRIMARY KEY,
                     event_type INTEGER,
@@ -1355,9 +1300,9 @@ if __name__ == '__main__':
                     oldperson_id INTEGER
                  )
                  '''
-    # 用 execute 执行一条 sql 语句
-    conn.execute(sql_create)
-    sql_create = '''
+# 用 execute 执行一条 sql 语句
+conn.execute(sql_create)
+sql_create = '''
                      CREATE TABLE IF NOT EXISTS sys_user (
                         ID INTEGER PRIMARY KEY,
                         UserName TEXT,
@@ -1383,9 +1328,8 @@ if __name__ == '__main__':
                         jsonauth TEXT
                      )
                      '''
-    # 用 execute 执行一条 sql 语句
-    rtmp_str = 'rtmp://192.168.0.5/live/camstream'
-    producer = Producer(rtmp_str)
-    producer.start()
-    conn.execute(sql_create)
-    app.run(debug=True, threaded=True)
+conn.execute(sql_create)
+
+#producer = Producer(rtmp_str)
+#producer.start()
+app.run(debug=True, threaded=True)

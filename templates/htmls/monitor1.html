@@ -53,7 +53,7 @@
             <img src="../static/assets/media/image/user/1.png" class="rounded-circle" alt="image">
         </figure>
         <div>
-            <h5>杨烁平</h5>
+            <h5 id="sidename">杨烁平</h5>
             <p class="text-muted">管理员</p>
             <ul class="nav">
                 <li class="nav-item">
@@ -295,12 +295,6 @@
 
                     <div class="card">
                         <div class="card-body">
-                            <div class="col-lg-3 col-sm-6 m-t-b-20">
-                                <button type="button" class="btn btn-instagram" id="take">
-                                    <i class="fa fa-instagram mr-2"></i> 实时拍照
-                                </button>
-                            </div>
-                            <br/>
                             <!--请谨慎修改，video中的参数，比如加auto自动播放，就无法播放了。未知原因—— 张泽光 -->
                             <video id="my-video"
                                    class="video-js"
@@ -317,83 +311,7 @@
                                         video</a>
                                 </p>
                             </video>
-                            <script src="http://vjs.zencdn.net/5.5.3/video.js"></script>
-                            <!--vjs-big-play-centered 播放按钮居中-->
-                            <!--poster默认的显示界面，就是还没点播放，给你显示的界面-->
-                            <!--controls 规定浏览器应该为视频提供播放控件-->
-                            <!--preload="auto" 是否提前加载-->
-                            <!--autoplay 自动播放-->
-                            <!--loop=true 自动循环-->
-                            <!--data-setup='{"example_option":true}' 可以把一些属性写到这个里面来，如data-setup={"autoplay":true}-->
 
-                            {#以下是video的其它应用方法，这里以防万一，作为保留。v是本地摄像头，src选取播放本地视频#}
-                            {#<video id="v"  style="width: 640px;height: 480px;" controls="controls" autoplay></video>#}
-                            {#<video src="images/xxx.mov" width="300px" heigth="300px" controls="controls" autoplay></video>#}
-                            {#                            拍照的画布，不知道是否有用，保留#}
-
-                            <canvas id="canvas" style="display:none;"></canvas>
-                            #}
-                            <br/>#}
-                            <img src="http://placehold.it/640&text=Your%20image%20here%20..." id="photo" alt="photo">#}
-
-                            {#调用的本地摄像头的js，他可能涉及拍照功能，所以我没有删去。如果用RTMP请忽略。#}
-                            <script>
-                                !(function () {
-                                    // 老的浏览器可能根本没有实现 mediaDevices，所以我们可以先设置一个空的对象
-                                    if (navigator.mediaDevices === undefined) {
-                                        navigator.mediaDevices = {};
-                                    }
-                                    if (navigator.mediaDevices.getUserMedia === undefined) {
-                                        navigator.mediaDevices.getUserMedia = function (constraints) {
-                                            // 首先，如果有getUserMedia的话，就获得它
-                                            var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-
-                                            // 一些浏览器根本没实现它 - 那么就返回一个error到promise的reject来保持一个统一的接口
-                                            if (!getUserMedia) {
-                                                return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
-                                            }
-
-                                            // 否则，为老的navigator.getUserMedia方法包裹一个Promise
-                                            return new Promise(function (resolve, reject) {
-                                                getUserMedia.call(navigator, constraints, resolve, reject);
-                                            });
-                                        }
-                                    }
-                                    const constraints = {
-                                        video: true,
-                                        audio: false
-                                    };
-                                    let videoPlaying = false;
-                                    let v = document.getElementById('v');
-                                    let promise = navigator.mediaDevices.getUserMedia(constraints);
-                                    promise.then(stream => {
-                                        // 旧的浏览器可能没有srcObject
-                                        if ("srcObject" in v) {
-                                            v.srcObject = stream;
-                                        } else {
-                                            // 防止再新的浏览器里使用它，应为它已经不再支持了
-                                            v.src = window.URL.createObjectURL(stream);
-                                        }
-                                        v.onloadedmetadata = function (e) {
-                                            v.play();
-                                            videoPlaying = true;
-                                        };
-                                    }).catch(err => {
-                                        console.error(err.name + ": " + err.message);
-                                    })
-                                    照片的获取
-                                    document.getElementById('take').addEventListener('click', function () {
-                                        if (videoPlaying) {
-                                            let canvas = document.getElementById('canvas');
-                                            canvas.width = v.videoWidth;
-                                            canvas.height = v.videoHeight;
-                                            canvas.getContext('2d').drawImage(v, 0, 0);
-                                            let data = canvas.toDataURL('image/webp');
-                                            document.getElementById('photo').setAttribute('src', data);
-                                        }
-                                    }, false);
-                                })();
-                            </script>
 
                         </div>
                     </div>
@@ -403,7 +321,6 @@
 
         </div>
         <!-- end::container -->
-
     </div>
     <!-- end::main-content -->
 
@@ -421,8 +338,29 @@
 
 <!-- Plugin scripts -->
 <script src="../static/vendors/bundle.js"></script>
-
+<script src="http://vjs.zencdn.net/5.5.3/video.js"></script>
 <!-- App scripts -->
 <script src="../static/assets/js/app.min.js"></script>
+<script>
+    function getCookie(cookie_name) {
+        var allcookies = document.cookie;
+        var cookie_pos = allcookies.indexOf(cookie_name);
+        if (cookie_pos != -1) {
+            cookie_pos += cookie_name.length + 1;
+            var cookie_end = allcookies.indexOf(";", cookie_pos);
+
+            if (cookie_end == -1) {
+                cookie_end = allcookies.length;
+            }
+
+            var value = allcookies.substring(cookie_pos, cookie_end);
+        }
+        return decodeURI(value);
+    }
+
+    let realname = getCookie('realname');
+    console.log(realname);
+    document.getElementById("sidename").innerHTML = realname;
+</script>
 </body>
 </html>
