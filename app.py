@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, Response, make_response, jsonify
+import requests
+from flask import Flask, render_template, request, make_response, jsonify
 import sqlite3
 import time
 import os
@@ -64,14 +65,17 @@ class Producer(threading.Thread):
             #
             #     break
             count += 1
-            if count % 5 == 0:
-                # 识别代码
-                f = bodydetect.detect_fall(image)
-                if f:
-                    content = '摔倒'
-                else:
-                    content = '正常'
-                print(content)
+            if count % 3 == 0:
+                # 延时直到flask服务器开启
+                if count > 360:
+                    # 识别代码
+                    f = bodydetect.detect_fall(image)
+                    content = ''
+                    if f:
+                        content = '摔倒'
+                        print(content)
+                    else:
+                        content = '正常'
             ret, image = self.cap.read()
 
         self.cap.release()
@@ -850,8 +854,13 @@ def addo():
             'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     global conn
     if add_elder(conn, info):
-        content = "增添成功"
-        return render_template('/htmls/index.html', content=content)
+        table_name = 'oldperson_info'
+        s = select(conn, table_name, "")
+        info = []
+        for x in s:
+            info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'roomnum': x[10]})
+        info = json.dumps(info)
+        return render_template('/htmls/select_old.html', info=info)
     else:
         content = "用户名已存在"
         return render_template('/htmls/index.html', content=content)
@@ -951,8 +960,13 @@ def adde():
                 form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     global conn
     if add_employee(conn, info):
-        content = "增添成功"
-        return render_template('/htmls/index.html', content=content)
+        table_name = 'employee_info'
+        s = select(conn, table_name, "")
+        info = []
+        for x in s:
+            info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'phone': x[3]})
+        info = json.dumps(info)
+        return render_template('/htmls/select_worker.html', info=info)
     else:
         content = "用户名已存在"
         return render_template('/htmls/index.html', content=content)
@@ -1009,8 +1023,13 @@ def addv():
                 form.get('imgset_dir'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     global conn
     if add_volunteer(conn, info):
-        content = "增添成功"
-        return render_template('/htmls/index.html', content=content)
+        table_name = 'volunteer_info'
+        s = select(conn, table_name, "")
+        info = []
+        for x in s:
+            info.append({'id': x[0], 'name': x[1], 'gender': x[2], 'phone': x[3]})
+        info = json.dumps(info)
+        return render_template('/htmls/select_volunteer.html', info=info)
     else:
         content = "用户名已存在"
         return render_template('/htmls/index.html', content=content)
@@ -1173,7 +1192,6 @@ def getinout():
                 volin[ms.index(m)] += 1
     inout = {'oldin': oldin, 'oldout': oldout, 'empin': empin, 'volin': volin}
     inout = json.dumps(inout)
-    print(inout)
     return inout
 
 
@@ -1327,9 +1345,12 @@ sql_create = '''
                         appversion TEXT,
                         jsonauth TEXT
                      )
+                     
                      '''
 conn.execute(sql_create)
 
-#producer = Producer(rtmp_str)
-#producer.start()
+# 服务器拉流线程
+# producer = Producer(rtmp_str)
+# producer.start()
+# producer.join()
 app.run(debug=True, threaded=True)
