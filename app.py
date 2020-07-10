@@ -1126,6 +1126,85 @@ def retev():
     return render_template('/htmls/select_event.html', info=info)
 
 
+@app.route('/getallmembers', methods=['GET', 'POST'])
+def getallmembers():
+    table_name = 'oldperson_info'
+    s = select(conn, table_name, "")
+    olds = len(s)
+    table_name = 'employee_info'
+    s = select(conn, table_name, "")
+    workers = len(s)
+    table_name = 'volunteer_info'
+    s = select(conn, table_name, "")
+    volunteers = len(s)
+    nums = [olds, workers, volunteers]
+    return nums
+
+
+@app.route('/getinout', methods=['GET', 'POST'])
+def getinout():
+    table_name = 'oldperson_info'
+    s1 = select(conn, table_name, "")
+    table_name = 'employee_info'
+    s2 = select(conn, table_name, "")
+    table_name = 'volunteer_info'
+    s3 = select(conn, table_name, "")
+    ms = []
+    t = time.strftime("%Y-%m", time.localtime())
+    t0 = t.split('-')
+    nowy = int(t0[0])
+    nowm = int(t0[1])
+    if nowm >= 6:
+        i = 0
+        while i < 6:
+            nowt = str(nowy) + '-' + str(nowm - i)
+            ms.append(nowt)
+            i += 1
+    else:
+        m0 = 6 - nowm
+        while nowm > 0:
+            nowt = str(nowy) + '-' + str(nowm)
+            ms.append(nowt)
+            nowm -= 1
+        i = 0
+        while i < m0:
+            nowt = str(nowy - 1) + '-' + str(12 - i)
+            ms.append(nowt)
+            i += 1
+    i = 0
+    for m in ms:
+        if len(m) == 6:
+            m = m[0:5] + str(0) + m[-1]
+            ms[i] = m
+            i += 1
+    oldin = [0, 0, 0, 0, 0, 0]
+    oldout = [0, 0, 0, 0, 0, 0]
+    for x in s1:
+        if x[6]:
+            m = x[6][0:7]
+            if m in ms:
+                oldin[ms.index(m)] += 1
+        if x[7]:
+            m = x[7][0:7]
+            if m in ms:
+                oldout[ms.index(m)] += 1
+    empin = [0, 0, 0, 0, 0, 0]
+    for x in s2:
+        if x[6]:
+            m = x[6][0:7]
+            if m in ms:
+                empin[ms.index(m)] += 1
+    volin = [0, 0, 0, 0, 0, 0]
+    for x in s3:
+        if x[6]:
+            m = x[6][0:7]
+            if m in ms:
+                volin[ms.index(m)] += 1
+    inout = {'oldin': oldin, 'oldout': oldout, 'empin': empin, 'volin': volin}
+    inout = json.dumps(inout)
+    return inout
+
+
 @app.route('/images', methods=['GET', 'POST'])
 def images():
     f = request.files.get('file')
