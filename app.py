@@ -763,7 +763,11 @@ def login0():
             info.append({'checkin_date': x[6], 'checkout_date': x[7]})
         info = json.dumps(info)
         response = make_response(render_template('/htmls/index.html', content=content, info=info))
+<<<<<<< HEAD
         realname = quote(realname)
+=======
+
+>>>>>>> e1893b3f408f7d5e19a3a3b3ed93508c635e3001
         response.set_cookie('id', str(userid))
         response.set_cookie('realname', realname)
         return response
