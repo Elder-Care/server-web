@@ -48,7 +48,7 @@
             <img src="../static/assets/media/image/user/1.png" class="rounded-circle" alt="image">
         </figure>
         <div>
-            <h5>杨烁平</h5>
+            <h5 id="sidename">杨烁平</h5>
             <p class="text-muted">管理员</p>
             <ul class="nav">
                 <li class="nav-item">
@@ -178,7 +178,7 @@
                 <li class="nav-item search-form">
                     <div class="row">
                         <div class="col-md-6">
-                                <h4>智慧养老系统后台</h4>
+                            <h4>智慧养老系统后台</h4>
                         </div>
                     </div>
                 </li>
@@ -272,7 +272,7 @@
         <div class="container">
 
             <div class="page-header">
-                <h4>欢迎， <span class="text-primary">杨烁平</span></h4>
+                <h4>欢迎， <span class="text-primary" id="welcomename">杨烁平</span></h4>
             </div>
 
             <div class="row">
@@ -295,7 +295,7 @@
                                                         </div>
                                                         <div>
                                                             <h6 class="text-uppercase font-size-11">目前养老院的老年人数量</h6>
-                                                            <h4 class="mb-0">133</h4>
+                                                            <h4 class="mb-0" id="olds">133</h4>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -308,7 +308,7 @@
                                                         </div>
                                                         <div>
                                                             <h6 class="text-uppercase font-size-11">目前养老院的工作人员数量</h6>
-                                                            <h4 class="mb-0">26</h4>
+                                                            <h4 class="mb-0" id="workers">26</h4>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -321,7 +321,7 @@
                                                         </div>
                                                         <div>
                                                             <h6 class="text-uppercase font-size-11">目前养老院的义工数量</h6>
-                                                            <h4 class="mb-0">11</h4>
+                                                            <h4 class="mb-0" id="volunteers">11</h4>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -339,49 +339,7 @@
                                                         <th>访问义工人数</th>
                                                     </tr>
                                                     </thead>
-                                                    <tbody>
-                                                    <tr>
-                                                        <td>07/2020</td>
-                                                        <td class="text-success">+ 3</td>
-                                                        <td class="text-danger">- 2</td>
-                                                        <td class="text-success">+ 3</td>
-                                                        <td class="text-success">+ 3</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>06/2020</td>
-                                                        <td class="text-success">+ 1</td>
-                                                        <td class="text-danger">- 4</td>
-                                                        <td class="text-success">+ 5</td>
-                                                        <td class="text-success">+ 1</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>05/2020</td>
-                                                        <td class="text-success">+ 9</td>
-                                                        <td class="text-danger">- 0</td>
-                                                        <td class="text-success">+ 11</td>
-                                                        <td class="text-success">+ 32</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>04/2020</td>
-                                                        <td class="text-success">+ 13</td>
-                                                        <td class="text-danger">- 20</td>
-                                                        <td class="text-success">+ 30</td>
-                                                        <td class="text-success">+ 31</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>03/2020</td>
-                                                        <td class="text-success">+ 13</td>
-                                                        <td class="text-danger">- 21</td>
-                                                        <td class="text-success">+ 32</td>
-                                                        <td class="text-success">+ 37</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>02/2020</td>
-                                                        <td class="text-success">+ 0</td>
-                                                        <td class="text-danger">- 20</td>
-                                                        <td class="text-success">+ 0</td>
-                                                        <td class="text-success">+ 1</td>
-                                                    </tr>
+                                                    <tbody id="inoutbody">
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -410,7 +368,8 @@
     <!-- begin::footer -->
     <footer>
         <div class="container">
-            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a></div>
+            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a>
+            </div>
         </div>
     </footer>
     <!-- end::footer -->
@@ -418,78 +377,151 @@
 </div>
 <!-- end::main -->
 
-<!-- Plugin scripts -->
-<script src="../static/vendors/bundle.js"></script>
-
-<!-- App scripts -->
-<script src="../static/assets/js/app.min.js"></script>
-
-<!-- Chartjs -->
-<script src="../static/vendors/charts/chartjs/chart.min.js"></script>
 <script>
-$(document).ready(function () {
+    var info = {{ info|safe }};
+    console.log(info);
 
-    var colors = {
-        primary: $('.colors .bg-primary').css('background-color'),
-        primaryLight: $('.colors .bg-primary-bright').css('background-color'),
-        secondary: $('.colors .bg-secondary').css('background-color'),
-        secondaryLight: $('.colors .bg-secondary-bright').css('background-color'),
-        info: $('.colors .bg-info').css('background-color'),
-        infoLight: $('.colors .bg-info-bright').css('background-color'),
-        success: $('.colors .bg-success').css('background-color'),
-        successLight: $('.colors .bg-success-bright').css('background-color'),
-        danger: $('.colors .bg-danger').css('background-color'),
-        dangerLight: $('.colors .bg-danger-bright').css('background-color'),
-        warning: $('.colors .bg-warning').css('background-color'),
-        warningLight: $('.colors .bg-warning-bright').css('background-color'),
-    };
+    var twentyNineteen = ["-07-", "-08-", "-09-", "-10-", "-11-", "-12-"];
+    var twentyNineteen_enter_number = [0, 0, 0, 0, 0, 0];
+    var twentyNineteen_out_number = [0, 0, 0, 0, 0, 0];
 
-    function chartjs_old() {
-        var element = document.getElementById("chartjs_old");
-        element.height = 100;
-        new Chart(element, {
-            type: 'bar',
-            data: {
-                labels: ["7月", "8月", "9月", "10月", "11月", "12月"],
-                datasets: [{
-                    label: "入院",
-                    type: "line",
-                    borderColor: colors.warning,
-                    data: [4,44,22,111,22,1],
-                    fill: false
-                }, {
-                    label: "出院",
-                    type: "line",
-                    borderColor: colors.success,
-                    data: [0,43,21,12,91,4],
-                    fill: false
-                }, {
-                    label: "入院",
-                    type: "bar",
-                    backgroundColor: colors.secondary,
-                    data: [4,44,22,111,22,1],
-                }, {
-                    label: "出院",
-                    type: "bar",
-                    backgroundColor: colors.primary,
-                    backgroundColorHover: "#3e95cd",
-                    data: [0,43,21,12,91,4]
-                }
-                ]
-            },
-            options: {
-                title: {
-                    display: true,
-                    text: '2019年下半年养老院每月老年人数量变化图'
-                },
-                legend: { display: false }
+    for (i in info) {
+
+        for (j in twentyNineteen) {
+            if (info[i]['checkin_date'] != null && info[i]['checkin_date'].indexOf(twentyNineteen[j]) !== -1 && info[i]['checkin_date'].indexOf("2019") !== -1) {
+                twentyNineteen_enter_number[j] += 1;
+                break;
             }
-        });
+            if (info[i]['checkout_date'] != null && info[i]['checkout_date'].indexOf(twentyNineteen[j]) !== -1 && info[i]['checkout_date'].indexOf("2019") !== -1) {
+                twentyNineteen_out_number[j] += 1;
+                break;
+            }
+        }
+
     }
 
-    chartjs_old();
+    console.log(twentyNineteen_enter_number);
+    console.log(twentyNineteen_out_number);
 
-});
+</script>
+
+<!-- Plugin scripts -->
+<script src="/static/vendors/bundle.js"></script>
+
+<!-- App scripts -->
+<script src="/static/assets/js/app.min.js"></script>
+
+<!-- Chartjs -->
+<script src="/static/vendors/charts/chartjs/chart.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+
+            var colors = {
+                primary: $('.colors .bg-primary').css('background-color'),
+                primaryLight: $('.colors .bg-primary-bright').css('background-color'),
+                secondary: $('.colors .bg-secondary').css('background-color'),
+                secondaryLight: $('.colors .bg-secondary-bright').css('background-color'),
+                info: $('.colors .bg-info').css('background-color'),
+                infoLight: $('.colors .bg-info-bright').css('background-color'),
+                success: $('.colors .bg-success').css('background-color'),
+                successLight: $('.colors .bg-success-bright').css('background-color'),
+                danger: $('.colors .bg-danger').css('background-color'),
+                dangerLight: $('.colors .bg-danger-bright').css('background-color'),
+                warning: $('.colors .bg-warning').css('background-color'),
+                warningLight: $('.colors .bg-warning-bright').css('background-color'),
+            };
+
+            function chartjs_old() {
+                var element = document.getElementById("chartjs_old");
+                element.height = 100;
+                new Chart(element, {
+                    type: 'bar',
+                    data: {
+                        labels: ["7月", "8月", "9月", "10月", "11月", "12月"],
+                        datasets: [{
+                            label: "入院",
+                            type: "line",
+                            borderColor: colors.warning,
+                            data: twentyNineteen_enter_number,
+                            fill: false
+                        }, {
+                            label: "出院",
+                            type: "line",
+                            borderColor: colors.success,
+                            data: twentyNineteen_out_number,
+                            fill: false
+                        }, {
+                            label: "入院",
+                            type: "bar",
+                            backgroundColor: colors.secondary,
+                            data: twentyNineteen_enter_number
+                        }, {
+                            label: "出院",
+                            type: "bar",
+                            backgroundColor: colors.primary,
+                            backgroundColorHover: "#3e95cd",
+                            data: twentyNineteen_out_number
+                        }
+                        ]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: '2019年下半年养老院每月老年人数量变化图'
+                        },
+                        options: {
+                            title: {
+                                display: true,
+                                text: '2019年下半年养老院每月老年人数量变化图'
+                            },
+                            legend: {display: false}
+                        }
+                    }
+                })
+            }
+
+            chartjs_old();
+
+            $.ajax({
+                method: 'POST',
+                url: "http://127.0.0.1:5000/getallmembers",
+                success: function (data) {
+                    document.getElementById("olds").innerHTML = data.olds;
+                    document.getElementById("workers").innerHTML = data.workers;
+                    document.getElementById("volunteers").innerHTML = data.volunteers;
+                }
+            });
+
+            $.ajax({
+                method: 'POST',
+                url: "http://127.0.0.1:5000/getinout",
+                success: function (data) {
+                    var data = eval('(' + data + ')');
+                    var myDate = new Date();
+                    var tYear = myDate.getFullYear();
+                    var tMonth = myDate.getMonth() + 1;
+                    var tableData = ""
+                    for (var i = 0; i < 6; i++) {
+                        if (tMonth - i == 0) {
+                            tMonth = 12;
+                            tYear = tYear - 1
+                        }
+                        tableData += "<tr>";
+                        tableData += "<td>" + tYear + "/" + (tMonth - i) + "</td>";
+                        tableData += "<td>" + data.oldin[i] + "</td>";
+                        tableData += "<td>" + data.oldout[i] + "</td>";
+                        tableData += "<td>" + data.empin[i] + "</td>";
+                        tableData += "<td>" + data.volin[i] + "</td>";
+                        tableData += "</tr>";
+                    }
+                    $("#inoutbody").html(tableData);
+                }
+            });
+
+        }
+    );
 </script>
 <div class="colors"> <!-- To use theme colors with Javascript -->
     <div class="bg-primary"></div>
@@ -505,6 +537,26 @@ $(document).ready(function () {
     <div class="bg-warning"></div>
     <div class="bg-warning-bright"></div>
 </div>
-
 </body>
+<script>
+    function getCookie(cookie_name) {
+        var allcookies = document.cookie;
+        var cookie_pos = allcookies.indexOf(cookie_name);
+        if (cookie_pos != -1) {
+            cookie_pos += cookie_name.length + 1;
+            var cookie_end = allcookies.indexOf(";", cookie_pos);
+
+            if (cookie_end == -1) {
+                cookie_end = allcookies.length;
+            }
+
+            var value = allcookies.substring(cookie_pos, cookie_end);
+        }
+        return decodeURI(value);
+    }
+
+    let realname = getCookie('realname');
+    document.getElementById("sidename").innerHTML = realname;
+    document.getElementById("welcomename").innerHTML = realname;
+</script>
 </html>
