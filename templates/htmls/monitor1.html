@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>摄像头1</title>
 
@@ -11,6 +11,11 @@
 
     <!-- App styles -->
     <link rel="stylesheet" href="../static/assets/css/app.min.css" type="text/css">
+
+    <!-- 摄像头中的js -->
+    <link href="http://vjs.zencdn.net/5.5.3/video-js.css" rel="stylesheet">
+    <!-- If you'd like to support IE8 -->
+    <script src="http://vjs.zencdn.net/ie8/1.1.1/videojs-ie8.min.js"></script>
 </head>
 <body>
 
@@ -48,7 +53,7 @@
             <img src="../static/assets/media/image/user/1.png" class="rounded-circle" alt="image">
         </figure>
         <div>
-            <h5 id="sidename">杨烁平</h5>
+            <h5>杨烁平</h5>
             <p class="text-muted">管理员</p>
             <ul class="nav">
                 <li class="nav-item">
@@ -178,7 +183,7 @@
                 <li class="nav-item search-form">
                     <div class="row">
                         <div class="col-md-6">
-                                <h4>智慧养老系统后台</h4>
+                            <h4>智慧养老系统后台</h4>
                         </div>
                     </div>
                 </li>
@@ -295,68 +300,100 @@
                                     <i class="fa fa-instagram mr-2"></i> 实时拍照
                                 </button>
                             </div>
-                            <br />
-                            <video id="v" style="width: 640px;height: 480px;"></video>
+                            <br/>
+                            <!--请谨慎修改，video中的参数，比如加auto自动播放，就无法播放了。未知原因—— 张泽光 -->
+                            <video id="my-video"
+                                   class="video-js"
+                                   controls preload="auto"
+                                   width="640"
+                                   height="480"
+                                   poster=""
+                                   data-setup="{}">
+                                <source src="rtmp://192.168.0.5/live/camstream" type="rtmp/flv">
+                                <p class="vjs-no-js vjs-big-play-centered">播放视频需要启用 JavaScript，推荐使用支持HTML5的浏览器访问。
+                                    To view this video please enable JavaScript, and consider upgrading to a web browser
+                                    that
+                                    <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5
+                                        video</a>
+                                </p>
+                            </video>
+                            <script src="http://vjs.zencdn.net/5.5.3/video.js"></script>
+                            <!--vjs-big-play-centered 播放按钮居中-->
+                            <!--poster默认的显示界面，就是还没点播放，给你显示的界面-->
+                            <!--controls 规定浏览器应该为视频提供播放控件-->
+                            <!--preload="auto" 是否提前加载-->
+                            <!--autoplay 自动播放-->
+                            <!--loop=true 自动循环-->
+                            <!--data-setup='{"example_option":true}' 可以把一些属性写到这个里面来，如data-setup={"autoplay":true}-->
+
+                            {#以下是video的其它应用方法，这里以防万一，作为保留。v是本地摄像头，src选取播放本地视频#}
+                            {#<video id="v"  style="width: 640px;height: 480px;" controls="controls" autoplay></video>#}
+                            {#<video src="images/xxx.mov" width="300px" heigth="300px" controls="controls" autoplay></video>#}
+                            {#                            拍照的画布，不知道是否有用，保留#}
+
                             <canvas id="canvas" style="display:none;"></canvas>
-                            <br />
-                            <img src="http://placehold.it/640&text=Your%20image%20here%20..." id="photo" alt="photo">
+                            #}
+                            <br/>#}
+                            <img src="http://placehold.it/640&text=Your%20image%20here%20..." id="photo" alt="photo">#}
 
-    <script>
-        !(function () {
-            // 老的浏览器可能根本没有实现 mediaDevices，所以我们可以先设置一个空的对象
-            if (navigator.mediaDevices === undefined) {
-                navigator.mediaDevices = {};
-            }
-            if (navigator.mediaDevices.getUserMedia === undefined) {
-                navigator.mediaDevices.getUserMedia = function (constraints) {
-                    // 首先，如果有getUserMedia的话，就获得它
-                    var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+                            {#调用的本地摄像头的js，他可能涉及拍照功能，所以我没有删去。如果用RTMP请忽略。#}
+                            <script>
+                                !(function () {
+                                    // 老的浏览器可能根本没有实现 mediaDevices，所以我们可以先设置一个空的对象
+                                    if (navigator.mediaDevices === undefined) {
+                                        navigator.mediaDevices = {};
+                                    }
+                                    if (navigator.mediaDevices.getUserMedia === undefined) {
+                                        navigator.mediaDevices.getUserMedia = function (constraints) {
+                                            // 首先，如果有getUserMedia的话，就获得它
+                                            var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
-                    // 一些浏览器根本没实现它 - 那么就返回一个error到promise的reject来保持一个统一的接口
-                    if (!getUserMedia) {
-                        return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
-                    }
+                                            // 一些浏览器根本没实现它 - 那么就返回一个error到promise的reject来保持一个统一的接口
+                                            if (!getUserMedia) {
+                                                return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+                                            }
 
-                    // 否则，为老的navigator.getUserMedia方法包裹一个Promise
-                    return new Promise(function (resolve, reject) {
-                        getUserMedia.call(navigator, constraints, resolve, reject);
-                    });
-                }
-            }
-            const constraints = {
-                video: true,
-                audio: false
-            };
-            let videoPlaying = false;
-            let v = document.getElementById('v');
-            let promise = navigator.mediaDevices.getUserMedia(constraints);
-            promise.then(stream => {
-                // 旧的浏览器可能没有srcObject
-                if ("srcObject" in v) {
-                    v.srcObject = stream;
-                } else {
-                    // 防止再新的浏览器里使用它，应为它已经不再支持了
-                    v.src = window.URL.createObjectURL(stream);
-                }
-                v.onloadedmetadata = function (e) {
-                    v.play();
-                    videoPlaying = true;
-                };
-            }).catch(err => {
-                console.error(err.name + ": " + err.message);
-            })
-            document.getElementById('take').addEventListener('click', function () {
-                if (videoPlaying) {
-                    let canvas = document.getElementById('canvas');
-                    canvas.width = v.videoWidth;
-                    canvas.height = v.videoHeight;
-                    canvas.getContext('2d').drawImage(v, 0, 0);
-                    let data = canvas.toDataURL('image/webp');
-                    document.getElementById('photo').setAttribute('src', data);
-                }
-            }, false);
-        })();
-    </script>
+                                            // 否则，为老的navigator.getUserMedia方法包裹一个Promise
+                                            return new Promise(function (resolve, reject) {
+                                                getUserMedia.call(navigator, constraints, resolve, reject);
+                                            });
+                                        }
+                                    }
+                                    const constraints = {
+                                        video: true,
+                                        audio: false
+                                    };
+                                    let videoPlaying = false;
+                                    let v = document.getElementById('v');
+                                    let promise = navigator.mediaDevices.getUserMedia(constraints);
+                                    promise.then(stream => {
+                                        // 旧的浏览器可能没有srcObject
+                                        if ("srcObject" in v) {
+                                            v.srcObject = stream;
+                                        } else {
+                                            // 防止再新的浏览器里使用它，应为它已经不再支持了
+                                            v.src = window.URL.createObjectURL(stream);
+                                        }
+                                        v.onloadedmetadata = function (e) {
+                                            v.play();
+                                            videoPlaying = true;
+                                        };
+                                    }).catch(err => {
+                                        console.error(err.name + ": " + err.message);
+                                    })
+                                    照片的获取
+                                    document.getElementById('take').addEventListener('click', function () {
+                                        if (videoPlaying) {
+                                            let canvas = document.getElementById('canvas');
+                                            canvas.width = v.videoWidth;
+                                            canvas.height = v.videoHeight;
+                                            canvas.getContext('2d').drawImage(v, 0, 0);
+                                            let data = canvas.toDataURL('image/webp');
+                                            document.getElementById('photo').setAttribute('src', data);
+                                        }
+                                    }, false);
+                                })();
+                            </script>
 
                         </div>
                     </div>
@@ -373,7 +410,8 @@
     <!-- begin::footer -->
     <footer>
         <div class="container">
-            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a></div>
+            <div>Copyright &copy; 2020.北京交通大学软件学院大三小学期实训.<a href="http://faculty.bjtu.edu.cn/rjxy/9438.html">指导教师-张健</a>
+            </div>
         </div>
     </footer>
     <!-- end::footer -->
@@ -387,8 +425,4 @@
 <!-- App scripts -->
 <script src="../static/assets/js/app.min.js"></script>
 </body>
-<script>
-    var realname = document.cookie.split(";")[1].split("=")[1];
-    console.log(realname);
-    document.getElementById("sidename").innerHTML = realname;
-</script>
+</html>

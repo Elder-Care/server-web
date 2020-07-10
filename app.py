@@ -6,118 +6,72 @@ import random
 import cv2
 import bodydetect
 import json
+from urllib.parse import quote
+import threading
 
 app = Flask(__name__)
 conn = sqlite3.connect('old_care.sqlite', check_same_thread=False)
 cur_id = 0
 
 
-class VideoCamera1(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture(0)
+class Producer(threading.Thread):
+    """docstring for Producer"""
 
-    def __del__(self):
-        self.video.release()
+    def __init__(self, rtmp_str):
+        super(Producer, self).__init__()
 
-    def get_frame(self):
-        success, image = self.video.read()
-        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
-        # so we must encode it into JPEG in order to correctly display the
-        # video stream.
-        bodydetect.detect_fall(image)
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
+        self.rtmp_str = rtmp_str
 
+        # 通过cv2中的类获取视频流操作对象cap
+        self.cap = cv2.VideoCapture(self.rtmp_str)
 
-class VideoCamera2(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture('./camera2.mp4')
+        # 调用cv2方法获取cap的视频帧（帧：每秒多少张图片）
+        # fps = self.cap.get(cv2.CAP_PROP_FPS)
+        self.fps = self.cap.get(cv2.CAP_PROP_FPS)
+        print(self.fps)
 
-    def __del__(self):
-        self.video.release()
+        # 获取cap视频流的每帧大小
+        self.width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        self.height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        self.size = (self.width, self.height)
+        print(self.size)
 
-    def get_frame(self):
-        success, image = self.video.read()
-        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
-        # so we must encode it into JPEG in order to correctly display the
-        # video stream.
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
+        # 定义编码格式mpge-4
+        # self.fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', '2')
 
+        # 定义视频文件输入对象
+        # self.outVideo = cv2.VideoWriter('saveDir1.avi', self.fourcc, self.fps, self.size)
 
-class VideoCamera3(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture(0)
+    def run(self):
+        print('in producer')
 
-    def __del__(self):
-        self.video.release()
+        ret, image = self.cap.read()
+        count = 0
+        while ret:
+            # if ret == True:
 
-    def get_frame(self):
-        success, image = self.video.read()
-        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
-        # so we must encode it into JPEG in order to correctly display the
-        # video stream.
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
+            # self.outVideo.write(image)
 
+            # cv2.imshow('video', image)
 
-class VideoCamera4(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture(0)
+            cv2.waitKey(int(1000 / int(self.fps)))  # 延迟
 
-    def __del__(self):
-        self.video.release()
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     self.outVideo.release()
+            #
+            #     self.cap.release()
+            #
+            #     cv2.destroyAllWindows()
+            #
+            #     break
+            count += count
+            if count % 5 == 0:
+                # 此处为识别代码
+                i = 0
+            ret, image = self.cap.read()
 
-    def get_frame(self):
-        success, image = self.video.read()
-        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
-        # so we must encode it into JPEG in order to correctly display the
-        # video stream.
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
-
-
-class VideoCamera5(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture(0)
-
-    def __del__(self):
-        self.video.release()
-
-    def get_frame(self):
-        success, image = self.video.read()
-        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
-        # so we must encode it into JPEG in order to correctly display the
-        # video stream.
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
-
-
-class camera(object):
-    def __init__(self):
-        self.frames = [open(f + '.jpg', 'rb').read() for f in ['1', '2', '3']]
-        self.video = cv2.VideoCapture(0)
-
-    def __del__(self):
-        self.video.release()
-
-    def get_frame(self):
-        success, image = self.video.read()
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
-
-
-def gen(camera):
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-
-
-@app.route('/video_feed1')
-def video_feed1():
-    return Response(gen(VideoCamera1()),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+        self.cap.release()
+        cv2.destroyAllWindows()
 
 
 def columns(table_name):
@@ -804,7 +758,6 @@ def login0():
         where = 'ID = \'' + str(userid) + '\''
         s = select(conn, table_name, where)
         realname = s[0][3]
-        realname = realname.encode('utf-8').decode('latin-1')
         table_name = 'oldperson_info'
         s = select(conn, table_name, "")
         info = []
@@ -812,8 +765,9 @@ def login0():
             info.append({'checkin_date': x[6], 'checkout_date': x[7]})
         info = json.dumps(info)
         response = make_response(render_template('/htmls/index.html', content=content, info=info))
+        realname = quote(realname)
         response.set_cookie('id', str(userid))
-        response.set_cookie('realname', str(realname))
+        response.set_cookie('realname', realname)
         return response
     else:
         content = "用户名或密码错误"
@@ -1158,47 +1112,65 @@ def getallmembers():
 @app.route('/getinout', methods=['GET', 'POST'])
 def getinout():
     table_name = 'oldperson_info'
-    s = select(conn, table_name, "")
-    ms = []
-    ms2 = []
-    oldin = []
-    oldout = []
-    for x in s:
-        if x[6]:
-            m = x[6][0:6]
-            if not m in ms:
-                ms.append(m)
-                ms.sort(reverse=True)
-            oldin[ms.index(m)] += 1
-        if x[7]:
-            m = x[7][0:6]
-            if not m in ms2:
-                ms2.append(m)
-                ms2.sort(reverse=True)
-            oldout[ms2.index(m)] += 1
+    s1 = select(conn, table_name, "")
     table_name = 'employee_info'
-    s = select(conn, table_name, "")
-    ms3 = []
-    empin = []
-    for x in s:
-        if x[6]:
-            m = x[6][0:6]
-            if not m in ms3:
-                ms3.append(m)
-                ms3.sort(reverse=True)
-            empin[ms3.index(m)] += 1
+    s2 = select(conn, table_name, "")
     table_name = 'volunteer_info'
-    s = select(conn, table_name, "")
-    ms4 = []
-    volin = []
-    for x in s:
+    s3 = select(conn, table_name, "")
+    ms = []
+    t = time.strftime("%Y-%m", time.localtime())
+    t0 = t.split('-')
+    nowy = int(t0[0])
+    nowm = int(t0[1])
+    if nowm >= 6:
+        i = 0
+        while i < 6:
+            nowt = str(nowy) + '-' + str(nowm - i)
+            ms.append(nowt)
+            i += 1
+    else:
+        m0 = 6 - nowm
+        while nowm > 0:
+            nowt = str(nowy) + '-' + str(nowm)
+            ms.append(nowt)
+            nowm -= 1
+        i = 0
+        while i < m0:
+            nowt = str(nowy - 1) + '-' + str(12 - i)
+            ms.append(nowt)
+            i += 1
+    i = 0
+    for m in ms:
+        if len(m) == 6:
+            m = m[0:5] + str(0) + m[-1]
+            ms[i] = m
+            i += 1
+    oldin = [0, 0, 0, 0, 0, 0]
+    oldout = [0, 0, 0, 0, 0, 0]
+    for x in s1:
         if x[6]:
-            m = x[6][0:6]
-            if not m in ms4:
-                ms4.append(m)
-                ms4.sort(reverse=True)
-            volin[ms4.index(m)] += 1
-    inout = [oldin, oldout, empin, volin]
+            m = x[6][0:7]
+            if m in ms:
+                oldin[ms.index(m)] += 1
+        if x[7]:
+            m = x[7][0:7]
+            if m in ms:
+                oldout[ms.index(m)] += 1
+    empin = [0, 0, 0, 0, 0, 0]
+    for x in s2:
+        if x[6]:
+            m = x[6][0:7]
+            if m in ms:
+                empin[ms.index(m)] += 1
+    volin = [0, 0, 0, 0, 0, 0]
+    for x in s3:
+        if x[6]:
+            m = x[6][0:7]
+            if m in ms:
+                volin[ms.index(m)] += 1
+    inout = {'oldin': oldin, 'oldout': oldout, 'empin': empin, 'volin': volin}
+    inout = json.dumps(inout)
+    print(inout)
     return inout
 
 
@@ -1412,5 +1384,8 @@ if __name__ == '__main__':
                      )
                      '''
     # 用 execute 执行一条 sql 语句
+    rtmp_str = 'rtmp://192.168.0.5/live/camstream'
+    producer = Producer(rtmp_str)
+    producer.start()
     conn.execute(sql_create)
-    app.run(debug=True)
+    app.run(debug=True, threaded=True)
