@@ -145,7 +145,7 @@
             <img src="../static/assets/media/image/user/1.png" class="rounded-circle" alt="image">
         </figure>
         <div>
-            <h5>杨烁平</h5>
+            <h5 id="sidename">杨烁平</h5>
             <p class="text-muted">管理员</p>
             <ul class="nav">
                 <li class="nav-item">
@@ -557,4 +557,24 @@
 
 </script>
 </body>
-</html>
+<script>
+        function getCookie(cookie_name) {
+        var allcookies = document.cookie;
+        var cookie_pos = allcookies.indexOf(cookie_name);
+        if (cookie_pos != -1) {
+            cookie_pos += cookie_name.length + 1;
+            var cookie_end = allcookies.indexOf(";", cookie_pos);
+
+            if (cookie_end == -1) {
+                cookie_end = allcookies.length;
+            }
+
+            var value = allcookies.substring(cookie_pos, cookie_end);
+        }
+        return decodeURI(value);
+    }
+
+    let realname = getCookie('realname');
+    console.log(realname);
+    document.getElementById("sidename").innerHTML = realname;
+</script></html>

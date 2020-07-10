@@ -1,123 +1,75 @@
-from flask import Flask, render_template, request, Response, make_response
+from datetime import timedelta
+
+from flask import Flask, render_template, request, Response, make_response, jsonify
 import sqlite3
 import time
 import os
 import random
 import cv2
+from werkzeug.utils import secure_filename
+
 import bodydetect
 import json
+from urllib.parse import quote
+import threading
 
 app = Flask(__name__)
 conn = sqlite3.connect('old_care.sqlite', check_same_thread=False)
 cur_id = 0
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'JPG', 'PNG', 'bmp'}
+# 设置静态文件缓存过期时间
+app.send_file_max_age_default = timedelta(seconds=1)
 
 
-class VideoCamera1(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture(0)
+def producer():
+    print('in producer')
 
-    def __del__(self):
-        self.video.release()
+    # 通过cv2中的类获取视频流操作对象cap
+    cap = cv2.VideoCapture(rtmp_str)
 
-    def get_frame(self):
-        success, image = self.video.read()
-        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
-        # so we must encode it into JPEG in order to correctly display the
-        # video stream.
-        bodydetect.detect_fall(image)
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
+    # 调用cv2方法获取cap的视频帧（帧：每秒多少张图片）
+    # fps = cap.get(cv2.CAP_PROP_FPS)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    # print(fps)
 
+    # 获取cap视频流的每帧大小
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    size = (width, height)
+    # print(self.size)
 
-class VideoCamera2(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture('./camera2.mp4')
+    # 定义编码格式mpge-4
+    fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', '2')
 
-    def __del__(self):
-        self.video.release()
+    # 定义视频文件输入对象
+    # self.outVideo = cv2.VideoWriter('saveDir1.avi', self.fourcc, self.fps, self.size)
+    ret, image = cap.read()
+    count = 0
+    while ret:
+        # if ret == True:
+        # self.outVideo.write(image)
 
-    def get_frame(self):
-        success, image = self.video.read()
-        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
-        # so we must encode it into JPEG in order to correctly display the
-        # video stream.
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
+        # cv2.imshow('video', image)
 
+        cv2.waitKey(int(1000 / int(fps)))  # 延迟
 
-class VideoCamera3(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture(0)
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     self.outVideo.release()
+        #
+        #     self.cap.release()
+        #
+        #     cv2.destroyAllWindows()
+        #
+        #     break
+        count += count
+        print(count)
+        if count % 5 == 0:
+            # 此处为识别代码
+            i = 0
+        ret, image = cap.read()
 
-    def __del__(self):
-        self.video.release()
-
-    def get_frame(self):
-        success, image = self.video.read()
-        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
-        # so we must encode it into JPEG in order to correctly display the
-        # video stream.
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
-
-
-class VideoCamera4(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture(0)
-
-    def __del__(self):
-        self.video.release()
-
-    def get_frame(self):
-        success, image = self.video.read()
-        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
-        # so we must encode it into JPEG in order to correctly display the
-        # video stream.
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
-
-
-class VideoCamera5(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture(0)
-
-    def __del__(self):
-        self.video.release()
-
-    def get_frame(self):
-        success, image = self.video.read()
-        # We are using Motion JPEG, but OpenCV defaults to capture raw images,
-        # so we must encode it into JPEG in order to correctly display the
-        # video stream.
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
-
-
-class camera(object):
-    def __init__(self):
-        self.frames = [open(f + '.jpg', 'rb').read() for f in ['1', '2', '3']]
-        self.video = cv2.VideoCapture(0)
-
-    def __del__(self):
-        self.video.release()
-
-    def get_frame(self):
-        success, image = self.video.read()
-        ret, jpeg = cv2.imencode('.jpg', image)
-        return jpeg.tobytes()
-
-
-def gen(camera):
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-
-
-@app.route('/video_feed1')
-def video_feed1():
-    return Response(gen(VideoCamera1()),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+    cap.release()
+    cv2.destroyAllWindows()
 
 
 def columns(table_name):
@@ -415,7 +367,6 @@ def tologin1():
 
 @app.route('/toprofile', methods=['GET', 'POST'])
 def toprofile():
-    form = request.form
     id = request.cookies.get('id')
     table_name = 'sys_user'
     where = 'ID = \'' + str(id) + '\''
@@ -598,7 +549,6 @@ def modifyworkerbasic():
             'resign_date': form.get('resign_date'), 'imgset_dir': form.get('imgset_dir'), 'profile_photo':
                 form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     uid = form.get('id')
-    print(info)
     emp_info(conn, uid, info)
     content = sel_emp(conn, uid)
     return render_template('/htmls/worker_info.html', content=content)
@@ -664,7 +614,6 @@ def toanalyzeold():
     for x in s:
         info.append({'gender': x[2], 'birthday': x[5], 'checkin_date': x[6], 'checkout_date': x[7]})
     info = json.dumps(info)
-    print(info, type(info))
     return render_template('/htmls/analyze_old.html', info=info)
 
 
@@ -695,9 +644,8 @@ def toanalyzeworker():
     s = select(conn, table_name, "")
     info = []
     for x in s:
-        info.append({'gender': x[2],'birthday': x[5], 'hire_date': x[6], 'resign_date': x[7]})
+        info.append({'gender': x[2], 'birthday': x[5], 'hire_date': x[6], 'resign_date': x[7]})
     info = json.dumps(info)
-    print(info, type(info))
     return render_template('/htmls/analyze_worker.html', info=info)
 
 
@@ -728,9 +676,8 @@ def toanalyzevolunteer():
     s = select(conn, table_name, "")
     info = []
     for x in s:
-        info.append({'gender': x[2],'birthday': x[5], 'checkin_date': x[6], 'checkout_date': x[7]})
+        info.append({'gender': x[2], 'birthday': x[5], 'checkin_date': x[6], 'checkout_date': x[7]})
     info = json.dumps(info)
-    print(info, type(info))
     return render_template('/htmls/analyze_volunteer.html', info=info)
 
 
@@ -804,15 +751,21 @@ def login0():
     if login(conn, username, password) != 0:
         content = "登录成功"
         userid = login(conn, username, password)
+        id = request.cookies.get('id')
+        table_name = 'sys_user'
+        where = 'ID = \'' + str(userid) + '\''
+        s = select(conn, table_name, where)
+        realname = s[0][3]
         table_name = 'oldperson_info'
         s = select(conn, table_name, "")
         info = []
         for x in s:
             info.append({'checkin_date': x[6], 'checkout_date': x[7]})
         info = json.dumps(info)
-        print(info, type(info))
         response = make_response(render_template('/htmls/index.html', content=content, info=info))
+        realname = quote(realname)
         response.set_cookie('id', str(userid))
+        response.set_cookie('realname', realname)
         return response
     else:
         content = "用户名或密码错误"
@@ -1140,6 +1093,85 @@ def retev():
     return render_template('/htmls/select_event.html', info=info)
 
 
+@app.route('/getallmembers', methods=['GET', 'POST'])
+def getallmembers():
+    table_name = 'oldperson_info'
+    s = select(conn, table_name, "")
+    olds = len(s)
+    table_name = 'employee_info'
+    s = select(conn, table_name, "")
+    workers = len(s)
+    table_name = 'volunteer_info'
+    s = select(conn, table_name, "")
+    volunteers = len(s)
+    return jsonify({'olds': olds, 'workers': workers, 'volunteers': volunteers})
+
+
+@app.route('/getinout', methods=['GET', 'POST'])
+def getinout():
+    table_name = 'oldperson_info'
+    s1 = select(conn, table_name, "")
+    table_name = 'employee_info'
+    s2 = select(conn, table_name, "")
+    table_name = 'volunteer_info'
+    s3 = select(conn, table_name, "")
+    ms = []
+    t = time.strftime("%Y-%m", time.localtime())
+    t0 = t.split('-')
+    nowy = int(t0[0])
+    nowm = int(t0[1])
+    if nowm >= 6:
+        i = 0
+        while i < 6:
+            nowt = str(nowy) + '-' + str(nowm - i)
+            ms.append(nowt)
+            i += 1
+    else:
+        m0 = 6 - nowm
+        while nowm > 0:
+            nowt = str(nowy) + '-' + str(nowm)
+            ms.append(nowt)
+            nowm -= 1
+        i = 0
+        while i < m0:
+            nowt = str(nowy - 1) + '-' + str(12 - i)
+            ms.append(nowt)
+            i += 1
+    i = 0
+    for m in ms:
+        if len(m) == 6:
+            m = m[0:5] + str(0) + m[-1]
+            ms[i] = m
+            i += 1
+    oldin = [0, 0, 0, 0, 0, 0]
+    oldout = [0, 0, 0, 0, 0, 0]
+    for x in s1:
+        if x[6]:
+            m = x[6][0:7]
+            if m in ms:
+                oldin[ms.index(m)] += 1
+        if x[7]:
+            m = x[7][0:7]
+            if m in ms:
+                oldout[ms.index(m)] += 1
+    empin = [0, 0, 0, 0, 0, 0]
+    for x in s2:
+        if x[6]:
+            m = x[6][0:7]
+            if m in ms:
+                empin[ms.index(m)] += 1
+    volin = [0, 0, 0, 0, 0, 0]
+    for x in s3:
+        if x[6]:
+            m = x[6][0:7]
+            if m in ms:
+                volin[ms.index(m)] += 1
+    inout = {'oldin': oldin, 'oldout': oldout, 'empin': empin, 'volin': volin}
+    inout = json.dumps(inout)
+    print(inout)
+    return inout
+
+
 @app.route('/images', methods=['GET', 'POST'])
 def images():
     f = request.files.get('file')
@@ -1149,28 +1181,27 @@ def images():
         t = int(t0)
         uid = form.get('id')
         if t == 0:
-            t1 = 'old'
+            t1 = 'old_profile'
             table_name = 'oldperson_info'
         elif t == 1:
-            t1 = 'employee'
+            t1 = 'employee_profile'
             table_name = 'employee_info'
         else:
-            t1 = 'volunteer'
+            t1 = 'volunteer_profile'
             table_name = 'volunteer_info'
-        path = 'D:\\dasanxxq\\images\\'
+
+        path = os.path.dirname(__file__)
+        path += '\\static\\images\\'
         path += t1
         path += '\\'
         path += str(uid)
-        if not os.path.exists(path):
-            os.mkdir(path)
-        path += '\\'
-        path += str(random.randint(0, 999999))
         path += '.png'
         f.save(path)
-        set = 'imgset_dir = \'' + path + '\''
+        set = 'profile_photo = \'' + path + '\''
         where = 'id = \'' + str(uid) + '\''
         update(conn, table_name, set, where)
-    return render_template('images.html')
+    print(path)
+    return render_template('/htmls/index.html')
 
 
 @app.route('/videos', methods=['GET', 'POST'])
@@ -1227,6 +1258,30 @@ def camera():
     cap.release()
     cv2.destroyAllWindows()
     pass
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+
+# 添加路由
+@app.route('/upload', methods=['POST', 'GET'])
+def upload():
+    if request.method == 'POST':
+        # 通过file标签获取文件
+        f = request.files['file']
+        if not (f and allowed_file(f.filename)):
+            return jsonify({"error": 1001, "msg": "图片类型：png、PNG、jpg、JPG、bmp"})
+        # 当前文件所在路径
+        basepath = os.path.dirname(__file__)
+        # 一定要先创建该文件夹，不然会提示没有该路径
+        upload_path = os.path.join(basepath, 'static/images', secure_filename(f.filename))
+        # 保存文件
+        f.save(upload_path)
+        # 返回上传成功界面
+        return render_template('/htmls/index.html')
+    # 重新返回上传界面
+    return render_template('/htmls/index.html')
 
 
 if __name__ == '__main__':
@@ -1350,5 +1405,9 @@ if __name__ == '__main__':
                      )
                      '''
     # 用 execute 执行一条 sql 语句
+    rtmp_str = 'rtmp://192.168.0.5/live/camstream'
+    producer = threading.Thread(target=producer, args=())
+    producer.start()
+    producer.join()
     conn.execute(sql_create)
-    app.run(debug=True)
+    app.run(debug=True, threaded=True)
