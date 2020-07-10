@@ -1187,8 +1187,6 @@ def videos():
     return render_template('videos.html')
 
 
-
-
 @app.route('/vindex', methods=['GET', 'POST'])
 def vindex():
     return render_template('vindex.html')
