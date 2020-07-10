@@ -85,6 +85,8 @@ def postprocess(frame, outs):
 
     for i in classIds:
         if i == 1:
+            # 摔倒
+            cv.imwrite('./fall.jpg', frame)
             return 1
         else:
             return 0
