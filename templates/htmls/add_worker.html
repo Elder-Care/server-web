@@ -389,7 +389,61 @@
                     <div class="card">
                         <div class="card-body">
 
-                            <h6 class="card-title">工作人员信息录入</h6>
+                            <h6 class="card-title">工作人员头像信息录入</h6>
+
+                            <div class="row">
+                                <div class="col-md-8">
+
+                                    <form action="/images" enctype='multipart/form-data' method="post">
+                                        <input type="hidden" name="type" value="1">
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">工作人员ID</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" placeholder="请输入已存在基本信息的工作人员的ID号"
+                                                       name="id">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label">头像路径</label>
+                                            <div class="col-sm-8">
+                                                <div class="fileinput fileinput-new" data-provides="fileinput"
+                                                     id="exampleInputUpload">
+                                                    <div class="fileinput-new thumbnail"
+                                                         style="width: 200px;height: auto;max-height:150px;">
+                                                        <img id='picImg'
+                                                             style="width: 100%;height: auto;max-height: 140px;"
+                                                             src="http://placehold.it/640&text=Your%20image%20here%20..." alt=""/>
+                                                    </div>
+                                                    <div class="fileinput-preview fileinput-exists thumbnail"
+                                                         style="max-width: 200px; max-height: 150px;"></div>
+                                                    <div>
+                                                        <span class="btn btn-primary btn-file">
+                                                            <span class="fileinput-new">选择文件</span>
+                                                            <span class="fileinput-exists">换一张</span>
+                                                            <input type="file" name="file" id="picID" accept="image/gif,image/jpeg,image/x-png">
+                                                        </span>
+                                                        <a href="javascript:;" class="btn btn-warning fileinput-exists"
+                                                           data-dismiss="fileinput">移除</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <t>{{ content }}</t>
+                                        <button type="submit" class="btn btn-primary">录入信息</button>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+
+                            <h6 class="card-title">工作人员详细信息录入</h6>
 
                             <div class="row">
                                 <div class="col-md-8">

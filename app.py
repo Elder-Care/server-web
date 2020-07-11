@@ -1,10 +1,13 @@
-import requests
+from datetime import timedelta
+from flask import Flask, render_template, request, Response, make_response, jsonify
 from flask import Flask, render_template, request, make_response, jsonify
 import sqlite3
 import time
 import os
 import random
 import cv2
+from werkzeug.utils import secure_filename
+
 import bodydetect
 import json
 from urllib.parse import quote
@@ -13,6 +16,13 @@ import threading
 app = Flask(__name__)
 conn = sqlite3.connect('old_care.sqlite', check_same_thread=False)
 cur_id = 0
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'JPG', 'PNG', 'bmp'}
+# 设置静态文件缓存过期时间
+app.send_file_max_age_default = timedelta(seconds=1)
+
+
+
 rtmp_str = 'rtmp://192.168.0.5/live/camstream'
 db_path = 'old_care.sqlite'
 
@@ -1204,32 +1214,40 @@ def images():
         t = int(t0)
         uid = form.get('id')
         if t == 0:
-            t1 = 'old'
+            t1 = 'old_profile'
             table_name = 'oldperson_info'
         elif t == 1:
-            t1 = 'employee'
+            t1 = 'employee_profile'
             table_name = 'employee_info'
         else:
-            t1 = 'volunteer'
+            t1 = 'volunteer_profile'
             table_name = 'volunteer_info'
-        path = 'D:\\dasanxxq\\images\\'
+
+        path = os.path.dirname(__file__)
+        path += '\\static\\images\\'
         path += t1
         path += '\\'
         path += str(uid)
-        if not os.path.exists(path):
-            os.mkdir(path)
-        path += '\\'
-        path += str(random.randint(0, 999999))
         path += '.png'
         f.save(path)
-        set = 'imgset_dir = \'' + path + '\''
+        set = 'profile_photo = \'' + path + '\''
         where = 'id = \'' + str(uid) + '\''
         update(conn, table_name, set, where)
-    return render_template('images.html')
+    print(path)
+    return render_template('/htmls/index.html')
 
 
-conn = sqlite3.connect(db_path, check_same_thread=False)
-sql_create = '''
+
+
+
+if __name__ == '__main__':
+    db_path = 'old_care.sqlite'
+    conn = sqlite3.connect(db_path, check_same_thread=False)
+    sql_create = '''
+
+    conn = sqlite3.connect(db_path, check_same_thread=False)
+    sql_create = '''
+
         CREATE TABLE IF NOT EXISTS oldperson_info (
           ID INTEGER PRIMARY KEY,
           username TEXT,
@@ -1347,9 +1365,8 @@ sql_create = '''
                      )
                      
                      '''
-conn.execute(sql_create)
 
-# 服务器拉流线程
+conn.execute(sql_create)
 # producer = Producer(rtmp_str)
 # producer.start()
 # producer.join()
