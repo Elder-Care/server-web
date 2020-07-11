@@ -1,6 +1,6 @@
 from datetime import timedelta
-
 from flask import Flask, render_template, request, Response, make_response, jsonify
+from flask import Flask, render_template, request, make_response, jsonify
 import sqlite3
 import time
 import os
@@ -16,60 +16,79 @@ import threading
 app = Flask(__name__)
 conn = sqlite3.connect('old_care.sqlite', check_same_thread=False)
 cur_id = 0
+
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'JPG', 'PNG', 'bmp'}
 # 设置静态文件缓存过期时间
 app.send_file_max_age_default = timedelta(seconds=1)
 
 
-def producer():
-    print('in producer')
 
-    # 通过cv2中的类获取视频流操作对象cap
-    cap = cv2.VideoCapture(rtmp_str)
+rtmp_str = 'rtmp://192.168.0.5/live/camstream'
+db_path = 'old_care.sqlite'
 
-    # 调用cv2方法获取cap的视频帧（帧：每秒多少张图片）
-    # fps = cap.get(cv2.CAP_PROP_FPS)
-    fps = cap.get(cv2.CAP_PROP_FPS)
-    # print(fps)
 
-    # 获取cap视频流的每帧大小
-    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    size = (width, height)
-    # print(self.size)
+class Producer(threading.Thread):
 
-    # 定义编码格式mpge-4
-    fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', '2')
+    def __init__(self, rtmp_str):
+        super(Producer, self).__init__()
+        self.rtmp_str = rtmp_str
 
-    # 定义视频文件输入对象
-    # self.outVideo = cv2.VideoWriter('saveDir1.avi', self.fourcc, self.fps, self.size)
-    ret, image = cap.read()
-    count = 0
-    while ret:
-        # if ret == True:
-        # self.outVideo.write(image)
+        # 通过cv2中的类获取视频流操作对象cap
+        self.cap = cv2.VideoCapture(self.rtmp_str)
 
-        # cv2.imshow('video', image)
+        # 调用cv2方法获取cap的视频帧（帧：每秒多少张图片）
+        # fps = self.cap.get(cv2.CAP_PROP_FPS)
+        self.fps = self.cap.get(cv2.CAP_PROP_FPS)
+        # print(self.fps)
 
-        cv2.waitKey(int(1000 / int(fps)))  # 延迟
+        # 获取cap视频流的每帧大小
+        self.width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        self.height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        self.size = (self.width, self.height)
+        # print(self.size)
 
-        # if cv2.waitKey(1) & 0xFF == ord('q'):
-        #     self.outVideo.release()
-        #
-        #     self.cap.release()
-        #
-        #     cv2.destroyAllWindows()
-        #
-        #     break
-        count += count
-        print(count)
-        if count % 5 == 0:
-            # 此处为识别代码
-            i = 0
-        ret, image = cap.read()
+        # 定义编码格式mpge-4
+        self.fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', '2')
 
-    cap.release()
-    cv2.destroyAllWindows()
+        # 定义视频文件输入对象
+        # self.outVideo = cv2.VideoWriter('saveDir1.avi', self.fourcc, self.fps, self.size)
+
+    def run(self):
+        print('in producer')
+
+        ret, image = self.cap.read()
+        count = 0
+        while ret:
+            # if ret == True:
+            # self.outVideo.write(image)
+
+            # cv2.imshow('video', image)
+
+            cv2.waitKey(int(1000 / int(self.fps)))  # 延迟
+
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     self.outVideo.release()
+            #
+            #     self.cap.release()
+            #
+            #     cv2.destroyAllWindows()
+            #
+            #     break
+            count += 1
+            if count % 3 == 0:
+                # 延时直到flask服务器开启
+                if count > 360:
+                    # 识别代码
+                    f = bodydetect.detect_fall(image)
+                    content = ''
+                    if f:
+                        content = '摔倒'
+                        print(content)
+                    else:
+                        content = '正常'
+            ret, image = self.cap.read()
+
+        self.cap.release()
 
 
 def columns(table_name):
@@ -763,11 +782,7 @@ def login0():
             info.append({'checkin_date': x[6], 'checkout_date': x[7]})
         info = json.dumps(info)
         response = make_response(render_template('/htmls/index.html', content=content, info=info))
-<<<<<<< HEAD
         realname = quote(realname)
-=======
-
->>>>>>> e1893b3f408f7d5e19a3a3b3ed93508c635e3001
         response.set_cookie('id', str(userid))
         response.set_cookie('realname', realname)
         return response
@@ -849,8 +864,13 @@ def addo():
             'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     global conn
     if add_elder(conn, info):
-        content = "增添成功"
-        return render_template('/htmls/index.html', content=content)
+        table_name = 'oldperson_info'
+        s = select(conn, table_name, "")
+        info = []
+        for x in s:
+            info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'roomnum': x[10]})
+        info = json.dumps(info)
+        return render_template('/htmls/select_old.html', info=info)
     else:
         content = "用户名已存在"
         return render_template('/htmls/index.html', content=content)
@@ -950,8 +970,13 @@ def adde():
                 form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     global conn
     if add_employee(conn, info):
-        content = "增添成功"
-        return render_template('/htmls/index.html', content=content)
+        table_name = 'employee_info'
+        s = select(conn, table_name, "")
+        info = []
+        for x in s:
+            info.append({'id': x[0], 'username': x[1], 'gender': x[2], 'phone': x[3]})
+        info = json.dumps(info)
+        return render_template('/htmls/select_worker.html', info=info)
     else:
         content = "用户名已存在"
         return render_template('/htmls/index.html', content=content)
@@ -1008,8 +1033,13 @@ def addv():
                 form.get('imgset_dir'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     global conn
     if add_volunteer(conn, info):
-        content = "增添成功"
-        return render_template('/htmls/index.html', content=content)
+        table_name = 'volunteer_info'
+        s = select(conn, table_name, "")
+        info = []
+        for x in s:
+            info.append({'id': x[0], 'name': x[1], 'gender': x[2], 'phone': x[3]})
+        info = json.dumps(info)
+        return render_template('/htmls/select_volunteer.html', info=info)
     else:
         content = "用户名已存在"
         return render_template('/htmls/index.html', content=content)
@@ -1172,7 +1202,6 @@ def getinout():
                 volin[ms.index(m)] += 1
     inout = {'oldin': oldin, 'oldout': oldout, 'empin': empin, 'volin': volin}
     inout = json.dumps(inout)
-    print(inout)
     return inout
 
 
@@ -1208,90 +1237,17 @@ def images():
     return render_template('/htmls/index.html')
 
 
-@app.route('/videos', methods=['GET', 'POST'])
-def videos():
-    f = request.files.get('file')
-    path = 'D:\\dasanxxq\\videos'
-    if not os.path.exists(path):
-        os.mkdir(path)
-    path += '\\'
-    path += str(random.randint(0, 999999))
-    path += '.avi'
-    if f:
-        f.save(path)
-    return render_template('videos.html')
 
-
-@app.route('/vindex', methods=['GET', 'POST'])
-def vindex():
-    return render_template('vindex.html')
-
-
-def gen(camera):
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-
-@app.route('/fall', methods=['GET', 'POST'])
-def fall():
-    f = bodydetect.detect_fall('./pic/test.png')
-    if f:
-        content = '摔倒'
-    else:
-        content = '正常'
-    return render_template('fall.html', content=content)
-
-
-@app.route('/camera')
-def camera():
-    # cap = cv2.VideoCapture('person.mp4')
-    cap = cv2.VideoCapture()
-    count = 1
-    while True:
-        success, image = cap.read()
-        if success:
-            if count % 36 == 1:
-                cv2.imwrite("picture/frame%d.jpg" % count, image)
-                if cv2.waitKey(10) == 27:
-                    break
-            count += 1
-        else:
-            break
-    cap.release()
-    cv2.destroyAllWindows()
-    pass
-
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-
-
-# 添加路由
-@app.route('/upload', methods=['POST', 'GET'])
-def upload():
-    if request.method == 'POST':
-        # 通过file标签获取文件
-        f = request.files['file']
-        if not (f and allowed_file(f.filename)):
-            return jsonify({"error": 1001, "msg": "图片类型：png、PNG、jpg、JPG、bmp"})
-        # 当前文件所在路径
-        basepath = os.path.dirname(__file__)
-        # 一定要先创建该文件夹，不然会提示没有该路径
-        upload_path = os.path.join(basepath, 'static/images', secure_filename(f.filename))
-        # 保存文件
-        f.save(upload_path)
-        # 返回上传成功界面
-        return render_template('/htmls/index.html')
-    # 重新返回上传界面
-    return render_template('/htmls/index.html')
 
 
 if __name__ == '__main__':
     db_path = 'old_care.sqlite'
     conn = sqlite3.connect(db_path, check_same_thread=False)
     sql_create = '''
+
+    conn = sqlite3.connect(db_path, check_same_thread=False)
+    sql_create = '''
+
         CREATE TABLE IF NOT EXISTS oldperson_info (
           ID INTEGER PRIMARY KEY,
           username TEXT,
@@ -1322,9 +1278,9 @@ if __name__ == '__main__':
           REMOVE TEXT
         )
         '''
-    # 用 execute 执行一条 sql 语句
-    conn.execute(sql_create)
-    sql_create = '''
+# 用 execute 执行一条 sql 语句
+conn.execute(sql_create)
+sql_create = '''
             CREATE TABLE IF NOT EXISTS employee_info (
             id INTEGER PRIMARY KEY,
             username TEXT,
@@ -1345,9 +1301,9 @@ if __name__ == '__main__':
             REMOVE TEXT
             )
             '''
-    # 用 execute 执行一条 sql 语句
-    conn.execute(sql_create)
-    sql_create = '''
+# 用 execute 执行一条 sql 语句
+conn.execute(sql_create)
+sql_create = '''
               CREATE TABLE IF NOT EXISTS volunteer_info (
                 id INTEGER PRIMARY KEY,
                 name TEXT,
@@ -1368,9 +1324,9 @@ if __name__ == '__main__':
                 REMOVE TEXT
               )
               '''
-    # 用 execute 执行一条 sql 语句
-    conn.execute(sql_create)
-    sql_create = '''
+# 用 execute 执行一条 sql 语句
+conn.execute(sql_create)
+sql_create = '''
                  CREATE TABLE IF NOT EXISTS event_info (
                     id INTEGER PRIMARY KEY,
                     event_type INTEGER,
@@ -1380,9 +1336,9 @@ if __name__ == '__main__':
                     oldperson_id INTEGER
                  )
                  '''
-    # 用 execute 执行一条 sql 语句
-    conn.execute(sql_create)
-    sql_create = '''
+# 用 execute 执行一条 sql 语句
+conn.execute(sql_create)
+sql_create = '''
                      CREATE TABLE IF NOT EXISTS sys_user (
                         ID INTEGER PRIMARY KEY,
                         UserName TEXT,
@@ -1407,11 +1363,11 @@ if __name__ == '__main__':
                         appversion TEXT,
                         jsonauth TEXT
                      )
+                     
                      '''
-    # 用 execute 执行一条 sql 语句
-    rtmp_str = 'rtmp://192.168.0.5/live/camstream'
-    producer = threading.Thread(target=producer, args=())
-    producer.start()
-    producer.join()
-    conn.execute(sql_create)
-    app.run(debug=True, threaded=True)
+
+conn.execute(sql_create)
+# producer = Producer(rtmp_str)
+# producer.start()
+# producer.join()
+app.run(debug=True, threaded=True)
