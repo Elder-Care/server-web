@@ -1,9 +1,13 @@
+from datetime import timedelta
+
 from flask import Flask, render_template, request, Response, make_response, jsonify
 import sqlite3
 import time
 import os
 import random
 import cv2
+from werkzeug.utils import secure_filename
+
 import bodydetect
 import json
 from urllib.parse import quote
@@ -12,66 +16,60 @@ import threading
 app = Flask(__name__)
 conn = sqlite3.connect('old_care.sqlite', check_same_thread=False)
 cur_id = 0
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'JPG', 'PNG', 'bmp'}
+# 设置静态文件缓存过期时间
+app.send_file_max_age_default = timedelta(seconds=1)
 
 
-class Producer(threading.Thread):
-    """docstring for Producer"""
+def producer():
+    print('in producer')
 
-    def __init__(self, rtmp_str):
-        super(Producer, self).__init__()
+    # 通过cv2中的类获取视频流操作对象cap
+    cap = cv2.VideoCapture(rtmp_str)
 
-        self.rtmp_str = rtmp_str
+    # 调用cv2方法获取cap的视频帧（帧：每秒多少张图片）
+    # fps = cap.get(cv2.CAP_PROP_FPS)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    # print(fps)
 
-        # 通过cv2中的类获取视频流操作对象cap
-        self.cap = cv2.VideoCapture(self.rtmp_str)
+    # 获取cap视频流的每帧大小
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    size = (width, height)
+    # print(self.size)
 
-        # 调用cv2方法获取cap的视频帧（帧：每秒多少张图片）
-        # fps = self.cap.get(cv2.CAP_PROP_FPS)
-        self.fps = self.cap.get(cv2.CAP_PROP_FPS)
-        print(self.fps)
+    # 定义编码格式mpge-4
+    fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', '2')
 
-        # 获取cap视频流的每帧大小
-        self.width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        self.height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        self.size = (self.width, self.height)
-        print(self.size)
+    # 定义视频文件输入对象
+    # self.outVideo = cv2.VideoWriter('saveDir1.avi', self.fourcc, self.fps, self.size)
+    ret, image = cap.read()
+    count = 0
+    while ret:
+        # if ret == True:
+        # self.outVideo.write(image)
 
-        # 定义编码格式mpge-4
-        # self.fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', '2')
+        # cv2.imshow('video', image)
 
-        # 定义视频文件输入对象
-        # self.outVideo = cv2.VideoWriter('saveDir1.avi', self.fourcc, self.fps, self.size)
+        cv2.waitKey(int(1000 / int(fps)))  # 延迟
 
-    def run(self):
-        print('in producer')
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     self.outVideo.release()
+        #
+        #     self.cap.release()
+        #
+        #     cv2.destroyAllWindows()
+        #
+        #     break
+        count += count
+        print(count)
+        if count % 5 == 0:
+            # 此处为识别代码
+            i = 0
+        ret, image = cap.read()
 
-        ret, image = self.cap.read()
-        count = 0
-        while ret:
-            # if ret == True:
-
-            # self.outVideo.write(image)
-
-            # cv2.imshow('video', image)
-
-            cv2.waitKey(int(1000 / int(self.fps)))  # 延迟
-
-            # if cv2.waitKey(1) & 0xFF == ord('q'):
-            #     self.outVideo.release()
-            #
-            #     self.cap.release()
-            #
-            #     cv2.destroyAllWindows()
-            #
-            #     break
-            count += count
-            if count % 5 == 0:
-                # 此处为识别代码
-                i = 0
-            ret, image = self.cap.read()
-
-        self.cap.release()
-        cv2.destroyAllWindows()
+    cap.release()
+    cv2.destroyAllWindows()
 
 
 def columns(table_name):
@@ -1179,6 +1177,7 @@ def images():
     f = request.files.get('file')
     form = request.form
     t0 = form.get('type')
+    content = ""
     if t0:
         t = int(t0)
         uid = form.get('id')
@@ -1204,7 +1203,8 @@ def images():
         set = 'imgset_dir = \'' + path + '\''
         where = 'id = \'' + str(uid) + '\''
         update(conn, table_name, set, where)
-    return render_template('images.html')
+        content = "上传成功"
+    return render_template('/htmls/images.html', content=content)
 
 
 @app.route('/videos', methods=['GET', 'POST'])
@@ -1261,6 +1261,30 @@ def camera():
     cap.release()
     cv2.destroyAllWindows()
     pass
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+
+# 添加路由
+@app.route('/upload', methods=['POST', 'GET'])
+def upload():
+    if request.method == 'POST':
+        # 通过file标签获取文件
+        f = request.files['file']
+        if not (f and allowed_file(f.filename)):
+            return jsonify({"error": 1001, "msg": "图片类型：png、PNG、jpg、JPG、bmp"})
+        # 当前文件所在路径
+        basepath = os.path.dirname(__file__)
+        # 一定要先创建该文件夹，不然会提示没有该路径
+        upload_path = os.path.join(basepath, 'static/images', secure_filename(f.filename))
+        # 保存文件
+        f.save(upload_path)
+        # 返回上传成功界面
+        return render_template('/htmls/upload_ok.html')
+    # 重新返回上传界面
+    return render_template('/htmls/upload.html')
 
 
 if __name__ == '__main__':
@@ -1385,7 +1409,8 @@ if __name__ == '__main__':
                      '''
     # 用 execute 执行一条 sql 语句
     rtmp_str = 'rtmp://192.168.0.5/live/camstream'
-    producer = Producer(rtmp_str)
+    producer = threading.Thread(target=producer, args=())
     producer.start()
+    producer.join()
     conn.execute(sql_create)
     app.run(debug=True, threaded=True)
