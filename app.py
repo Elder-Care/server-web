@@ -1,12 +1,9 @@
 from datetime import timedelta
-from flask import Flask, render_template, request, Response, make_response, jsonify
 from flask import Flask, render_template, request, make_response, jsonify
 import sqlite3
 import time
 import os
-import random
 import cv2
-from werkzeug.utils import secure_filename
 
 import bodydetect
 import json
@@ -20,8 +17,6 @@ cur_id = 0
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'JPG', 'PNG', 'bmp'}
 # 设置静态文件缓存过期时间
 app.send_file_max_age_default = timedelta(seconds=1)
-
-
 
 rtmp_str = 'rtmp://192.168.0.5/live/camstream'
 db_path = 'old_care.sqlite'
@@ -1237,16 +1232,9 @@ def images():
     return render_template('/htmls/index.html')
 
 
-
-
-
-if __name__ == '__main__':
-    db_path = 'old_care.sqlite'
-    conn = sqlite3.connect(db_path, check_same_thread=False)
-    sql_create = '''
-
-    conn = sqlite3.connect(db_path, check_same_thread=False)
-    sql_create = '''
+db_path = 'old_care.sqlite'
+conn = sqlite3.connect(db_path, check_same_thread=False)
+sql_create = '''
 
         CREATE TABLE IF NOT EXISTS oldperson_info (
           ID INTEGER PRIMARY KEY,
