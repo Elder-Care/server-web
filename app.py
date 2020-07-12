@@ -349,8 +349,8 @@ def sel_old(conn, id):
     where = 'id = \'' + id + '\''
     s = select(conn, table_name, where)
     info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
-            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
-            'profile_photo': s[0][9], 'room_number': s[0][10], 'firstguardian_name': s[0][11],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': 's[0][8]',
+            'profile_photo': '0', 'room_number': s[0][10], 'firstguardian_name': s[0][11],
             'firstguardian_relationship': s[0][12], 'firstguardian_phone': s[0][13], 'firstguardian_wechat': s[0][14],
             'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16], 'secondguardian_phone': s[0][17]
         , 'secondguardian_wechat': s[0][18], 'health_state': s[0][19], 'DESCRIPTION': s[0][20], 'ISACTIVE': s[0][21],
@@ -365,8 +365,8 @@ def sel_emp(conn, id):
     where = 'id = \'' + id + '\''
     s = select(conn, table_name, where)
     info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
-            'birthday': s[0][5], 'hire_date': s[0][6], 'resign_date': s[0][7], 'imgset_dir': s[0][8],
-            'profile_photo': s[0][9], 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
+            'birthday': s[0][5], 'hire_date': s[0][6], 'resign_date': s[0][7], 'imgset_dir': 's[0][8]',
+            'profile_photo': '0', 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
             'CREATED': s[0][12], 'CREATEDBY': s[0][13], 'UPDATED': s[0][14]
         , 'UPDATEDBY': s[0][15], 'REMOVE': s[0][16]}
     info = json.dumps(info)
@@ -378,8 +378,8 @@ def sel_vol(conn, id):
     where = 'id = \'' + id + '\''
     s = select(conn, table_name, where)
     info = {'id': s[0][0], 'name': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
-            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
-            'profile_photo': s[0][9], 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': 's[0][8]',
+            'profile_photo': '0', 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
             'CREATED': s[0][12], 'CREATEDBY': s[0][13], 'UPDATED': s[0][14]
         , 'UPDATEDBY': s[0][15], 'REMOVE': s[0][16]}
     info = json.dumps(info)
@@ -440,15 +440,16 @@ def tomodifyoldbasicinfo():
     where = 'id = \'' + str(uid) + '\''
     s = select(conn, table_name, where)
     info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
-            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
-            'profile_photo': s[0][9], 'room_number': s[0][10], 'firstguardian_name': s[0][11],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': 's[0][8]',
+            'profile_photo': '0', 'room_number': s[0][10], 'firstguardian_name': s[0][11],
             'firstguardian_relationship': s[0][12], 'firstguardian_phone': s[0][13], 'firstguardian_wechat': s[0][14],
             'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16], 'secondguardian_phone': s[0][17]
         , 'secondguardian_wechat': s[0][18], 'health_state': s[0][19], 'DESCRIPTION': s[0][20], 'ISACTIVE': s[0][21],
             'CREATED': s[0][22], 'CREATEDBY': s[0][23], 'UPDATED': s[0][24]
         , 'UPDATEDBY': s[0][25], 'REMOVE': s[0][26]}
     info = json.dumps(info)
-    return render_template('/htmls/modify_old_basic.html', info=info)
+    response = make_response(render_template('/htmls/modify_old_basic.html', info=info))
+    return response
 
 
 @app.route('/tomodifyoldguardianinfo', methods=['GET', 'POST'])
@@ -459,8 +460,8 @@ def tomodifyoldguardianinfo():
     where = 'id = \'' + str(uid) + '\''
     s = select(conn, table_name, where)
     info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
-            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
-            'profile_photo': s[0][9], 'room_number': s[0][10], 'firstguardian_name': s[0][11],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': 's[0][8]',
+            'profile_photo': '0', 'room_number': s[0][10], 'firstguardian_name': s[0][11],
             'firstguardian_relationship': s[0][12], 'firstguardian_phone': s[0][13], 'firstguardian_wechat': s[0][14],
             'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16], 'secondguardian_phone': s[0][17]
         , 'secondguardian_wechat': s[0][18], 'health_state': s[0][19], 'DESCRIPTION': s[0][20], 'ISACTIVE': s[0][21],
@@ -478,8 +479,8 @@ def tomodifyvolunteerinfo():
     where = 'id = \'' + str(uid) + '\''
     s = select(conn, table_name, where)
     info = {'id': s[0][0], 'name': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
-            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
-            'profile_photo': s[0][9], 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': 's[0][8]',
+            'profile_photo': '0', 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
             'CREATED': s[0][12], 'CREATEDBY': s[0][13], 'UPDATED': s[0][14]
         , 'UPDATEDBY': s[0][15], 'REMOVE': s[0][16]}
     info = json.dumps(info)
@@ -494,8 +495,8 @@ def tomodifyworkerinfo():
     where = 'id = \'' + str(uid) + '\''
     s = select(conn, table_name, where)
     info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
-            'birthday': s[0][5], 'hire_date': s[0][6], 'resign_date': s[0][7], 'imgset_dir': s[0][8],
-            'profile_photo': s[0][9], 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
+            'birthday': s[0][5], 'hire_date': s[0][6], 'resign_date': s[0][7], 'imgset_dir': 's[0][8]',
+            'profile_photo': '0', 'DESCRIPTION': s[0][10], 'ISACTIVE': s[0][11],
             'CREATED': s[0][12], 'CREATEDBY': s[0][13], 'UPDATED': s[0][14]
         , 'UPDATEDBY': s[0][15], 'REMOVE': s[0][16]}
     info = json.dumps(info)
@@ -530,15 +531,15 @@ def modifyoldbasic():
             'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
             'checkout_date': form.get('checkout_date'), 'room_number': form.get('room_number'),
-            'health_state': form.get('health_state'), 'imgset_dir': form.get('imgset_dir'),
+            'health_state': form.get('health_state'), 'imgset_dir': '0',
             'DESCRIPTION': form.get('DESCRIPTION')}
     elder_info(conn, uid, info)
     table_name = 'oldperson_info'
     where = 'id = \'' + str(uid) + '\''
     s = select(conn, table_name, where)
     info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
-            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
-            'profile_photo': s[0][9], 'room_number': s[0][10], 'firstguardian_name': s[0][11],
+            'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': '0',
+            'profile_photo': '0', 'room_number': s[0][10], 'firstguardian_name': s[0][11],
             'firstguardian_relationship': s[0][12], 'firstguardian_phone': s[0][13],
             'firstguardian_wechat': s[0][14],
             'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16],
@@ -568,7 +569,7 @@ def modifyoldguardian():
     s = select(conn, table_name, where)
     info = {'id': s[0][0], 'username': s[0][1], 'gender': s[0][2], 'phone': s[0][3], 'id_card': s[0][4],
             'birthday': s[0][5], 'checkin_date': s[0][6], 'checkout_date': s[0][7], 'imgset_dir': s[0][8],
-            'profile_photo': s[0][9], 'room_number': s[0][10], 'firstguardian_name': s[0][11],
+            'profile_photo': '0', 'room_number': s[0][10], 'firstguardian_name': s[0][11],
             'firstguardian_relationship': s[0][12], 'firstguardian_phone': s[0][13],
             'firstguardian_wechat': s[0][14],
             'secondguardian_name': s[0][15], 'secondguardian_relationship': s[0][16],
@@ -587,8 +588,8 @@ def modifyworkerbasic():
     info = {'username': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
             'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'hire_date': form.get("hire_date"),
-            'resign_date': form.get('resign_date'), 'imgset_dir': form.get('imgset_dir'), 'profile_photo':
-                form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
+            'resign_date': form.get('resign_date'), 'imgset_dir': '0', 'profile_photo':
+                '0', 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     uid = form.get('id')
     emp_info(conn, uid, info)
     content = sel_emp(conn, uid)
@@ -601,8 +602,8 @@ def modifyvolunteerbasic():
     info = {'name': form.get('name'), 'gender': form.get('gender'), 'phone': form.get('phone'),
             'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
-            'checkout_date': form.get('checkout_date'), 'imgset_dir': form.get('imgset_dir'), 'profile_photo':
-                form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
+            'checkout_date': form.get('checkout_date'), 'imgset_dir': '0', 'profile_photo':
+                '0', 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     uid = form.get('id')
     vol_info(conn, uid, info)
     content = sel_vol(conn, uid)
@@ -931,7 +932,7 @@ def oinfo():
     info = {'gender': form.get('gender'), 'phone': form.get('phone'), 'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
             'checkout_date': form.get('checkout_date'), 'profile_photo':
-                form.get('profile_photo'), 'room_number': form.get('room_number'), 'firstguardian_name':
+                '0', 'room_number': form.get('room_number'), 'firstguardian_name':
                 form.get('firstguardian_name'), 'firstguardian_relationship': form.get('firstguardian_relationship'),
             'firstguardian_phone': form.get('firstguardian_phone'), 'firstguardian_wechat':
                 form.get('firstguardian_wechat'), 'secondguardian_name':
@@ -1055,8 +1056,8 @@ def einfo():
     uid = form.get('id')
     info = {'gender': form.get('gender'), 'phone': form.get('phone'), 'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'hire_date': form.get("hire_date"),
-            'resign_date': form.get('resign_date'), 'imgset_dir': form.get('imgset_dir'), 'profile_photo':
-                form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
+            'resign_date': form.get('resign_date'), 'imgset_dir': '0', 'profile_photo':
+                '0', 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     if emp_info(conn, uid, info):
         content = "员工信息更新成功"
     else:
@@ -1137,8 +1138,8 @@ def vinfo():
     uid = form.get('id')
     info = {'gender': form.get('gender'), 'phone': form.get('phone'), 'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
-            'checkout_date': form.get('checkout_date'), 'imgset_dir': form.get('imgset_dir'), 'profile_photo':
-                form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
+            'checkout_date': form.get('checkout_date'), 'imgset_dir': '0', 'profile_photo':
+                '0', 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
     if vol_info(conn, uid, info):
         content = "志愿者信息更新成功"
     else:
@@ -1443,6 +1444,6 @@ sql_create = '''
                      '''
 
 conn.execute(sql_create)
-producer = Producer(rtmp_str)
-producer.start()
+# producer = Producer(rtmp_str)
+# producer.start()
 app.run(debug=True, use_reloader=False)

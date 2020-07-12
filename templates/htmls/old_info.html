@@ -350,10 +350,7 @@
                                 <div class="col-6 text-muted">出生日期:</div>
                                 <div class="col-6" id="birthday">1955-6-30</div>
                             </div>
-                            <div class="row mb-2">
-                                <div class="col-6 text-muted">图像目录：</div>
-                                <div class="col-6" id="imgset_dir">xxx</div>
-                            </div>
+
                             <div class="row mb-2">
                                 <div class="col-6 text-muted">房间号：</div>
                                 <div class="col-6" id="room_number"></div>
@@ -497,7 +494,6 @@
     document.getElementById("firstguardian_relationship").innerHTML = info.firstguardian_relationship
     document.getElementById("firstguardian_wechat").innerHTML = info.firstguardian_wechat
     document.getElementById("health_state").innerHTML = info.health_state
-    document.getElementById("imgset_dir").innerHTML = info.imgset_dir
     document.getElementById("room_number").innerHTML = info.room_number
     document.getElementById("secondguardian_name").innerHTML = info.secondguardian_name
     document.getElementById("secondguardian_phone").innerHTML = info.secondguardian_phone
@@ -518,7 +514,7 @@
 
 </body>
 <script>
-        function getCookie(cookie_name) {
+    function getCookie(cookie_name) {
         var allcookies = document.cookie;
         var cookie_pos = allcookies.indexOf(cookie_name);
         if (cookie_pos != -1) {
@@ -537,4 +533,5 @@
     let realname = getCookie('realname');
     console.log(realname);
     document.getElementById("sidename").innerHTML = realname;
-</script></html>
+</script>
+</html>
