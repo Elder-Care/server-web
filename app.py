@@ -1,10 +1,11 @@
-from datetime import timedelta
 from flask import Flask, render_template, request, make_response, jsonify
 import sqlite3
 import time
 import os
 import cv2
+import datetime
 
+import faceemodetect
 import bodydetect
 import json
 from urllib.parse import quote
@@ -16,7 +17,7 @@ cur_id = 0
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'JPG', 'PNG', 'bmp'}
 # 设置静态文件缓存过期时间
-app.send_file_max_age_default = timedelta(seconds=1)
+app.send_file_max_age_default = datetime.timedelta(seconds=1)
 
 rtmp_str = 'rtmp://192.168.0.5/live/camstream'
 db_path = 'old_care.sqlite'
@@ -49,17 +50,13 @@ class Producer(threading.Thread):
         # self.outVideo = cv2.VideoWriter('saveDir1.avi', self.fourcc, self.fps, self.size)
 
     def run(self):
-        print('in producer')
-
+        eflag = 0
+        vflag = 0
         ret, image = self.cap.read()
         count = 0
         while ret:
             # if ret == True:
             # self.outVideo.write(image)
-
-            # cv2.imshow('video', image)
-
-            cv2.waitKey(int(1000 / int(self.fps)))  # 延迟
 
             # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     self.outVideo.release()
@@ -69,21 +66,51 @@ class Producer(threading.Thread):
             #     cv2.destroyAllWindows()
             #
             #     break
+
             count += 1
-            if count % 3 == 0:
+            if count > 5:
                 # 延时直到flask服务器开启
-                if count > 360:
+                if count % 2 == 0:
                     # 识别代码
-                    f = bodydetect.detect_fall(image)
-                    content = ''
+                    cv2.imshow('video', image)
+                    f = bodydetect.detect_fall(image, count)
+                    frame = cv2.resize(image, (0, 0), fx=1, fy=1)
+                    a = faceemodetect.main(image, count)
                     if f:
-                        content = '摔倒'
-                        print(content)
+                        print('fall')
+                        addevent(event_type='0', event_desc='老人摔倒')
                     else:
                         content = '正常'
+                    for i in a:
+                        if i['type'] == 'Unknown':
+                            print('with u')
+                            addevent(event_type='1', event_desc='陌生人闯入')
+                        if i['type'] == 'volunteer':
+                            vflag = 1
+                        if i['type'] == 'elder':
+                            eflag = 1
+                            if i['emotion'] == 1:
+                                print('smile')
+                                addevent(event_type='2', event_desc='老人笑了')
+                        if vflag == 1 and eflag == 1:
+                            print('v and e')
+                            addevent(event_type='3', event_desc='老人与义工互动')
+
+            cv2.waitKey(30)  # 延迟
+            eflag = 0
+            vflag = 0
             ret, image = self.cap.read()
 
         self.cap.release()
+
+
+def addevent(event_type, event_desc):
+    table_name = 'event_info'
+    event_date = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')
+    event_location = 'camera1'
+    value = {'event_type': event_type, 'event_date': event_date, 'event_location': event_location,
+             'event_desc': event_desc, 'oldperson_id': 0}
+    insert(conn, table_name, value)
 
 
 def columns(table_name):
@@ -596,7 +623,14 @@ def tomain():
 
 @app.route('/toselectevent', methods=['GET', 'POST'])
 def toselectevent():
-    return render_template('/htmls/select_event.html')
+    table_name = 'event_info'
+    s = select(conn, table_name, "")
+    info = []
+    for x in s:
+        info.append({'id': x[0], 'event_type': x[1], 'event_date': x[2], 'event_location': x[3], 'event_desc': x[4],
+                     'oldperson_id': x[5]})
+    info = json.dumps(info)
+    return render_template('/htmls/select_event.html', info=info)
 
 
 @app.route('/toaddold', methods=['GET', 'POST'])
@@ -841,6 +875,15 @@ def signoff():
 @app.route('/addo', methods=['GET', 'POST'])
 def addo():
     # 新增老人
+    f = request.files['file']
+    t1 = 'old_profile'
+    global conn
+    table_name = 'oldperson_info'
+    s = select(conn, table_name, "")
+    uid = 0
+    for x in s:
+        uid = x[0]
+    uid += 1
     form = request.form
     if not form.get('username'):
         content = "请输入用户名"
@@ -848,8 +891,7 @@ def addo():
     info = {'username': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
             'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
-            'checkout_date': form.get('checkout_date'), 'profile_photo':
-                form.get('profile_photo'), 'room_number': form.get('room_number'), 'firstguardian_name':
+            'checkout_date': form.get('checkout_date'), 'room_number': form.get('room_number'), 'firstguardian_name':
                 form.get('firstguardian_name'), 'firstguardian_relationship': form.get('firstguardian_relationship'),
             'firstguardian_phone': form.get('firstguardian_phone'), 'firstguardian_wechat':
                 form.get('firstguardian_wechat'), 'secondguardian_name':
@@ -857,8 +899,19 @@ def addo():
             'secondguardian_phone': form.get('secondguardian_phone'), 'secondguardian_wechat':
                 form.get('secondguardian_wechat'), 'health_state': form.get('health_state'),
             'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
-    global conn
+
     if add_elder(conn, info):
+        if f:
+            path = os.path.dirname(__file__)
+            path += '\\static\\images\\'
+            path += t1
+            path += '\\'
+            path += str(uid)
+            path += '.png'
+            f.save(path)
+            set = 'profile_photo = \'' + path + '\''
+            where = 'id = \'' + str(uid) + '\''
+            update(conn, table_name, set, where)
         table_name = 'oldperson_info'
         s = select(conn, table_name, "")
         info = []
@@ -868,7 +921,7 @@ def addo():
         return render_template('/htmls/select_old.html', info=info)
     else:
         content = "用户名已存在"
-        return render_template('/htmls/index.html', content=content)
+        return render_template('/htmls/select_old.html', content=content)
 
 
 @app.route('/oinfo', methods=['POST', 'GET'])
@@ -954,6 +1007,15 @@ def sele():
 @app.route('/adde', methods=['GET', 'POST'])
 def adde():
     # 新增员工
+    f = request.files['file']
+    t1 = 'employee_profile'
+    table_name = 'employee_info'
+    global conn
+    s = select(conn, table_name, "")
+    uid = 0
+    for x in s:
+        uid = x[0]
+    uid += 1
     form = request.form
     if not form.get('username'):
         content = "请输入用户名"
@@ -961,10 +1023,20 @@ def adde():
     info = {'username': form.get('username'), 'gender': form.get('gender'), 'phone': form.get('phone'),
             'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'hire_date': form.get("hire_date"),
-            'resign_date': form.get('resign_date'), 'profile_photo':
-                form.get('profile_photo'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
-    global conn
+            'resign_date': form.get('resign_date'), 'DESCRIPTION': form.get('DESCRIPTION'),
+            'ISACTIVE': form.get('ISACTIVE')}
     if add_employee(conn, info):
+        if f:
+            path = os.path.dirname(__file__)
+            path += '\\static\\images\\'
+            path += t1
+            path += '\\'
+            path += str(uid)
+            path += '.png'
+            f.save(path)
+            set = 'profile_photo = \'' + path + '\''
+            where = 'id = \'' + str(uid) + '\''
+            update(conn, table_name, set, where)
         table_name = 'employee_info'
         s = select(conn, table_name, "")
         info = []
@@ -974,7 +1046,7 @@ def adde():
         return render_template('/htmls/select_worker.html', info=info)
     else:
         content = "用户名已存在"
-        return render_template('/htmls/index.html', content=content)
+        return render_template('/htmls/select_worker.html', content=content)
 
 
 @app.route('/einfo', methods=['GET', 'POST'])
@@ -1017,6 +1089,15 @@ def dele():
 @app.route('/addv', methods=['GET', 'POST'])
 def addv():
     # 新增志愿者
+    f = request.files['file']
+    t1 = 'volunteer_profile'
+    global conn
+    table_name = 'volunteer_info'
+    s = select(conn, table_name, "")
+    uid = 0
+    for x in s:
+        uid = x[0]
+    uid += 1
     form = request.form
     if not form.get('name'):
         content = "请输入用户名"
@@ -1024,10 +1105,20 @@ def addv():
     info = {'name': form.get('name'), 'gender': form.get('gender'), 'phone': form.get('phone'),
             'id_card': form.get('id_card'),
             'birthday': form.get('birthday'), 'checkin_date': form.get("checkin_date"),
-            'checkout_date': form.get('checkout_date'), 'imgset_dir':
-                form.get('imgset_dir'), 'DESCRIPTION': form.get('DESCRIPTION'), 'ISACTIVE': form.get('ISACTIVE')}
-    global conn
+            'checkout_date': form.get('checkout_date'), 'DESCRIPTION': form.get('DESCRIPTION'),
+            'ISACTIVE': form.get('ISACTIVE')}
     if add_volunteer(conn, info):
+        if f:
+            path = os.path.dirname(__file__)
+            path += '\\static\\images\\'
+            path += t1
+            path += '\\'
+            path += str(uid)
+            path += '.png'
+            f.save(path)
+            set = 'profile_photo = \'' + path + '\''
+            where = 'id = \'' + str(uid) + '\''
+            update(conn, table_name, set, where)
         table_name = 'volunteer_info'
         s = select(conn, table_name, "")
         info = []
@@ -1037,7 +1128,7 @@ def addv():
         return render_template('/htmls/select_volunteer.html', info=info)
     else:
         content = "用户名已存在"
-        return render_template('/htmls/index.html', content=content)
+        return render_template('/htmls/select_volunteer.html', content=content)
 
 
 @app.route('/vinfo', methods=['GET', 'POST'])
@@ -1228,12 +1319,9 @@ def images():
         set = 'profile_photo = \'' + path + '\''
         where = 'id = \'' + str(uid) + '\''
         update(conn, table_name, set, where)
-    print(path)
     return render_template('/htmls/index.html')
 
 
-db_path = 'old_care.sqlite'
-conn = sqlite3.connect(db_path, check_same_thread=False)
 sql_create = '''
 
         CREATE TABLE IF NOT EXISTS oldperson_info (
@@ -1355,7 +1443,6 @@ sql_create = '''
                      '''
 
 conn.execute(sql_create)
-# producer = Producer(rtmp_str)
-# producer.start()
-# producer.join()
-app.run(debug=True, threaded=True)
+producer = Producer(rtmp_str)
+producer.start()
+app.run(debug=True, use_reloader=False)

@@ -7,10 +7,10 @@
     <title>摄像头1</title>
 
     <!-- Plugin styles -->
-    <link rel="stylesheet" href="../static/vendors/bundle.css" type="text/css">
+    <link rel="stylesheet" href="/static/vendors/bundle.css" type="text/css">
 
     <!-- App styles -->
-    <link rel="stylesheet" href="../static/assets/css/app.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/assets/css/app.min.css" type="text/css">
 
     <!-- 摄像头中的js -->
     <link href="http://vjs.zencdn.net/5.5.3/video-js.css" rel="stylesheet">
@@ -41,8 +41,8 @@
     <!-- begin::logo -->
     <div id="logo">
         <a href="tomain">
-            <img class="logo" src="../static/assets/media/image/logo.png" alt="logo">
-            <img class="logo-sm" src="../static/assets/media/image/logo-sm.png" alt="small logo">
+            <img class="logo" src="/static/assets/media/image/logo.png" alt="logo">
+            <img class="logo-sm" src="/static/assets/media/image/logo-sm.png" alt="small logo">
         </a>
     </div>
     <!-- end::logo -->
@@ -50,7 +50,7 @@
     <!-- begin::navigation header -->
     <header class="navigation-header">
         <figure class="avatar avatar-state-success">
-            <img src="../static/assets/media/image/user/1.png" class="rounded-circle" alt="image">
+            <img src="/static/assets/media/image/user/1.png" class="rounded-circle" alt="image">
         </figure>
         <div>
             <h5 id="sidename">杨烁平</h5>
@@ -167,8 +167,8 @@
             <!-- begin::header-logo -->
             <li class="nav-item" id="header-logo">
                 <a href="tomain">
-                    <img class="logo" src="../static/assets/media/image/logo.png" alt="logo">
-                    <img class="logo-sm" src="../static/assets/media/image/logo-sm.png" alt="small logo">
+                    <img class="logo" src="/static/assets/media/image/logo.png" alt="logo">
+                    <img class="logo-sm" src="/static/assets/media/image/logo-sm.png" alt="small logo">
                 </a>
             </li>
             <!-- end::header-logo -->
@@ -302,7 +302,8 @@
                                    width="640"
                                    height="480"
                                    poster=""
-                                   data-setup="{}">
+                                   data-setup="{}"
+                                   autoplay="autoplay">
                                 <source src="rtmp://192.168.0.5/live/camstream" type="rtmp/flv">
                                 <p class="vjs-no-js vjs-big-play-centered">播放视频需要启用 JavaScript，推荐使用支持HTML5的浏览器访问。
                                     To view this video please enable JavaScript, and consider upgrading to a web browser
@@ -337,10 +338,10 @@
 <!-- end::main -->
 
 <!-- Plugin scripts -->
-<script src="../static/vendors/bundle.js"></script>
+<script src="/static/vendors/bundle.js"></script>
 <script src="http://vjs.zencdn.net/5.5.3/video.js"></script>
 <!-- App scripts -->
-<script src="../static/assets/js/app.min.js"></script>
+<script src="/static/assets/js/app.min.js"></script>
 <script>
     function getCookie(cookie_name) {
         var allcookies = document.cookie;

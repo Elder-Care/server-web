@@ -46,7 +46,7 @@ def drawPred(frame, classId, conf, left, top, right, bottom):
 
 
 # Remove the bounding boxes with low confidence using non-maxima suppression
-def postprocess(frame, outs):
+def postprocess(frame, outs, count):
     frameHeight = frame.shape[0]
     frameWidth = frame.shape[1]
 
@@ -86,7 +86,7 @@ def postprocess(frame, outs):
     for i in classIds:
         if i == 1:
             # 摔倒
-            cv.imwrite('./fall.jpg', frame)
+            cv.imwrite('./static/images/fall_image/' + str(count) + '_fall.jpg', frame)
             return 1
         else:
             return 0
@@ -96,7 +96,7 @@ def postprocess(frame, outs):
 
 # cv.namedWindow(winName, cv.WINDOW_NORMAL)
 
-def detect_fall(frame):
+def detect_fall(frame, count):
     # Create a 4D blob from a frame.
     blob = cv.dnn.blobFromImage(frame, 1 / 255, (inpWidth, inpHeight), [0, 0, 0], 1, crop=False)
 
@@ -107,11 +107,10 @@ def detect_fall(frame):
     outs = net.forward(getOutputsNames(net))
 
     # Remove the bounding boxes with low confidence
-    fallcount = postprocess(frame, outs)
+    f = postprocess(frame, outs, count)
 
     # Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
     t, _ = net.getPerfProfile()
     label = 'Time Costs: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
     cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
-
-    cv.waitKey(30)
+    return f
